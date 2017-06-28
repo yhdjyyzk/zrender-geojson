@@ -63,12 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 26);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
-/* 1 */
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -667,7 +666,498 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 
 /***/ }),
-/* 2 */,
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+    var ArrayCtor = typeof Float32Array === 'undefined'
+        ? Array
+        : Float32Array;
+
+    /**
+     * @typedef {Float32Array|Array.<number>} Vector2
+     */
+    /**
+     * 二维向量类
+     * @exports zrender/tool/vector
+     */
+    var vector = {
+        /**
+         * 创建一个向量
+         * @param {number} [x=0]
+         * @param {number} [y=0]
+         * @return {Vector2}
+         */
+        create: function (x, y) {
+            var out = new ArrayCtor(2);
+            if (x == null) {
+                x = 0;
+            }
+            if (y == null) {
+                y = 0;
+            }
+            out[0] = x;
+            out[1] = y;
+            return out;
+        },
+
+        /**
+         * 复制向量数据
+         * @param {Vector2} out
+         * @param {Vector2} v
+         * @return {Vector2}
+         */
+        copy: function (out, v) {
+            out[0] = v[0];
+            out[1] = v[1];
+            return out;
+        },
+
+        /**
+         * 克隆一个向量
+         * @param {Vector2} v
+         * @return {Vector2}
+         */
+        clone: function (v) {
+            var out = new ArrayCtor(2);
+            out[0] = v[0];
+            out[1] = v[1];
+            return out;
+        },
+
+        /**
+         * 设置向量的两个项
+         * @param {Vector2} out
+         * @param {number} a
+         * @param {number} b
+         * @return {Vector2} 结果
+         */
+        set: function (out, a, b) {
+            out[0] = a;
+            out[1] = b;
+            return out;
+        },
+
+        /**
+         * 向量相加
+         * @param {Vector2} out
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         */
+        add: function (out, v1, v2) {
+            out[0] = v1[0] + v2[0];
+            out[1] = v1[1] + v2[1];
+            return out;
+        },
+
+        /**
+         * 向量缩放后相加
+         * @param {Vector2} out
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         * @param {number} a
+         */
+        scaleAndAdd: function (out, v1, v2, a) {
+            out[0] = v1[0] + v2[0] * a;
+            out[1] = v1[1] + v2[1] * a;
+            return out;
+        },
+
+        /**
+         * 向量相减
+         * @param {Vector2} out
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         */
+        sub: function (out, v1, v2) {
+            out[0] = v1[0] - v2[0];
+            out[1] = v1[1] - v2[1];
+            return out;
+        },
+
+        /**
+         * 向量长度
+         * @param {Vector2} v
+         * @return {number}
+         */
+        len: function (v) {
+            return Math.sqrt(this.lenSquare(v));
+        },
+
+        /**
+         * 向量长度平方
+         * @param {Vector2} v
+         * @return {number}
+         */
+        lenSquare: function (v) {
+            return v[0] * v[0] + v[1] * v[1];
+        },
+
+        /**
+         * 向量乘法
+         * @param {Vector2} out
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         */
+        mul: function (out, v1, v2) {
+            out[0] = v1[0] * v2[0];
+            out[1] = v1[1] * v2[1];
+            return out;
+        },
+
+        /**
+         * 向量除法
+         * @param {Vector2} out
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         */
+        div: function (out, v1, v2) {
+            out[0] = v1[0] / v2[0];
+            out[1] = v1[1] / v2[1];
+            return out;
+        },
+
+        /**
+         * 向量点乘
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         * @return {number}
+         */
+        dot: function (v1, v2) {
+            return v1[0] * v2[0] + v1[1] * v2[1];
+        },
+
+        /**
+         * 向量缩放
+         * @param {Vector2} out
+         * @param {Vector2} v
+         * @param {number} s
+         */
+        scale: function (out, v, s) {
+            out[0] = v[0] * s;
+            out[1] = v[1] * s;
+            return out;
+        },
+
+        /**
+         * 向量归一化
+         * @param {Vector2} out
+         * @param {Vector2} v
+         */
+        normalize: function (out, v) {
+            var d = vector.len(v);
+            if (d === 0) {
+                out[0] = 0;
+                out[1] = 0;
+            }
+            else {
+                out[0] = v[0] / d;
+                out[1] = v[1] / d;
+            }
+            return out;
+        },
+
+        /**
+         * 计算向量间距离
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         * @return {number}
+         */
+        distance: function (v1, v2) {
+            return Math.sqrt(
+                (v1[0] - v2[0]) * (v1[0] - v2[0])
+                + (v1[1] - v2[1]) * (v1[1] - v2[1])
+            );
+        },
+
+        /**
+         * 向量距离平方
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         * @return {number}
+         */
+        distanceSquare: function (v1, v2) {
+            return (v1[0] - v2[0]) * (v1[0] - v2[0])
+                + (v1[1] - v2[1]) * (v1[1] - v2[1]);
+        },
+
+        /**
+         * 求负向量
+         * @param {Vector2} out
+         * @param {Vector2} v
+         */
+        negate: function (out, v) {
+            out[0] = -v[0];
+            out[1] = -v[1];
+            return out;
+        },
+
+        /**
+         * 插值两个点
+         * @param {Vector2} out
+         * @param {Vector2} v1
+         * @param {Vector2} v2
+         * @param {number} t
+         */
+        lerp: function (out, v1, v2, t) {
+            out[0] = v1[0] + t * (v2[0] - v1[0]);
+            out[1] = v1[1] + t * (v2[1] - v1[1]);
+            return out;
+        },
+
+        /**
+         * 矩阵左乘向量
+         * @param {Vector2} out
+         * @param {Vector2} v
+         * @param {Vector2} m
+         */
+        applyTransform: function (out, v, m) {
+            var x = v[0];
+            var y = v[1];
+            out[0] = m[0] * x + m[2] * y + m[4];
+            out[1] = m[1] * x + m[3] * y + m[5];
+            return out;
+        },
+        /**
+         * 求两个向量最小值
+         * @param  {Vector2} out
+         * @param  {Vector2} v1
+         * @param  {Vector2} v2
+         */
+        min: function (out, v1, v2) {
+            out[0] = Math.min(v1[0], v2[0]);
+            out[1] = Math.min(v1[1], v2[1]);
+            return out;
+        },
+        /**
+         * 求两个向量最大值
+         * @param  {Vector2} out
+         * @param  {Vector2} v1
+         * @param  {Vector2} v2
+         */
+        max: function (out, v1, v2) {
+            out[0] = Math.max(v1[0], v2[0]);
+            out[1] = Math.max(v1[1], v2[1]);
+            return out;
+        }
+    };
+
+    vector.length = vector.len;
+    vector.lengthSquare = vector.lenSquare;
+    vector.dist = vector.distance;
+    vector.distSquare = vector.distanceSquare;
+
+    return vector;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @module echarts/core/BoundingRect
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
+    'use strict';
+
+    var vec2 = __webpack_require__(1);
+    var matrix = __webpack_require__(17);
+
+    var v2ApplyTransform = vec2.applyTransform;
+    var mathMin = Math.min;
+    var mathMax = Math.max;
+    /**
+     * @alias module:echarts/core/BoundingRect
+     */
+    function BoundingRect(x, y, width, height) {
+
+        if (width < 0) {
+            x = x + width;
+            width = -width;
+        }
+        if (height < 0) {
+            y = y + height;
+            height = -height;
+        }
+
+        /**
+         * @type {number}
+         */
+        this.x = x;
+        /**
+         * @type {number}
+         */
+        this.y = y;
+        /**
+         * @type {number}
+         */
+        this.width = width;
+        /**
+         * @type {number}
+         */
+        this.height = height;
+    }
+
+    BoundingRect.prototype = {
+
+        constructor: BoundingRect,
+
+        /**
+         * @param {module:echarts/core/BoundingRect} other
+         */
+        union: function (other) {
+            var x = mathMin(other.x, this.x);
+            var y = mathMin(other.y, this.y);
+
+            this.width = mathMax(
+                    other.x + other.width,
+                    this.x + this.width
+                ) - x;
+            this.height = mathMax(
+                    other.y + other.height,
+                    this.y + this.height
+                ) - y;
+            this.x = x;
+            this.y = y;
+        },
+
+        /**
+         * @param {Array.<number>} m
+         * @methods
+         */
+        applyTransform: (function () {
+            var lt = [];
+            var rb = [];
+            var lb = [];
+            var rt = [];
+            return function (m) {
+                // In case usage like this
+                // el.getBoundingRect().applyTransform(el.transform)
+                // And element has no transform
+                if (!m) {
+                    return;
+                }
+                lt[0] = lb[0] = this.x;
+                lt[1] = rt[1] = this.y;
+                rb[0] = rt[0] = this.x + this.width;
+                rb[1] = lb[1] = this.y + this.height;
+
+                v2ApplyTransform(lt, lt, m);
+                v2ApplyTransform(rb, rb, m);
+                v2ApplyTransform(lb, lb, m);
+                v2ApplyTransform(rt, rt, m);
+
+                this.x = mathMin(lt[0], rb[0], lb[0], rt[0]);
+                this.y = mathMin(lt[1], rb[1], lb[1], rt[1]);
+                var maxX = mathMax(lt[0], rb[0], lb[0], rt[0]);
+                var maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
+                this.width = maxX - this.x;
+                this.height = maxY - this.y;
+            };
+        })(),
+
+        /**
+         * Calculate matrix of transforming from self to target rect
+         * @param  {module:zrender/core/BoundingRect} b
+         * @return {Array.<number>}
+         */
+        calculateTransform: function (b) {
+            var a = this;
+            var sx = b.width / a.width;
+            var sy = b.height / a.height;
+
+            var m = matrix.create();
+
+            // 矩阵右乘
+            matrix.translate(m, m, [-a.x, -a.y]);
+            matrix.scale(m, m, [sx, sy]);
+            matrix.translate(m, m, [b.x, b.y]);
+
+            return m;
+        },
+
+        /**
+         * @param {(module:echarts/core/BoundingRect|Object)} b
+         * @return {boolean}
+         */
+        intersect: function (b) {
+            if (!b) {
+                return false;
+            }
+
+            if (!(b instanceof BoundingRect)) {
+                // Normalize negative width/height.
+                b = BoundingRect.create(b);
+            }
+
+            var a = this;
+            var ax0 = a.x;
+            var ax1 = a.x + a.width;
+            var ay0 = a.y;
+            var ay1 = a.y + a.height;
+
+            var bx0 = b.x;
+            var bx1 = b.x + b.width;
+            var by0 = b.y;
+            var by1 = b.y + b.height;
+
+            return ! (ax1 < bx0 || bx1 < ax0 || ay1 < by0 || by1 < ay0);
+        },
+
+        contain: function (x, y) {
+            var rect = this;
+            return x >= rect.x
+                && x <= (rect.x + rect.width)
+                && y >= rect.y
+                && y <= (rect.y + rect.height);
+        },
+
+        /**
+         * @return {module:echarts/core/BoundingRect}
+         */
+        clone: function () {
+            return new BoundingRect(this.x, this.y, this.width, this.height);
+        },
+
+        /**
+         * Copy from another rect
+         */
+        copy: function (other) {
+            this.x = other.x;
+            this.y = other.y;
+            this.width = other.width;
+            this.height = other.height;
+        },
+
+        plain: function () {
+            return {
+                x: this.x,
+                y: this.y,
+                width: this.width,
+                height: this.height
+            };
+        }
+    };
+
+    /**
+     * @param {Object|module:zrender/core/BoundingRect} rect
+     * @param {number} rect.x
+     * @param {number} rect.y
+     * @param {number} rect.width
+     * @param {number} rect.height
+     * @return {module:zrender/core/BoundingRect}
+     */
+    BoundingRect.create = function (rect) {
+        return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
+    };
+
+    return BoundingRect;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -680,7 +1170,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     'use strict';
 
-    var vec2 = __webpack_require__(4);
+    var vec2 = __webpack_require__(1);
     var v2Create = vec2.create;
     var v2DistSquare = vec2.distSquare;
     var mathPow = Math.pow;
@@ -1220,512 +1710,6 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-    var ArrayCtor = typeof Float32Array === 'undefined'
-        ? Array
-        : Float32Array;
-
-    /**
-     * @typedef {Float32Array|Array.<number>} Vector2
-     */
-    /**
-     * 二维向量类
-     * @exports zrender/tool/vector
-     */
-    var vector = {
-        /**
-         * 创建一个向量
-         * @param {number} [x=0]
-         * @param {number} [y=0]
-         * @return {Vector2}
-         */
-        create: function (x, y) {
-            var out = new ArrayCtor(2);
-            if (x == null) {
-                x = 0;
-            }
-            if (y == null) {
-                y = 0;
-            }
-            out[0] = x;
-            out[1] = y;
-            return out;
-        },
-
-        /**
-         * 复制向量数据
-         * @param {Vector2} out
-         * @param {Vector2} v
-         * @return {Vector2}
-         */
-        copy: function (out, v) {
-            out[0] = v[0];
-            out[1] = v[1];
-            return out;
-        },
-
-        /**
-         * 克隆一个向量
-         * @param {Vector2} v
-         * @return {Vector2}
-         */
-        clone: function (v) {
-            var out = new ArrayCtor(2);
-            out[0] = v[0];
-            out[1] = v[1];
-            return out;
-        },
-
-        /**
-         * 设置向量的两个项
-         * @param {Vector2} out
-         * @param {number} a
-         * @param {number} b
-         * @return {Vector2} 结果
-         */
-        set: function (out, a, b) {
-            out[0] = a;
-            out[1] = b;
-            return out;
-        },
-
-        /**
-         * 向量相加
-         * @param {Vector2} out
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         */
-        add: function (out, v1, v2) {
-            out[0] = v1[0] + v2[0];
-            out[1] = v1[1] + v2[1];
-            return out;
-        },
-
-        /**
-         * 向量缩放后相加
-         * @param {Vector2} out
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         * @param {number} a
-         */
-        scaleAndAdd: function (out, v1, v2, a) {
-            out[0] = v1[0] + v2[0] * a;
-            out[1] = v1[1] + v2[1] * a;
-            return out;
-        },
-
-        /**
-         * 向量相减
-         * @param {Vector2} out
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         */
-        sub: function (out, v1, v2) {
-            out[0] = v1[0] - v2[0];
-            out[1] = v1[1] - v2[1];
-            return out;
-        },
-
-        /**
-         * 向量长度
-         * @param {Vector2} v
-         * @return {number}
-         */
-        len: function (v) {
-            return Math.sqrt(this.lenSquare(v));
-        },
-
-        /**
-         * 向量长度平方
-         * @param {Vector2} v
-         * @return {number}
-         */
-        lenSquare: function (v) {
-            return v[0] * v[0] + v[1] * v[1];
-        },
-
-        /**
-         * 向量乘法
-         * @param {Vector2} out
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         */
-        mul: function (out, v1, v2) {
-            out[0] = v1[0] * v2[0];
-            out[1] = v1[1] * v2[1];
-            return out;
-        },
-
-        /**
-         * 向量除法
-         * @param {Vector2} out
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         */
-        div: function (out, v1, v2) {
-            out[0] = v1[0] / v2[0];
-            out[1] = v1[1] / v2[1];
-            return out;
-        },
-
-        /**
-         * 向量点乘
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         * @return {number}
-         */
-        dot: function (v1, v2) {
-            return v1[0] * v2[0] + v1[1] * v2[1];
-        },
-
-        /**
-         * 向量缩放
-         * @param {Vector2} out
-         * @param {Vector2} v
-         * @param {number} s
-         */
-        scale: function (out, v, s) {
-            out[0] = v[0] * s;
-            out[1] = v[1] * s;
-            return out;
-        },
-
-        /**
-         * 向量归一化
-         * @param {Vector2} out
-         * @param {Vector2} v
-         */
-        normalize: function (out, v) {
-            var d = vector.len(v);
-            if (d === 0) {
-                out[0] = 0;
-                out[1] = 0;
-            }
-            else {
-                out[0] = v[0] / d;
-                out[1] = v[1] / d;
-            }
-            return out;
-        },
-
-        /**
-         * 计算向量间距离
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         * @return {number}
-         */
-        distance: function (v1, v2) {
-            return Math.sqrt(
-                (v1[0] - v2[0]) * (v1[0] - v2[0])
-                + (v1[1] - v2[1]) * (v1[1] - v2[1])
-            );
-        },
-
-        /**
-         * 向量距离平方
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         * @return {number}
-         */
-        distanceSquare: function (v1, v2) {
-            return (v1[0] - v2[0]) * (v1[0] - v2[0])
-                + (v1[1] - v2[1]) * (v1[1] - v2[1]);
-        },
-
-        /**
-         * 求负向量
-         * @param {Vector2} out
-         * @param {Vector2} v
-         */
-        negate: function (out, v) {
-            out[0] = -v[0];
-            out[1] = -v[1];
-            return out;
-        },
-
-        /**
-         * 插值两个点
-         * @param {Vector2} out
-         * @param {Vector2} v1
-         * @param {Vector2} v2
-         * @param {number} t
-         */
-        lerp: function (out, v1, v2, t) {
-            out[0] = v1[0] + t * (v2[0] - v1[0]);
-            out[1] = v1[1] + t * (v2[1] - v1[1]);
-            return out;
-        },
-
-        /**
-         * 矩阵左乘向量
-         * @param {Vector2} out
-         * @param {Vector2} v
-         * @param {Vector2} m
-         */
-        applyTransform: function (out, v, m) {
-            var x = v[0];
-            var y = v[1];
-            out[0] = m[0] * x + m[2] * y + m[4];
-            out[1] = m[1] * x + m[3] * y + m[5];
-            return out;
-        },
-        /**
-         * 求两个向量最小值
-         * @param  {Vector2} out
-         * @param  {Vector2} v1
-         * @param  {Vector2} v2
-         */
-        min: function (out, v1, v2) {
-            out[0] = Math.min(v1[0], v2[0]);
-            out[1] = Math.min(v1[1], v2[1]);
-            return out;
-        },
-        /**
-         * 求两个向量最大值
-         * @param  {Vector2} out
-         * @param  {Vector2} v1
-         * @param  {Vector2} v2
-         */
-        max: function (out, v1, v2) {
-            out[0] = Math.max(v1[0], v2[0]);
-            out[1] = Math.max(v1[1], v2[1]);
-            return out;
-        }
-    };
-
-    vector.length = vector.len;
-    vector.lengthSquare = vector.lenSquare;
-    vector.dist = vector.distance;
-    vector.distSquare = vector.distanceSquare;
-
-    return vector;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @module echarts/core/BoundingRect
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
-    'use strict';
-
-    var vec2 = __webpack_require__(4);
-    var matrix = __webpack_require__(23);
-
-    var v2ApplyTransform = vec2.applyTransform;
-    var mathMin = Math.min;
-    var mathMax = Math.max;
-    /**
-     * @alias module:echarts/core/BoundingRect
-     */
-    function BoundingRect(x, y, width, height) {
-
-        if (width < 0) {
-            x = x + width;
-            width = -width;
-        }
-        if (height < 0) {
-            y = y + height;
-            height = -height;
-        }
-
-        /**
-         * @type {number}
-         */
-        this.x = x;
-        /**
-         * @type {number}
-         */
-        this.y = y;
-        /**
-         * @type {number}
-         */
-        this.width = width;
-        /**
-         * @type {number}
-         */
-        this.height = height;
-    }
-
-    BoundingRect.prototype = {
-
-        constructor: BoundingRect,
-
-        /**
-         * @param {module:echarts/core/BoundingRect} other
-         */
-        union: function (other) {
-            var x = mathMin(other.x, this.x);
-            var y = mathMin(other.y, this.y);
-
-            this.width = mathMax(
-                    other.x + other.width,
-                    this.x + this.width
-                ) - x;
-            this.height = mathMax(
-                    other.y + other.height,
-                    this.y + this.height
-                ) - y;
-            this.x = x;
-            this.y = y;
-        },
-
-        /**
-         * @param {Array.<number>} m
-         * @methods
-         */
-        applyTransform: (function () {
-            var lt = [];
-            var rb = [];
-            var lb = [];
-            var rt = [];
-            return function (m) {
-                // In case usage like this
-                // el.getBoundingRect().applyTransform(el.transform)
-                // And element has no transform
-                if (!m) {
-                    return;
-                }
-                lt[0] = lb[0] = this.x;
-                lt[1] = rt[1] = this.y;
-                rb[0] = rt[0] = this.x + this.width;
-                rb[1] = lb[1] = this.y + this.height;
-
-                v2ApplyTransform(lt, lt, m);
-                v2ApplyTransform(rb, rb, m);
-                v2ApplyTransform(lb, lb, m);
-                v2ApplyTransform(rt, rt, m);
-
-                this.x = mathMin(lt[0], rb[0], lb[0], rt[0]);
-                this.y = mathMin(lt[1], rb[1], lb[1], rt[1]);
-                var maxX = mathMax(lt[0], rb[0], lb[0], rt[0]);
-                var maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
-                this.width = maxX - this.x;
-                this.height = maxY - this.y;
-            };
-        })(),
-
-        /**
-         * Calculate matrix of transforming from self to target rect
-         * @param  {module:zrender/core/BoundingRect} b
-         * @return {Array.<number>}
-         */
-        calculateTransform: function (b) {
-            var a = this;
-            var sx = b.width / a.width;
-            var sy = b.height / a.height;
-
-            var m = matrix.create();
-
-            // 矩阵右乘
-            matrix.translate(m, m, [-a.x, -a.y]);
-            matrix.scale(m, m, [sx, sy]);
-            matrix.translate(m, m, [b.x, b.y]);
-
-            return m;
-        },
-
-        /**
-         * @param {(module:echarts/core/BoundingRect|Object)} b
-         * @return {boolean}
-         */
-        intersect: function (b) {
-            if (!b) {
-                return false;
-            }
-
-            if (!(b instanceof BoundingRect)) {
-                // Normalize negative width/height.
-                b = BoundingRect.create(b);
-            }
-
-            var a = this;
-            var ax0 = a.x;
-            var ax1 = a.x + a.width;
-            var ay0 = a.y;
-            var ay1 = a.y + a.height;
-
-            var bx0 = b.x;
-            var bx1 = b.x + b.width;
-            var by0 = b.y;
-            var by1 = b.y + b.height;
-
-            return ! (ax1 < bx0 || bx1 < ax0 || ay1 < by0 || by1 < ay0);
-        },
-
-        contain: function (x, y) {
-            var rect = this;
-            return x >= rect.x
-                && x <= (rect.x + rect.width)
-                && y >= rect.y
-                && y <= (rect.y + rect.height);
-        },
-
-        /**
-         * @return {module:echarts/core/BoundingRect}
-         */
-        clone: function () {
-            return new BoundingRect(this.x, this.y, this.width, this.height);
-        },
-
-        /**
-         * Copy from another rect
-         */
-        copy: function (other) {
-            this.x = other.x;
-            this.y = other.y;
-            this.width = other.width;
-            this.height = other.height;
-        },
-
-        plain: function () {
-            return {
-                x: this.x,
-                y: this.y,
-                width: this.width,
-                height: this.height
-            };
-        }
-    };
-
-    /**
-     * @param {Object|module:zrender/core/BoundingRect} rect
-     * @param {number} rect.x
-     * @param {number} rect.y
-     * @param {number} rect.width
-     * @param {number} rect.height
-     * @return {module:zrender/core/BoundingRect}
-     */
-    BoundingRect.create = function (rect) {
-        return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
-    };
-
-    return BoundingRect;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
     var dpr = 1;
     // If in browser environment
     if (typeof window !== 'undefined') {
@@ -1755,7 +1739,1586 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () 
 
 
 /***/ }),
-/* 21 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * echarts设备环境识别
+ *
+ * @desc echarts基于Canvas，纯Javascript图表库，提供直观，生动，可交互，可个性化定制的数据统计图表。
+ * @author firede[firede@firede.us]
+ * @desc thanks zepto.
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+    var env = {};
+    if (typeof navigator === 'undefined') {
+        // In node
+        env = {
+            browser: {},
+            os: {},
+            node: true,
+            // Assume canvas is supported
+            canvasSupported: true
+        };
+    }
+    else {
+        env = detect(navigator.userAgent);
+    }
+
+    return env;
+
+    // Zepto.js
+    // (c) 2010-2013 Thomas Fuchs
+    // Zepto.js may be freely distributed under the MIT license.
+
+    function detect(ua) {
+        var os = {};
+        var browser = {};
+        // var webkit = ua.match(/Web[kK]it[\/]{0,1}([\d.]+)/);
+        // var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/);
+        // var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
+        // var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
+        // var iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/);
+        // var webos = ua.match(/(webOS|hpwOS)[\s\/]([\d.]+)/);
+        // var touchpad = webos && ua.match(/TouchPad/);
+        // var kindle = ua.match(/Kindle\/([\d.]+)/);
+        // var silk = ua.match(/Silk\/([\d._]+)/);
+        // var blackberry = ua.match(/(BlackBerry).*Version\/([\d.]+)/);
+        // var bb10 = ua.match(/(BB10).*Version\/([\d.]+)/);
+        // var rimtabletos = ua.match(/(RIM\sTablet\sOS)\s([\d.]+)/);
+        // var playbook = ua.match(/PlayBook/);
+        // var chrome = ua.match(/Chrome\/([\d.]+)/) || ua.match(/CriOS\/([\d.]+)/);
+        var firefox = ua.match(/Firefox\/([\d.]+)/);
+        // var safari = webkit && ua.match(/Mobile\//) && !chrome;
+        // var webview = ua.match(/(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/) && !chrome;
+        var ie = ua.match(/MSIE\s([\d.]+)/)
+            // IE 11 Trident/7.0; rv:11.0
+            || ua.match(/Trident\/.+?rv:(([\d.]+))/);
+        var edge = ua.match(/Edge\/([\d.]+)/); // IE 12 and 12+
+
+        var weChat = (/micromessenger/i).test(ua);
+
+        // Todo: clean this up with a better OS/browser seperation:
+        // - discern (more) between multiple browsers on android
+        // - decide if kindle fire in silk mode is android or not
+        // - Firefox on Android doesn't specify the Android version
+        // - possibly devide in os, device and browser hashes
+
+        // if (browser.webkit = !!webkit) browser.version = webkit[1];
+
+        // if (android) os.android = true, os.version = android[2];
+        // if (iphone && !ipod) os.ios = os.iphone = true, os.version = iphone[2].replace(/_/g, '.');
+        // if (ipad) os.ios = os.ipad = true, os.version = ipad[2].replace(/_/g, '.');
+        // if (ipod) os.ios = os.ipod = true, os.version = ipod[3] ? ipod[3].replace(/_/g, '.') : null;
+        // if (webos) os.webos = true, os.version = webos[2];
+        // if (touchpad) os.touchpad = true;
+        // if (blackberry) os.blackberry = true, os.version = blackberry[2];
+        // if (bb10) os.bb10 = true, os.version = bb10[2];
+        // if (rimtabletos) os.rimtabletos = true, os.version = rimtabletos[2];
+        // if (playbook) browser.playbook = true;
+        // if (kindle) os.kindle = true, os.version = kindle[1];
+        // if (silk) browser.silk = true, browser.version = silk[1];
+        // if (!silk && os.android && ua.match(/Kindle Fire/)) browser.silk = true;
+        // if (chrome) browser.chrome = true, browser.version = chrome[1];
+        if (firefox) {
+            browser.firefox = true;
+            browser.version = firefox[1];
+        }
+        // if (safari && (ua.match(/Safari/) || !!os.ios)) browser.safari = true;
+        // if (webview) browser.webview = true;
+
+        if (ie) {
+            browser.ie = true;
+            browser.version = ie[1];
+        }
+
+        if (edge) {
+            browser.edge = true;
+            browser.version = edge[1];
+        }
+
+        // It is difficult to detect WeChat in Win Phone precisely, because ua can
+        // not be set on win phone. So we do not consider Win Phone.
+        if (weChat) {
+            browser.weChat = true;
+        }
+
+        // os.tablet = !!(ipad || playbook || (android && !ua.match(/Mobile/)) ||
+        //     (firefox && ua.match(/Tablet/)) || (ie && !ua.match(/Phone/) && ua.match(/Touch/)));
+        // os.phone  = !!(!os.tablet && !os.ipod && (android || iphone || webos ||
+        //     (chrome && ua.match(/Android/)) || (chrome && ua.match(/CriOS\/([\d.]+)/)) ||
+        //     (firefox && ua.match(/Mobile/)) || (ie && ua.match(/Touch/))));
+
+        return {
+            browser: browser,
+            os: os,
+            node: false,
+            // 原生canvas支持，改极端点了
+            // canvasSupported : !(browser.ie && parseFloat(browser.version) < 9)
+            canvasSupported : document.createElement('canvas').getContext ? true : false,
+            // @see <http://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript>
+            // works on most browsers
+            // IE10/11 does not support touch event, and MS Edge supports them but not by
+            // default, so we dont check navigator.maxTouchPoints for them here.
+            touchEventsSupported: 'ontouchstart' in window && !browser.ie && !browser.edge,
+            // <http://caniuse.com/#search=pointer%20event>.
+            pointerEventsSupported: 'onpointerdown' in window
+                // Firefox supports pointer but not by default, only MS browsers are reliable on pointer
+                // events currently. So we dont use that on other browsers unless tested sufficiently.
+                // Although IE 10 supports pointer event, it use old style and is different from the
+                // standard. So we exclude that. (IE 10 is hardly used on touch device)
+                && (browser.edge || (browser.ie && browser.version >= 11))
+        };
+    }
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * 事件扩展
+ * @module zrender/mixin/Eventful
+ * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ *         pissang (https://www.github.com/pissang)
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var arrySlice = Array.prototype.slice;
+
+    /**
+     * 事件分发器
+     * @alias module:zrender/mixin/Eventful
+     * @constructor
+     */
+    var Eventful = function () {
+        this._$handlers = {};
+    };
+
+    Eventful.prototype = {
+
+        constructor: Eventful,
+
+        /**
+         * 单次触发绑定，trigger后销毁
+         *
+         * @param {string} event 事件名
+         * @param {Function} handler 响应函数
+         * @param {Object} context
+         */
+        one: function (event, handler, context) {
+            var _h = this._$handlers;
+
+            if (!handler || !event) {
+                return this;
+            }
+
+            if (!_h[event]) {
+                _h[event] = [];
+            }
+
+            for (var i = 0; i < _h[event].length; i++) {
+                if (_h[event][i].h === handler) {
+                    return this;
+                }
+            }
+
+            _h[event].push({
+                h: handler,
+                one: true,
+                ctx: context || this
+            });
+
+            return this;
+        },
+
+        /**
+         * 绑定事件
+         * @param {string} event 事件名
+         * @param {Function} handler 事件处理函数
+         * @param {Object} [context]
+         */
+        on: function (event, handler, context) {
+            var _h = this._$handlers;
+
+            if (!handler || !event) {
+                return this;
+            }
+
+            if (!_h[event]) {
+                _h[event] = [];
+            }
+
+            for (var i = 0; i < _h[event].length; i++) {
+                if (_h[event][i].h === handler) {
+                    return this;
+                }
+            }
+
+            _h[event].push({
+                h: handler,
+                one: false,
+                ctx: context || this
+            });
+
+            return this;
+        },
+
+        /**
+         * 是否绑定了事件
+         * @param  {string}  event
+         * @return {boolean}
+         */
+        isSilent: function (event) {
+            var _h = this._$handlers;
+            return _h[event] && _h[event].length;
+        },
+
+        /**
+         * 解绑事件
+         * @param {string} event 事件名
+         * @param {Function} [handler] 事件处理函数
+         */
+        off: function (event, handler) {
+            var _h = this._$handlers;
+
+            if (!event) {
+                this._$handlers = {};
+                return this;
+            }
+
+            if (handler) {
+                if (_h[event]) {
+                    var newList = [];
+                    for (var i = 0, l = _h[event].length; i < l; i++) {
+                        if (_h[event][i]['h'] != handler) {
+                            newList.push(_h[event][i]);
+                        }
+                    }
+                    _h[event] = newList;
+                }
+
+                if (_h[event] && _h[event].length === 0) {
+                    delete _h[event];
+                }
+            }
+            else {
+                delete _h[event];
+            }
+
+            return this;
+        },
+
+        /**
+         * 事件分发
+         *
+         * @param {string} type 事件类型
+         */
+        trigger: function (type) {
+            if (this._$handlers[type]) {
+                var args = arguments;
+                var argLen = args.length;
+
+                if (argLen > 3) {
+                    args = arrySlice.call(args, 1);
+                }
+
+                var _h = this._$handlers[type];
+                var len = _h.length;
+                for (var i = 0; i < len;) {
+                    // Optimize advise from backbone
+                    switch (argLen) {
+                        case 1:
+                            _h[i]['h'].call(_h[i]['ctx']);
+                            break;
+                        case 2:
+                            _h[i]['h'].call(_h[i]['ctx'], args[1]);
+                            break;
+                        case 3:
+                            _h[i]['h'].call(_h[i]['ctx'], args[1], args[2]);
+                            break;
+                        default:
+                            // have more than 2 given arguments
+                            _h[i]['h'].apply(_h[i]['ctx'], args);
+                            break;
+                    }
+
+                    if (_h[i]['one']) {
+                        _h.splice(i, 1);
+                        len--;
+                    }
+                    else {
+                        i++;
+                    }
+                }
+            }
+
+            return this;
+        },
+
+        /**
+         * 带有context的事件分发, 最后一个参数是事件回调的context
+         * @param {string} type 事件类型
+         */
+        triggerWithContext: function (type) {
+            if (this._$handlers[type]) {
+                var args = arguments;
+                var argLen = args.length;
+
+                if (argLen > 4) {
+                    args = arrySlice.call(args, 1, args.length - 1);
+                }
+                var ctx = args[args.length - 1];
+
+                var _h = this._$handlers[type];
+                var len = _h.length;
+                for (var i = 0; i < len;) {
+                    // Optimize advise from backbone
+                    switch (argLen) {
+                        case 1:
+                            _h[i]['h'].call(ctx);
+                            break;
+                        case 2:
+                            _h[i]['h'].call(ctx, args[1]);
+                            break;
+                        case 3:
+                            _h[i]['h'].call(ctx, args[1], args[2]);
+                            break;
+                        default:
+                            // have more than 2 given arguments
+                            _h[i]['h'].apply(ctx, args);
+                            break;
+                    }
+
+                    if (_h[i]['one']) {
+                        _h.splice(i, 1);
+                        len--;
+                    }
+                    else {
+                        i++;
+                    }
+                }
+            }
+
+            return this;
+        }
+    };
+
+    // 对象可以通过 onxxxx 绑定事件
+    /**
+     * @event module:zrender/mixin/Eventful#onclick
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#onmouseover
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#onmouseout
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#onmousemove
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#onmousewheel
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#onmousedown
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#onmouseup
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#ondrag
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#ondragstart
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#ondragend
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#ondragenter
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#ondragleave
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#ondragover
+     * @type {Function}
+     * @default null
+     */
+    /**
+     * @event module:zrender/mixin/Eventful#ondrop
+     * @type {Function}
+     * @default null
+     */
+
+    return Eventful;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * 事件辅助类
+ * @module zrender/core/event
+ * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
+
+    'use strict';
+
+    var Eventful = __webpack_require__(6);
+    var env = __webpack_require__(5);
+
+    var isDomLevel2 = (typeof window !== 'undefined') && !!window.addEventListener;
+
+    function getBoundingClientRect(el) {
+        // BlackBerry 5, iOS 3 (original iPhone) don't have getBoundingRect
+        return el.getBoundingClientRect ? el.getBoundingClientRect() : {left: 0, top: 0};
+    }
+
+    // `calculate` is optional, default false
+    function clientToLocal(el, e, out, calculate) {
+        out = out || {};
+
+        // According to the W3C Working Draft, offsetX and offsetY should be relative
+        // to the padding edge of the target element. The only browser using this convention
+        // is IE. Webkit uses the border edge, Opera uses the content edge, and FireFox does
+        // not support the properties.
+        // (see http://www.jacklmoore.com/notes/mouse-position/)
+        // In zr painter.dom, padding edge equals to border edge.
+
+        // FIXME
+        // When mousemove event triggered on ec tooltip, target is not zr painter.dom, and
+        // offsetX/Y is relative to e.target, where the calculation of zrX/Y via offsetX/Y
+        // is too complex. So css-transfrom dont support in this case temporarily.
+        if (calculate || !env.canvasSupported) {
+            defaultGetZrXY(el, e, out);
+        }
+        // Caution: In FireFox, layerX/layerY Mouse position relative to the closest positioned
+        // ancestor element, so we should make sure el is positioned (e.g., not position:static).
+        // BTW1, Webkit don't return the same results as FF in non-simple cases (like add
+        // zoom-factor, overflow / opacity layers, transforms ...)
+        // BTW2, (ev.offsetY || ev.pageY - $(ev.target).offset().top) is not correct in preserve-3d.
+        // <https://bugs.jquery.com/ticket/8523#comment:14>
+        // BTW3, In ff, offsetX/offsetY is always 0.
+        else if (env.browser.firefox && e.layerX != null && e.layerX !== e.offsetX) {
+            out.zrX = e.layerX;
+            out.zrY = e.layerY;
+        }
+        // For IE6+, chrome, safari, opera. (When will ff support offsetX?)
+        else if (e.offsetX != null) {
+            out.zrX = e.offsetX;
+            out.zrY = e.offsetY;
+        }
+        // For some other device, e.g., IOS safari.
+        else {
+            defaultGetZrXY(el, e, out);
+        }
+
+        return out;
+    }
+
+    function defaultGetZrXY(el, e, out) {
+        // This well-known method below does not support css transform.
+        var box = getBoundingClientRect(el);
+        out.zrX = e.clientX - box.left;
+        out.zrY = e.clientY - box.top;
+    }
+
+    /**
+     * 如果存在第三方嵌入的一些dom触发的事件，或touch事件，需要转换一下事件坐标.
+     * `calculate` is optional, default false.
+     */
+    function normalizeEvent(el, e, calculate) {
+
+        e = e || window.event;
+
+        if (e.zrX != null) {
+            return e;
+        }
+
+        var eventType = e.type;
+        var isTouch = eventType && eventType.indexOf('touch') >= 0;
+
+        if (!isTouch) {
+            clientToLocal(el, e, e, calculate);
+            e.zrDelta = (e.wheelDelta) ? e.wheelDelta / 120 : -(e.detail || 0) / 3;
+        }
+        else {
+            var touch = eventType != 'touchend'
+                ? e.targetTouches[0]
+                : e.changedTouches[0];
+            touch && clientToLocal(el, touch, e, calculate);
+        }
+
+        return e;
+    }
+
+    function addEventListener(el, name, handler) {
+        if (isDomLevel2) {
+            el.addEventListener(name, handler);
+        }
+        else {
+            el.attachEvent('on' + name, handler);
+        }
+    }
+
+    function removeEventListener(el, name, handler) {
+        if (isDomLevel2) {
+            el.removeEventListener(name, handler);
+        }
+        else {
+            el.detachEvent('on' + name, handler);
+        }
+    }
+
+    /**
+     * preventDefault and stopPropagation.
+     * Notice: do not do that in zrender. Upper application
+     * do that if necessary.
+     *
+     * @memberOf module:zrender/core/event
+     * @method
+     * @param {Event} e : event对象
+     */
+    var stop = isDomLevel2
+        ? function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.cancelBubble = true;
+        }
+        : function (e) {
+            e.returnValue = false;
+            e.cancelBubble = true;
+        };
+
+    return {
+        clientToLocal: clientToLocal,
+        normalizeEvent: normalizeEvent,
+        addEventListener: addEventListener,
+        removeEventListener: removeEventListener,
+
+        stop: stop,
+        // 做向上兼容
+        Dispatcher: Eventful
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @module zrender/graphic/shape/Polyline
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var polyHelper = __webpack_require__(47);
+
+    return __webpack_require__(20).extend({
+        
+        type: 'polyline',
+
+        shape: {
+            points: null,
+
+            smooth: false,
+
+            smoothConstraint: null
+        },
+
+        style: {
+            stroke: '#000',
+
+            fill: null
+        },
+
+        buildPath: function (ctx, shape) {
+            polyHelper.buildPath(ctx, shape, false);
+        }
+    });
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @module zrender/Element
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
+    'use strict';
+
+    var guid = __webpack_require__(15);
+    var Eventful = __webpack_require__(6);
+    var Transformable = __webpack_require__(53);
+    var Animatable = __webpack_require__(51);
+    var zrUtil = __webpack_require__(0);
+
+    /**
+     * @alias module:zrender/Element
+     * @constructor
+     * @extends {module:zrender/mixin/Animatable}
+     * @extends {module:zrender/mixin/Transformable}
+     * @extends {module:zrender/mixin/Eventful}
+     */
+    var Element = function (opts) {
+
+        Transformable.call(this, opts);
+        Eventful.call(this, opts);
+        Animatable.call(this, opts);
+
+        /**
+         * 画布元素ID
+         * @type {string}
+         */
+        this.id = opts.id || guid();
+    };
+
+    Element.prototype = {
+
+        /**
+         * 元素类型
+         * Element type
+         * @type {string}
+         */
+        type: 'element',
+
+        /**
+         * 元素名字
+         * Element name
+         * @type {string}
+         */
+        name: '',
+
+        /**
+         * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
+         * ZRender instance will be assigned when element is associated with zrender
+         * @name module:/zrender/Element#__zr
+         * @type {module:zrender/ZRender}
+         */
+        __zr: null,
+
+        /**
+         * 图形是否忽略，为true时忽略图形的绘制以及事件触发
+         * If ignore drawing and events of the element object
+         * @name module:/zrender/Element#ignore
+         * @type {boolean}
+         * @default false
+         */
+        ignore: false,
+
+        /**
+         * 用于裁剪的路径(shape)，所有 Group 内的路径在绘制时都会被这个路径裁剪
+         * 该路径会继承被裁减对象的变换
+         * @type {module:zrender/graphic/Path}
+         * @see http://www.w3.org/TR/2dcontext/#clipping-region
+         * @readOnly
+         */
+        clipPath: null,
+
+        /**
+         * Drift element
+         * @param  {number} dx dx on the global space
+         * @param  {number} dy dy on the global space
+         */
+        drift: function (dx, dy) {
+            switch (this.draggable) {
+                case 'horizontal':
+                    dy = 0;
+                    break;
+                case 'vertical':
+                    dx = 0;
+                    break;
+            }
+
+            var m = this.transform;
+            if (!m) {
+                m = this.transform = [1, 0, 0, 1, 0, 0];
+            }
+            m[4] += dx;
+            m[5] += dy;
+
+            this.decomposeTransform();
+            this.dirty(false);
+        },
+
+        /**
+         * Hook before update
+         */
+        beforeUpdate: function () {},
+        /**
+         * Hook after update
+         */
+        afterUpdate: function () {},
+        /**
+         * Update each frame
+         */
+        update: function () {
+            this.updateTransform();
+        },
+
+        /**
+         * @param  {Function} cb
+         * @param  {}   context
+         */
+        traverse: function (cb, context) {},
+
+        /**
+         * @protected
+         */
+        attrKV: function (key, value) {
+            if (key === 'position' || key === 'scale' || key === 'origin') {
+                // Copy the array
+                if (value) {
+                    var target = this[key];
+                    if (!target) {
+                        target = this[key] = [];
+                    }
+                    target[0] = value[0];
+                    target[1] = value[1];
+                }
+            }
+            else {
+                this[key] = value;
+            }
+        },
+
+        /**
+         * Hide the element
+         */
+        hide: function () {
+            this.ignore = true;
+            this.__zr && this.__zr.refresh();
+        },
+
+        /**
+         * Show the element
+         */
+        show: function () {
+            this.ignore = false;
+            this.__zr && this.__zr.refresh();
+        },
+
+        /**
+         * @param {string|Object} key
+         * @param {*} value
+         */
+        attr: function (key, value) {
+            if (typeof key === 'string') {
+                this.attrKV(key, value);
+            }
+            else if (zrUtil.isObject(key)) {
+                for (var name in key) {
+                    if (key.hasOwnProperty(name)) {
+                        this.attrKV(name, key[name]);
+                    }
+                }
+            }
+
+            this.dirty(false);
+
+            return this;
+        },
+
+        /**
+         * @param {module:zrender/graphic/Path} clipPath
+         */
+        setClipPath: function (clipPath) {
+            var zr = this.__zr;
+            if (zr) {
+                clipPath.addSelfToZr(zr);
+            }
+
+            // Remove previous clip path
+            if (this.clipPath && this.clipPath !== clipPath) {
+                this.removeClipPath();
+            }
+
+            this.clipPath = clipPath;
+            clipPath.__zr = zr;
+            clipPath.__clipTarget = this;
+
+            this.dirty(false);
+        },
+
+        /**
+         */
+        removeClipPath: function () {
+            var clipPath = this.clipPath;
+            if (clipPath) {
+                if (clipPath.__zr) {
+                    clipPath.removeSelfFromZr(clipPath.__zr);
+                }
+
+                clipPath.__zr = null;
+                clipPath.__clipTarget = null;
+                this.clipPath = null;
+
+                this.dirty(false);
+            }
+        },
+
+        /**
+         * Add self from zrender instance.
+         * Not recursively because it will be invoked when element added to storage.
+         * @param {module:zrender/ZRender} zr
+         */
+        addSelfToZr: function (zr) {
+            this.__zr = zr;
+            // 添加动画
+            var animators = this.animators;
+            if (animators) {
+                for (var i = 0; i < animators.length; i++) {
+                    zr.animation.addAnimator(animators[i]);
+                }
+            }
+
+            if (this.clipPath) {
+                this.clipPath.addSelfToZr(zr);
+            }
+        },
+
+        /**
+         * Remove self from zrender instance.
+         * Not recursively because it will be invoked when element added to storage.
+         * @param {module:zrender/ZRender} zr
+         */
+        removeSelfFromZr: function (zr) {
+            this.__zr = null;
+            // 移除动画
+            var animators = this.animators;
+            if (animators) {
+                for (var i = 0; i < animators.length; i++) {
+                    zr.animation.removeAnimator(animators[i]);
+                }
+            }
+
+            if (this.clipPath) {
+                this.clipPath.removeSelfFromZr(zr);
+            }
+        }
+    };
+
+    zrUtil.mixin(Element, Animatable);
+    zrUtil.mixin(Element, Transformable);
+    zrUtil.mixin(Element, Eventful);
+
+    return Element;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @module echarts/animation/Animator
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var Clip = __webpack_require__(33);
+    var color = __webpack_require__(54);
+    var util = __webpack_require__(0);
+    var isArrayLike = util.isArrayLike;
+
+    var arraySlice = Array.prototype.slice;
+
+    function defaultGetter(target, key) {
+        return target[key];
+    }
+
+    function defaultSetter(target, key, value) {
+        target[key] = value;
+    }
+
+    /**
+     * @param  {number} p0
+     * @param  {number} p1
+     * @param  {number} percent
+     * @return {number}
+     */
+    function interpolateNumber(p0, p1, percent) {
+        return (p1 - p0) * percent + p0;
+    }
+
+    /**
+     * @param  {string} p0
+     * @param  {string} p1
+     * @param  {number} percent
+     * @return {string}
+     */
+    function interpolateString(p0, p1, percent) {
+        return percent > 0.5 ? p1 : p0;
+    }
+
+    /**
+     * @param  {Array} p0
+     * @param  {Array} p1
+     * @param  {number} percent
+     * @param  {Array} out
+     * @param  {number} arrDim
+     */
+    function interpolateArray(p0, p1, percent, out, arrDim) {
+        var len = p0.length;
+        if (arrDim == 1) {
+            for (var i = 0; i < len; i++) {
+                out[i] = interpolateNumber(p0[i], p1[i], percent);
+            }
+        }
+        else {
+            var len2 = len && p0[0].length;
+            for (var i = 0; i < len; i++) {
+                for (var j = 0; j < len2; j++) {
+                    out[i][j] = interpolateNumber(
+                        p0[i][j], p1[i][j], percent
+                    );
+                }
+            }
+        }
+    }
+
+    // arr0 is source array, arr1 is target array.
+    // Do some preprocess to avoid error happened when interpolating from arr0 to arr1
+    function fillArr(arr0, arr1, arrDim) {
+        var arr0Len = arr0.length;
+        var arr1Len = arr1.length;
+        if (arr0Len !== arr1Len) {
+            // FIXME Not work for TypedArray
+            var isPreviousLarger = arr0Len > arr1Len;
+            if (isPreviousLarger) {
+                // Cut the previous
+                arr0.length = arr1Len;
+            }
+            else {
+                // Fill the previous
+                for (var i = arr0Len; i < arr1Len; i++) {
+                    arr0.push(
+                        arrDim === 1 ? arr1[i] : arraySlice.call(arr1[i])
+                    );
+                }
+            }
+        }
+        // Handling NaN value
+        var len2 = arr0[0] && arr0[0].length;
+        for (var i = 0; i < arr0.length; i++) {
+            if (arrDim === 1) {
+                if (isNaN(arr0[i])) {
+                    arr0[i] = arr1[i];
+                }
+            }
+            else {
+                for (var j = 0; j < len2; j++) {
+                    if (isNaN(arr0[i][j])) {
+                        arr0[i][j] = arr1[i][j];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param  {Array} arr0
+     * @param  {Array} arr1
+     * @param  {number} arrDim
+     * @return {boolean}
+     */
+    function isArraySame(arr0, arr1, arrDim) {
+        if (arr0 === arr1) {
+            return true;
+        }
+        var len = arr0.length;
+        if (len !== arr1.length) {
+            return false;
+        }
+        if (arrDim === 1) {
+            for (var i = 0; i < len; i++) {
+                if (arr0[i] !== arr1[i]) {
+                    return false;
+                }
+            }
+        }
+        else {
+            var len2 = arr0[0].length;
+            for (var i = 0; i < len; i++) {
+                for (var j = 0; j < len2; j++) {
+                    if (arr0[i][j] !== arr1[i][j]) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Catmull Rom interpolate array
+     * @param  {Array} p0
+     * @param  {Array} p1
+     * @param  {Array} p2
+     * @param  {Array} p3
+     * @param  {number} t
+     * @param  {number} t2
+     * @param  {number} t3
+     * @param  {Array} out
+     * @param  {number} arrDim
+     */
+    function catmullRomInterpolateArray(
+        p0, p1, p2, p3, t, t2, t3, out, arrDim
+    ) {
+        var len = p0.length;
+        if (arrDim == 1) {
+            for (var i = 0; i < len; i++) {
+                out[i] = catmullRomInterpolate(
+                    p0[i], p1[i], p2[i], p3[i], t, t2, t3
+                );
+            }
+        }
+        else {
+            var len2 = p0[0].length;
+            for (var i = 0; i < len; i++) {
+                for (var j = 0; j < len2; j++) {
+                    out[i][j] = catmullRomInterpolate(
+                        p0[i][j], p1[i][j], p2[i][j], p3[i][j],
+                        t, t2, t3
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Catmull Rom interpolate number
+     * @param  {number} p0
+     * @param  {number} p1
+     * @param  {number} p2
+     * @param  {number} p3
+     * @param  {number} t
+     * @param  {number} t2
+     * @param  {number} t3
+     * @return {number}
+     */
+    function catmullRomInterpolate(p0, p1, p2, p3, t, t2, t3) {
+        var v0 = (p2 - p0) * 0.5;
+        var v1 = (p3 - p1) * 0.5;
+        return (2 * (p1 - p2) + v0 + v1) * t3
+                + (-3 * (p1 - p2) - 2 * v0 - v1) * t2
+                + v0 * t + p1;
+    }
+
+    function cloneValue(value) {
+        if (isArrayLike(value)) {
+            var len = value.length;
+            if (isArrayLike(value[0])) {
+                var ret = [];
+                for (var i = 0; i < len; i++) {
+                    ret.push(arraySlice.call(value[i]));
+                }
+                return ret;
+            }
+
+            return arraySlice.call(value);
+        }
+
+        return value;
+    }
+
+    function rgba2String(rgba) {
+        rgba[0] = Math.floor(rgba[0]);
+        rgba[1] = Math.floor(rgba[1]);
+        rgba[2] = Math.floor(rgba[2]);
+
+        return 'rgba(' + rgba.join(',') + ')';
+    }
+
+    function getArrayDim(keyframes) {
+        var lastValue = keyframes[keyframes.length - 1].value;
+        return isArrayLike(lastValue && lastValue[0]) ? 2 : 1;
+    }
+
+    function createTrackClip (animator, easing, oneTrackDone, keyframes, propName) {
+        var getter = animator._getter;
+        var setter = animator._setter;
+        var useSpline = easing === 'spline';
+
+        var trackLen = keyframes.length;
+        if (!trackLen) {
+            return;
+        }
+        // Guess data type
+        var firstVal = keyframes[0].value;
+        var isValueArray = isArrayLike(firstVal);
+        var isValueColor = false;
+        var isValueString = false;
+
+        // For vertices morphing
+        var arrDim = isValueArray ? getArrayDim(keyframes) : 0;
+
+        var trackMaxTime;
+        // Sort keyframe as ascending
+        keyframes.sort(function(a, b) {
+            return a.time - b.time;
+        });
+
+        trackMaxTime = keyframes[trackLen - 1].time;
+        // Percents of each keyframe
+        var kfPercents = [];
+        // Value of each keyframe
+        var kfValues = [];
+        var prevValue = keyframes[0].value;
+        var isAllValueEqual = true;
+        for (var i = 0; i < trackLen; i++) {
+            kfPercents.push(keyframes[i].time / trackMaxTime);
+            // Assume value is a color when it is a string
+            var value = keyframes[i].value;
+
+            // Check if value is equal, deep check if value is array
+            if (!((isValueArray && isArraySame(value, prevValue, arrDim))
+                || (!isValueArray && value === prevValue))) {
+                isAllValueEqual = false;
+            }
+            prevValue = value;
+
+            // Try converting a string to a color array
+            if (typeof value == 'string') {
+                var colorArray = color.parse(value);
+                if (colorArray) {
+                    value = colorArray;
+                    isValueColor = true;
+                }
+                else {
+                    isValueString = true;
+                }
+            }
+            kfValues.push(value);
+        }
+        if (isAllValueEqual) {
+            return;
+        }
+
+        var lastValue = kfValues[trackLen - 1];
+        // Polyfill array and NaN value
+        for (var i = 0; i < trackLen - 1; i++) {
+            if (isValueArray) {
+                fillArr(kfValues[i], lastValue, arrDim);
+            }
+            else {
+                if (isNaN(kfValues[i]) && !isNaN(lastValue) && !isValueString && !isValueColor) {
+                    kfValues[i] = lastValue;
+                }
+            }
+        }
+        isValueArray && fillArr(getter(animator._target, propName), lastValue, arrDim);
+
+        // Cache the key of last frame to speed up when
+        // animation playback is sequency
+        var lastFrame = 0;
+        var lastFramePercent = 0;
+        var start;
+        var w;
+        var p0;
+        var p1;
+        var p2;
+        var p3;
+
+        if (isValueColor) {
+            var rgba = [0, 0, 0, 0];
+        }
+
+        var onframe = function (target, percent) {
+            // Find the range keyframes
+            // kf1-----kf2---------current--------kf3
+            // find kf2 and kf3 and do interpolation
+            var frame;
+            // In the easing function like elasticOut, percent may less than 0
+            if (percent < 0) {
+                frame = 0;
+            }
+            else if (percent < lastFramePercent) {
+                // Start from next key
+                // PENDING start from lastFrame ?
+                start = Math.min(lastFrame + 1, trackLen - 1);
+                for (frame = start; frame >= 0; frame--) {
+                    if (kfPercents[frame] <= percent) {
+                        break;
+                    }
+                }
+                // PENDING really need to do this ?
+                frame = Math.min(frame, trackLen - 2);
+            }
+            else {
+                for (frame = lastFrame; frame < trackLen; frame++) {
+                    if (kfPercents[frame] > percent) {
+                        break;
+                    }
+                }
+                frame = Math.min(frame - 1, trackLen - 2);
+            }
+            lastFrame = frame;
+            lastFramePercent = percent;
+
+            var range = (kfPercents[frame + 1] - kfPercents[frame]);
+            if (range === 0) {
+                return;
+            }
+            else {
+                w = (percent - kfPercents[frame]) / range;
+            }
+            if (useSpline) {
+                p1 = kfValues[frame];
+                p0 = kfValues[frame === 0 ? frame : frame - 1];
+                p2 = kfValues[frame > trackLen - 2 ? trackLen - 1 : frame + 1];
+                p3 = kfValues[frame > trackLen - 3 ? trackLen - 1 : frame + 2];
+                if (isValueArray) {
+                    catmullRomInterpolateArray(
+                        p0, p1, p2, p3, w, w * w, w * w * w,
+                        getter(target, propName),
+                        arrDim
+                    );
+                }
+                else {
+                    var value;
+                    if (isValueColor) {
+                        value = catmullRomInterpolateArray(
+                            p0, p1, p2, p3, w, w * w, w * w * w,
+                            rgba, 1
+                        );
+                        value = rgba2String(rgba);
+                    }
+                    else if (isValueString) {
+                        // String is step(0.5)
+                        return interpolateString(p1, p2, w);
+                    }
+                    else {
+                        value = catmullRomInterpolate(
+                            p0, p1, p2, p3, w, w * w, w * w * w
+                        );
+                    }
+                    setter(
+                        target,
+                        propName,
+                        value
+                    );
+                }
+            }
+            else {
+                if (isValueArray) {
+                    interpolateArray(
+                        kfValues[frame], kfValues[frame + 1], w,
+                        getter(target, propName),
+                        arrDim
+                    );
+                }
+                else {
+                    var value;
+                    if (isValueColor) {
+                        interpolateArray(
+                            kfValues[frame], kfValues[frame + 1], w,
+                            rgba, 1
+                        );
+                        value = rgba2String(rgba);
+                    }
+                    else if (isValueString) {
+                        // String is step(0.5)
+                        return interpolateString(kfValues[frame], kfValues[frame + 1], w);
+                    }
+                    else {
+                        value = interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
+                    }
+                    setter(
+                        target,
+                        propName,
+                        value
+                    );
+                }
+            }
+        };
+
+        var clip = new Clip({
+            target: animator._target,
+            life: trackMaxTime,
+            loop: animator._loop,
+            delay: animator._delay,
+            onframe: onframe,
+            ondestroy: oneTrackDone
+        });
+
+        if (easing && easing !== 'spline') {
+            clip.easing = easing;
+        }
+
+        return clip;
+    }
+
+    /**
+     * @alias module:zrender/animation/Animator
+     * @constructor
+     * @param {Object} target
+     * @param {boolean} loop
+     * @param {Function} getter
+     * @param {Function} setter
+     */
+    var Animator = function(target, loop, getter, setter) {
+        this._tracks = {};
+        this._target = target;
+
+        this._loop = loop || false;
+
+        this._getter = getter || defaultGetter;
+        this._setter = setter || defaultSetter;
+
+        this._clipCount = 0;
+
+        this._delay = 0;
+
+        this._doneList = [];
+
+        this._onframeList = [];
+
+        this._clipList = [];
+    };
+
+    Animator.prototype = {
+        /**
+         * 设置动画关键帧
+         * @param  {number} time 关键帧时间，单位是ms
+         * @param  {Object} props 关键帧的属性值，key-value表示
+         * @return {module:zrender/animation/Animator}
+         */
+        when: function(time /* ms */, props) {
+            var tracks = this._tracks;
+            for (var propName in props) {
+                if (!props.hasOwnProperty(propName)) {
+                    continue;
+                }
+
+                if (!tracks[propName]) {
+                    tracks[propName] = [];
+                    // Invalid value
+                    var value = this._getter(this._target, propName);
+                    if (value == null) {
+                        // zrLog('Invalid property ' + propName);
+                        continue;
+                    }
+                    // If time is 0
+                    //  Then props is given initialize value
+                    // Else
+                    //  Initialize value from current prop value
+                    if (time !== 0) {
+                        tracks[propName].push({
+                            time: 0,
+                            value: cloneValue(value)
+                        });
+                    }
+                }
+                tracks[propName].push({
+                    time: time,
+                    value: props[propName]
+                });
+            }
+            return this;
+        },
+        /**
+         * 添加动画每一帧的回调函数
+         * @param  {Function} callback
+         * @return {module:zrender/animation/Animator}
+         */
+        during: function (callback) {
+            this._onframeList.push(callback);
+            return this;
+        },
+
+        pause: function () {
+            for (var i = 0; i < this._clipList.length; i++) {
+                this._clipList[i].pause();
+            }
+            this._paused = true;
+        },
+
+        resume: function () {
+            for (var i = 0; i < this._clipList.length; i++) {
+                this._clipList[i].resume();
+            }
+            this._paused = false;
+        },
+
+        isPaused: function () {
+            return !!this._paused;
+        },
+
+        _doneCallback: function () {
+            // Clear all tracks
+            this._tracks = {};
+            // Clear all clips
+            this._clipList.length = 0;
+
+            var doneList = this._doneList;
+            var len = doneList.length;
+            for (var i = 0; i < len; i++) {
+                doneList[i].call(this);
+            }
+        },
+        /**
+         * 开始执行动画
+         * @param  {string|Function} easing
+         *         动画缓动函数，详见{@link module:zrender/animation/easing}
+         * @return {module:zrender/animation/Animator}
+         */
+        start: function (easing) {
+
+            var self = this;
+            var clipCount = 0;
+
+            var oneTrackDone = function() {
+                clipCount--;
+                if (!clipCount) {
+                    self._doneCallback();
+                }
+            };
+
+            var lastClip;
+            for (var propName in this._tracks) {
+                if (!this._tracks.hasOwnProperty(propName)) {
+                    continue;
+                }
+                var clip = createTrackClip(
+                    this, easing, oneTrackDone,
+                    this._tracks[propName], propName
+                );
+                if (clip) {
+                    this._clipList.push(clip);
+                    clipCount++;
+
+                    // If start after added to animation
+                    if (this.animation) {
+                        this.animation.addClip(clip);
+                    }
+
+                    lastClip = clip;
+                }
+            }
+
+            // Add during callback on the last clip
+            if (lastClip) {
+                var oldOnFrame = lastClip.onframe;
+                lastClip.onframe = function (target, percent) {
+                    oldOnFrame(target, percent);
+
+                    for (var i = 0; i < self._onframeList.length; i++) {
+                        self._onframeList[i](target, percent);
+                    }
+                };
+            }
+
+            if (!clipCount) {
+                this._doneCallback();
+            }
+            return this;
+        },
+        /**
+         * 停止动画
+         * @param {boolean} forwardToLast If move to last frame before stop
+         */
+        stop: function (forwardToLast) {
+            var clipList = this._clipList;
+            var animation = this.animation;
+            for (var i = 0; i < clipList.length; i++) {
+                var clip = clipList[i];
+                if (forwardToLast) {
+                    // Move to last frame before stop
+                    clip.onframe(this._target, 1);
+                }
+                animation && animation.removeClip(clip);
+            }
+            clipList.length = 0;
+        },
+        /**
+         * 设置动画延迟开始的时间
+         * @param  {number} time 单位ms
+         * @return {module:zrender/animation/Animator}
+         */
+        delay: function (time) {
+            this._delay = time;
+            return this;
+        },
+        /**
+         * 添加动画结束的回调
+         * @param  {Function} cb
+         * @return {module:zrender/animation/Animator}
+         */
+        done: function(cb) {
+            if (cb) {
+                this._doneList.push(cb);
+            }
+            return this;
+        },
+
+        /**
+         * @return {Array.<module:zrender/animation/Clip>}
+         */
+        getClips: function () {
+            return this._clipList;
+        }
+    };
+
+    return Animator;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
+
+    return (typeof window !== 'undefined' &&
+                ((window.requestAnimationFrame && window.requestAnimationFrame.bind(window))
+                // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
+                || (window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window))
+                || window.mozRequestAnimationFrame
+                || window.webkitRequestAnimationFrame)
+            )
+            || function (func) {
+                setTimeout(func, 16);
+            };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
@@ -1774,7 +3337,210 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (re
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 22 */
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;// Simple LRU cache use doubly linked list
+// @module zrender/core/LRU
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    /**
+     * Simple double linked list. Compared with array, it has O(1) remove operation.
+     * @constructor
+     */
+    var LinkedList = function () {
+
+        /**
+         * @type {module:zrender/core/LRU~Entry}
+         */
+        this.head = null;
+
+        /**
+         * @type {module:zrender/core/LRU~Entry}
+         */
+        this.tail = null;
+
+        this._len = 0;
+    };
+
+    var linkedListProto = LinkedList.prototype;
+    /**
+     * Insert a new value at the tail
+     * @param  {} val
+     * @return {module:zrender/core/LRU~Entry}
+     */
+    linkedListProto.insert = function (val) {
+        var entry = new Entry(val);
+        this.insertEntry(entry);
+        return entry;
+    };
+
+    /**
+     * Insert an entry at the tail
+     * @param  {module:zrender/core/LRU~Entry} entry
+     */
+    linkedListProto.insertEntry = function (entry) {
+        if (!this.head) {
+            this.head = this.tail = entry;
+        }
+        else {
+            this.tail.next = entry;
+            entry.prev = this.tail;
+            entry.next = null;
+            this.tail = entry;
+        }
+        this._len++;
+    };
+
+    /**
+     * Remove entry.
+     * @param  {module:zrender/core/LRU~Entry} entry
+     */
+    linkedListProto.remove = function (entry) {
+        var prev = entry.prev;
+        var next = entry.next;
+        if (prev) {
+            prev.next = next;
+        }
+        else {
+            // Is head
+            this.head = next;
+        }
+        if (next) {
+            next.prev = prev;
+        }
+        else {
+            // Is tail
+            this.tail = prev;
+        }
+        entry.next = entry.prev = null;
+        this._len--;
+    };
+
+    /**
+     * @return {number}
+     */
+    linkedListProto.len = function () {
+        return this._len;
+    };
+
+    /**
+     * Clear list
+     */
+    linkedListProto.clear = function () {
+        this.head = this.tail = null;
+        this._len = 0;
+    };
+
+    /**
+     * @constructor
+     * @param {} val
+     */
+    var Entry = function (val) {
+        /**
+         * @type {}
+         */
+        this.value = val;
+
+        /**
+         * @type {module:zrender/core/LRU~Entry}
+         */
+        this.next;
+
+        /**
+         * @type {module:zrender/core/LRU~Entry}
+         */
+        this.prev;
+    };
+
+    /**
+     * LRU Cache
+     * @constructor
+     * @alias module:zrender/core/LRU
+     */
+    var LRU = function (maxSize) {
+
+        this._list = new LinkedList();
+
+        this._map = {};
+
+        this._maxSize = maxSize || 10;
+
+        this._lastRemovedEntry = null;
+    };
+
+    var LRUProto = LRU.prototype;
+
+    /**
+     * @param  {string} key
+     * @param  {} value
+     * @return {} Removed value
+     */
+    LRUProto.put = function (key, value) {
+        var list = this._list;
+        var map = this._map;
+        var removed = null;
+        if (map[key] == null) {
+            var len = list.len();
+            // Reuse last removed entry
+            var entry = this._lastRemovedEntry;
+
+            if (len >= this._maxSize && len > 0) {
+                // Remove the least recently used
+                var leastUsedEntry = list.head;
+                list.remove(leastUsedEntry);
+                delete map[leastUsedEntry.key];
+
+                removed = leastUsedEntry.value;
+                this._lastRemovedEntry = leastUsedEntry;
+            }
+
+            if (entry) {
+                entry.value = value;
+            }
+            else {
+                entry = new Entry(value);
+            }
+            entry.key = key;
+            list.insertEntry(entry);
+            map[key] = entry;
+        }
+
+        return removed;
+    };
+
+    /**
+     * @param  {string} key
+     * @return {}
+     */
+    LRUProto.get = function (key) {
+        var entry = this._map[key];
+        var list = this._list;
+        if (entry != null) {
+            // Put the latest used entry in the tail
+            if (entry !== list.tail) {
+                list.remove(entry);
+                list.insertEntry(entry);
+            }
+
+            return entry.value;
+        }
+    };
+
+    /**
+     * Clear the cache
+     */
+    LRUProto.clear = function () {
+        this._list.clear();
+        this._map = {};
+    };
+
+    return LRU;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -1790,10 +3556,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
     'use strict';
 
     var curve = __webpack_require__(3);
-    var vec2 = __webpack_require__(4);
-    var bbox = __webpack_require__(59);
-    var BoundingRect = __webpack_require__(9);
-    var dpr = __webpack_require__(20).devicePixelRatio;
+    var vec2 = __webpack_require__(1);
+    var bbox = __webpack_require__(44);
+    var BoundingRect = __webpack_require__(2);
+    var dpr = __webpack_require__(4).devicePixelRatio;
 
     var CMD = {
         M: 1,
@@ -2569,7 +4335,66 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 23 */
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * zrender: 生成唯一id
+ *
+ * @author errorrik (errorrik@gmail.com)
+ */
+
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+    var idStart = 0x0907;
+
+    return function () {
+        return idStart++;
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+        var config = __webpack_require__(4);
+
+        /**
+         * @exports zrender/tool/log
+         * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
+         */
+        return function() {
+            if (config.debugMode === 0) {
+                return;
+            }
+            else if (config.debugMode == 1) {
+                for (var k in arguments) {
+                    throw new Error(arguments[k]);
+                }
+            }
+            else if (config.debugMode > 1) {
+                for (var k in arguments) {
+                    console.log(arguments[k]);
+                }
+            }
+        };
+
+        /* for debug
+        return function(mes) {
+            document.getElementById('wrong-message').innerHTML =
+                mes + ' ' + (new Date() - 0)
+                + '<br/>'
+                + document.getElementById('wrong-message').innerHTML;
+        };
+        */
+    }.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -2734,95 +4559,1787 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () 
 
 
 /***/ }),
-/* 24 */
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;// https://github.com/mziccard/node-timsort
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+    var DEFAULT_MIN_MERGE = 32;
+
+    var DEFAULT_MIN_GALLOPING = 7;
+
+    var DEFAULT_TMP_STORAGE_LENGTH = 256;
+
+    function minRunLength(n) {
+        var r = 0;
+
+        while (n >= DEFAULT_MIN_MERGE) {
+            r |= n & 1;
+            n >>= 1;
+        }
+
+        return n + r;
+    }
+
+    function makeAscendingRun(array, lo, hi, compare) {
+        var runHi = lo + 1;
+
+        if (runHi === hi) {
+            return 1;
+        }
+
+        if (compare(array[runHi++], array[lo]) < 0) {
+            while (runHi < hi && compare(array[runHi], array[runHi - 1]) < 0) {
+                runHi++;
+            }
+
+            reverseRun(array, lo, runHi);
+        }
+        else {
+            while (runHi < hi && compare(array[runHi], array[runHi - 1]) >= 0) {
+                runHi++;
+            }
+        }
+
+        return runHi - lo;
+    }
+
+    function reverseRun(array, lo, hi) {
+        hi--;
+
+        while (lo < hi) {
+            var t = array[lo];
+            array[lo++] = array[hi];
+            array[hi--] = t;
+        }
+    }
+
+    function binaryInsertionSort(array, lo, hi, start, compare) {
+        if (start === lo) {
+            start++;
+        }
+
+        for (; start < hi; start++) {
+            var pivot = array[start];
+
+            var left = lo;
+            var right = start;
+            var mid;
+
+            while (left < right) {
+                mid = left + right >>> 1;
+
+                if (compare(pivot, array[mid]) < 0) {
+                    right = mid;
+                }
+                else {
+                    left = mid + 1;
+                }
+            }
+
+            var n = start - left;
+
+            switch (n) {
+                case 3:
+                    array[left + 3] = array[left + 2];
+
+                case 2:
+                    array[left + 2] = array[left + 1];
+
+                case 1:
+                    array[left + 1] = array[left];
+                    break;
+                default:
+                    while (n > 0) {
+                        array[left + n] = array[left + n - 1];
+                        n--;
+                    }
+            }
+
+            array[left] = pivot;
+        }
+    }
+
+    function gallopLeft(value, array, start, length, hint, compare) {
+        var lastOffset = 0;
+        var maxOffset = 0;
+        var offset = 1;
+
+        if (compare(value, array[start + hint]) > 0) {
+            maxOffset = length - hint;
+
+            while (offset < maxOffset && compare(value, array[start + hint + offset]) > 0) {
+                lastOffset = offset;
+                offset = (offset << 1) + 1;
+
+                if (offset <= 0) {
+                    offset = maxOffset;
+                }
+            }
+
+            if (offset > maxOffset) {
+                offset = maxOffset;
+            }
+
+            lastOffset += hint;
+            offset += hint;
+        }
+        else {
+            maxOffset = hint + 1;
+            while (offset < maxOffset && compare(value, array[start + hint - offset]) <= 0) {
+                lastOffset = offset;
+                offset = (offset << 1) + 1;
+
+                if (offset <= 0) {
+                    offset = maxOffset;
+                }
+            }
+            if (offset > maxOffset) {
+                offset = maxOffset;
+            }
+
+            var tmp = lastOffset;
+            lastOffset = hint - offset;
+            offset = hint - tmp;
+        }
+
+        lastOffset++;
+        while (lastOffset < offset) {
+            var m = lastOffset + (offset - lastOffset >>> 1);
+
+            if (compare(value, array[start + m]) > 0) {
+                lastOffset = m + 1;
+            }
+            else {
+                offset = m;
+            }
+        }
+        return offset;
+    }
+
+    function gallopRight(value, array, start, length, hint, compare) {
+        var lastOffset = 0;
+        var maxOffset = 0;
+        var offset = 1;
+
+        if (compare(value, array[start + hint]) < 0) {
+            maxOffset = hint + 1;
+
+            while (offset < maxOffset && compare(value, array[start + hint - offset]) < 0) {
+                lastOffset = offset;
+                offset = (offset << 1) + 1;
+
+                if (offset <= 0) {
+                    offset = maxOffset;
+                }
+            }
+
+            if (offset > maxOffset) {
+                offset = maxOffset;
+            }
+
+            var tmp = lastOffset;
+            lastOffset = hint - offset;
+            offset = hint - tmp;
+        }
+        else {
+            maxOffset = length - hint;
+
+            while (offset < maxOffset && compare(value, array[start + hint + offset]) >= 0) {
+                lastOffset = offset;
+                offset = (offset << 1) + 1;
+
+                if (offset <= 0) {
+                    offset = maxOffset;
+                }
+            }
+
+            if (offset > maxOffset) {
+                offset = maxOffset;
+            }
+
+            lastOffset += hint;
+            offset += hint;
+        }
+
+        lastOffset++;
+
+        while (lastOffset < offset) {
+            var m = lastOffset + (offset - lastOffset >>> 1);
+
+            if (compare(value, array[start + m]) < 0) {
+                offset = m;
+            }
+            else {
+                lastOffset = m + 1;
+            }
+        }
+
+        return offset;
+    }
+
+    function TimSort(array, compare) {
+        var minGallop = DEFAULT_MIN_GALLOPING;
+        var length = 0;
+        var tmpStorageLength = DEFAULT_TMP_STORAGE_LENGTH;
+        var stackLength = 0;
+        var runStart;
+        var runLength;
+        var stackSize = 0;
+
+        length = array.length;
+
+        if (length < 2 * DEFAULT_TMP_STORAGE_LENGTH) {
+            tmpStorageLength = length >>> 1;
+        }
+
+        var tmp = [];
+
+        stackLength = length < 120 ? 5 : length < 1542 ? 10 : length < 119151 ? 19 : 40;
+
+        runStart = [];
+        runLength = [];
+
+        function pushRun(_runStart, _runLength) {
+            runStart[stackSize] = _runStart;
+            runLength[stackSize] = _runLength;
+            stackSize += 1;
+        }
+
+        function mergeRuns() {
+            while (stackSize > 1) {
+                var n = stackSize - 2;
+
+                if (n >= 1 && runLength[n - 1] <= runLength[n] + runLength[n + 1] || n >= 2 && runLength[n - 2] <= runLength[n] + runLength[n - 1]) {
+                    if (runLength[n - 1] < runLength[n + 1]) {
+                        n--;
+                    }
+                }
+                else if (runLength[n] > runLength[n + 1]) {
+                    break;
+                }
+                mergeAt(n);
+            }
+        }
+
+        function forceMergeRuns() {
+            while (stackSize > 1) {
+                var n = stackSize - 2;
+
+                if (n > 0 && runLength[n - 1] < runLength[n + 1]) {
+                    n--;
+                }
+
+                mergeAt(n);
+            }
+        }
+
+        function mergeAt(i) {
+            var start1 = runStart[i];
+            var length1 = runLength[i];
+            var start2 = runStart[i + 1];
+            var length2 = runLength[i + 1];
+
+            runLength[i] = length1 + length2;
+
+            if (i === stackSize - 3) {
+                runStart[i + 1] = runStart[i + 2];
+                runLength[i + 1] = runLength[i + 2];
+            }
+
+            stackSize--;
+
+            var k = gallopRight(array[start2], array, start1, length1, 0, compare);
+            start1 += k;
+            length1 -= k;
+
+            if (length1 === 0) {
+                return;
+            }
+
+            length2 = gallopLeft(array[start1 + length1 - 1], array, start2, length2, length2 - 1, compare);
+
+            if (length2 === 0) {
+                return;
+            }
+
+            if (length1 <= length2) {
+                mergeLow(start1, length1, start2, length2);
+            }
+            else {
+                mergeHigh(start1, length1, start2, length2);
+            }
+        }
+
+        function mergeLow(start1, length1, start2, length2) {
+            var i = 0;
+
+            for (i = 0; i < length1; i++) {
+                tmp[i] = array[start1 + i];
+            }
+
+            var cursor1 = 0;
+            var cursor2 = start2;
+            var dest = start1;
+
+            array[dest++] = array[cursor2++];
+
+            if (--length2 === 0) {
+                for (i = 0; i < length1; i++) {
+                    array[dest + i] = tmp[cursor1 + i];
+                }
+                return;
+            }
+
+            if (length1 === 1) {
+                for (i = 0; i < length2; i++) {
+                    array[dest + i] = array[cursor2 + i];
+                }
+                array[dest + length2] = tmp[cursor1];
+                return;
+            }
+
+            var _minGallop = minGallop;
+            var count1, count2, exit;
+
+            while (1) {
+                count1 = 0;
+                count2 = 0;
+                exit = false;
+
+                do {
+                    if (compare(array[cursor2], tmp[cursor1]) < 0) {
+                        array[dest++] = array[cursor2++];
+                        count2++;
+                        count1 = 0;
+
+                        if (--length2 === 0) {
+                            exit = true;
+                            break;
+                        }
+                    }
+                    else {
+                        array[dest++] = tmp[cursor1++];
+                        count1++;
+                        count2 = 0;
+                        if (--length1 === 1) {
+                            exit = true;
+                            break;
+                        }
+                    }
+                } while ((count1 | count2) < _minGallop);
+
+                if (exit) {
+                    break;
+                }
+
+                do {
+                    count1 = gallopRight(array[cursor2], tmp, cursor1, length1, 0, compare);
+
+                    if (count1 !== 0) {
+                        for (i = 0; i < count1; i++) {
+                            array[dest + i] = tmp[cursor1 + i];
+                        }
+
+                        dest += count1;
+                        cursor1 += count1;
+                        length1 -= count1;
+                        if (length1 <= 1) {
+                            exit = true;
+                            break;
+                        }
+                    }
+
+                    array[dest++] = array[cursor2++];
+
+                    if (--length2 === 0) {
+                        exit = true;
+                        break;
+                    }
+
+                    count2 = gallopLeft(tmp[cursor1], array, cursor2, length2, 0, compare);
+
+                    if (count2 !== 0) {
+                        for (i = 0; i < count2; i++) {
+                            array[dest + i] = array[cursor2 + i];
+                        }
+
+                        dest += count2;
+                        cursor2 += count2;
+                        length2 -= count2;
+
+                        if (length2 === 0) {
+                            exit = true;
+                            break;
+                        }
+                    }
+                    array[dest++] = tmp[cursor1++];
+
+                    if (--length1 === 1) {
+                        exit = true;
+                        break;
+                    }
+
+                    _minGallop--;
+                } while (count1 >= DEFAULT_MIN_GALLOPING || count2 >= DEFAULT_MIN_GALLOPING);
+
+                if (exit) {
+                    break;
+                }
+
+                if (_minGallop < 0) {
+                    _minGallop = 0;
+                }
+
+                _minGallop += 2;
+            }
+
+            minGallop = _minGallop;
+
+            minGallop < 1 && (minGallop = 1);
+
+            if (length1 === 1) {
+                for (i = 0; i < length2; i++) {
+                    array[dest + i] = array[cursor2 + i];
+                }
+                array[dest + length2] = tmp[cursor1];
+            }
+            else if (length1 === 0) {
+                throw new Error();
+                // throw new Error('mergeLow preconditions were not respected');
+            }
+            else {
+                for (i = 0; i < length1; i++) {
+                    array[dest + i] = tmp[cursor1 + i];
+                }
+            }
+        }
+
+        function mergeHigh (start1, length1, start2, length2) {
+            var i = 0;
+
+            for (i = 0; i < length2; i++) {
+                tmp[i] = array[start2 + i];
+            }
+
+            var cursor1 = start1 + length1 - 1;
+            var cursor2 = length2 - 1;
+            var dest = start2 + length2 - 1;
+            var customCursor = 0;
+            var customDest = 0;
+
+            array[dest--] = array[cursor1--];
+
+            if (--length1 === 0) {
+                customCursor = dest - (length2 - 1);
+
+                for (i = 0; i < length2; i++) {
+                    array[customCursor + i] = tmp[i];
+                }
+
+                return;
+            }
+
+            if (length2 === 1) {
+                dest -= length1;
+                cursor1 -= length1;
+                customDest = dest + 1;
+                customCursor = cursor1 + 1;
+
+                for (i = length1 - 1; i >= 0; i--) {
+                    array[customDest + i] = array[customCursor + i];
+                }
+
+                array[dest] = tmp[cursor2];
+                return;
+            }
+
+            var _minGallop = minGallop;
+
+            while (true) {
+                var count1 = 0;
+                var count2 = 0;
+                var exit = false;
+
+                do {
+                    if (compare(tmp[cursor2], array[cursor1]) < 0) {
+                        array[dest--] = array[cursor1--];
+                        count1++;
+                        count2 = 0;
+                        if (--length1 === 0) {
+                            exit = true;
+                            break;
+                        }
+                    }
+                    else {
+                        array[dest--] = tmp[cursor2--];
+                        count2++;
+                        count1 = 0;
+                        if (--length2 === 1) {
+                            exit = true;
+                            break;
+                        }
+                    }
+                } while ((count1 | count2) < _minGallop);
+
+                if (exit) {
+                    break;
+                }
+
+                do {
+                    count1 = length1 - gallopRight(tmp[cursor2], array, start1, length1, length1 - 1, compare);
+
+                    if (count1 !== 0) {
+                        dest -= count1;
+                        cursor1 -= count1;
+                        length1 -= count1;
+                        customDest = dest + 1;
+                        customCursor = cursor1 + 1;
+
+                        for (i = count1 - 1; i >= 0; i--) {
+                            array[customDest + i] = array[customCursor + i];
+                        }
+
+                        if (length1 === 0) {
+                            exit = true;
+                            break;
+                        }
+                    }
+
+                    array[dest--] = tmp[cursor2--];
+
+                    if (--length2 === 1) {
+                        exit = true;
+                        break;
+                    }
+
+                    count2 = length2 - gallopLeft(array[cursor1], tmp, 0, length2, length2 - 1, compare);
+
+                    if (count2 !== 0) {
+                        dest -= count2;
+                        cursor2 -= count2;
+                        length2 -= count2;
+                        customDest = dest + 1;
+                        customCursor = cursor2 + 1;
+
+                        for (i = 0; i < count2; i++) {
+                            array[customDest + i] = tmp[customCursor + i];
+                        }
+
+                        if (length2 <= 1) {
+                            exit = true;
+                            break;
+                        }
+                    }
+
+                    array[dest--] = array[cursor1--];
+
+                    if (--length1 === 0) {
+                        exit = true;
+                        break;
+                    }
+
+                    _minGallop--;
+                } while (count1 >= DEFAULT_MIN_GALLOPING || count2 >= DEFAULT_MIN_GALLOPING);
+
+                if (exit) {
+                    break;
+                }
+
+                if (_minGallop < 0) {
+                    _minGallop = 0;
+                }
+
+                _minGallop += 2;
+            }
+
+            minGallop = _minGallop;
+
+            if (minGallop < 1) {
+                minGallop = 1;
+            }
+
+            if (length2 === 1) {
+                dest -= length1;
+                cursor1 -= length1;
+                customDest = dest + 1;
+                customCursor = cursor1 + 1;
+
+                for (i = length1 - 1; i >= 0; i--) {
+                    array[customDest + i] = array[customCursor + i];
+                }
+
+                array[dest] = tmp[cursor2];
+            }
+            else if (length2 === 0) {
+                throw new Error();
+                // throw new Error('mergeHigh preconditions were not respected');
+            }
+            else {
+                customCursor = dest - (length2 - 1);
+                for (i = 0; i < length2; i++) {
+                    array[customCursor + i] = tmp[i];
+                }
+            }
+        }
+
+        this.mergeRuns = mergeRuns;
+        this.forceMergeRuns = forceMergeRuns;
+        this.pushRun = pushRun;
+    }
+
+    function sort(array, compare, lo, hi) {
+        if (!lo) {
+            lo = 0;
+        }
+        if (!hi) {
+            hi = array.length;
+        }
+
+        var remaining = hi - lo;
+
+        if (remaining < 2) {
+            return;
+        }
+
+        var runLength = 0;
+
+        if (remaining < DEFAULT_MIN_MERGE) {
+            runLength = makeAscendingRun(array, lo, hi, compare);
+            binaryInsertionSort(array, lo, hi, lo + runLength, compare);
+            return;
+        }
+
+        var ts = new TimSort(array, compare);
+
+        var minRun = minRunLength(remaining);
+
+        do {
+            runLength = makeAscendingRun(array, lo, hi, compare);
+            if (runLength < minRun) {
+                var force = remaining;
+                if (force > minRun) {
+                    force = minRun;
+                }
+
+                binaryInsertionSort(array, lo, lo + force, lo + runLength, compare);
+                runLength = force;
+            }
+
+            ts.pushRun(lo, runLength);
+            ts.mergeRuns();
+
+            remaining -= runLength;
+            lo += runLength;
+        } while (remaining !== 0);
+
+        ts.forceMergeRuns();
+    }
+
+    return sort;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * 可绘制的图形基类
+ * Base class of all displayable graphic objects
+ * @module zrender/graphic/Displayable
+ */
+
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var zrUtil = __webpack_require__(0);
+
+    var Style = __webpack_require__(22);
+
+    var Element = __webpack_require__(9);
+    var RectText = __webpack_require__(50);
+    // var Stateful = require('./mixin/Stateful');
+
+    /**
+     * @alias module:zrender/graphic/Displayable
+     * @extends module:zrender/Element
+     * @extends module:zrender/graphic/mixin/RectText
+     */
+    function Displayable(opts) {
+
+        opts = opts || {};
+
+        Element.call(this, opts);
+
+        // Extend properties
+        for (var name in opts) {
+            if (
+                opts.hasOwnProperty(name) &&
+                name !== 'style'
+            ) {
+                this[name] = opts[name];
+            }
+        }
+
+        /**
+         * @type {module:zrender/graphic/Style}
+         */
+        this.style = new Style(opts.style);
+
+        this._rect = null;
+        // Shapes for cascade clipping.
+        this.__clipPaths = [];
+
+        // FIXME Stateful must be mixined after style is setted
+        // Stateful.call(this, opts);
+    }
+
+    Displayable.prototype = {
+
+        constructor: Displayable,
+
+        type: 'displayable',
+
+        /**
+         * Displayable 是否为脏，Painter 中会根据该标记判断是否需要是否需要重新绘制
+         * Dirty flag. From which painter will determine if this displayable object needs brush
+         * @name module:zrender/graphic/Displayable#__dirty
+         * @type {boolean}
+         */
+        __dirty: true,
+
+        /**
+         * 图形是否可见，为true时不绘制图形，但是仍能触发鼠标事件
+         * If ignore drawing of the displayable object. Mouse event will still be triggered
+         * @name module:/zrender/graphic/Displayable#invisible
+         * @type {boolean}
+         * @default false
+         */
+        invisible: false,
+
+        /**
+         * @name module:/zrender/graphic/Displayable#z
+         * @type {number}
+         * @default 0
+         */
+        z: 0,
+
+        /**
+         * @name module:/zrender/graphic/Displayable#z
+         * @type {number}
+         * @default 0
+         */
+        z2: 0,
+
+        /**
+         * z层level，决定绘画在哪层canvas中
+         * @name module:/zrender/graphic/Displayable#zlevel
+         * @type {number}
+         * @default 0
+         */
+        zlevel: 0,
+
+        /**
+         * 是否可拖拽
+         * @name module:/zrender/graphic/Displayable#draggable
+         * @type {boolean}
+         * @default false
+         */
+        draggable: false,
+
+        /**
+         * 是否正在拖拽
+         * @name module:/zrender/graphic/Displayable#draggable
+         * @type {boolean}
+         * @default false
+         */
+        dragging: false,
+
+        /**
+         * 是否相应鼠标事件
+         * @name module:/zrender/graphic/Displayable#silent
+         * @type {boolean}
+         * @default false
+         */
+        silent: false,
+
+        /**
+         * If enable culling
+         * @type {boolean}
+         * @default false
+         */
+        culling: false,
+
+        /**
+         * Mouse cursor when hovered
+         * @name module:/zrender/graphic/Displayable#cursor
+         * @type {string}
+         */
+        cursor: 'pointer',
+
+        /**
+         * If hover area is bounding rect
+         * @name module:/zrender/graphic/Displayable#rectHover
+         * @type {string}
+         */
+        rectHover: false,
+
+        /**
+         * Render the element progressively when the value >= 0,
+         * usefull for large data.
+         * @type {number}
+         */
+        progressive: -1,
+
+        beforeBrush: function (ctx) {},
+
+        afterBrush: function (ctx) {},
+
+        /**
+         * 图形绘制方法
+         * @param {Canvas2DRenderingContext} ctx
+         */
+        // Interface
+        brush: function (ctx, prevEl) {},
+
+        /**
+         * 获取最小包围盒
+         * @return {module:zrender/core/BoundingRect}
+         */
+        // Interface
+        getBoundingRect: function () {},
+
+        /**
+         * 判断坐标 x, y 是否在图形上
+         * If displayable element contain coord x, y
+         * @param  {number} x
+         * @param  {number} y
+         * @return {boolean}
+         */
+        contain: function (x, y) {
+            return this.rectContain(x, y);
+        },
+
+        /**
+         * @param  {Function} cb
+         * @param  {}   context
+         */
+        traverse: function (cb, context) {
+            cb.call(context, this);
+        },
+
+        /**
+         * 判断坐标 x, y 是否在图形的包围盒上
+         * If bounding rect of element contain coord x, y
+         * @param  {number} x
+         * @param  {number} y
+         * @return {boolean}
+         */
+        rectContain: function (x, y) {
+            var coord = this.transformCoordToLocal(x, y);
+            var rect = this.getBoundingRect();
+            return rect.contain(coord[0], coord[1]);
+        },
+
+        /**
+         * 标记图形元素为脏，并且在下一帧重绘
+         * Mark displayable element dirty and refresh next frame
+         */
+        dirty: function () {
+            this.__dirty = true;
+
+            this._rect = null;
+
+            this.__zr && this.__zr.refresh();
+        },
+
+        /**
+         * 图形是否会触发事件
+         * If displayable object binded any event
+         * @return {boolean}
+         */
+        // TODO, 通过 bind 绑定的事件
+        // isSilent: function () {
+        //     return !(
+        //         this.hoverable || this.draggable
+        //         || this.onmousemove || this.onmouseover || this.onmouseout
+        //         || this.onmousedown || this.onmouseup || this.onclick
+        //         || this.ondragenter || this.ondragover || this.ondragleave
+        //         || this.ondrop
+        //     );
+        // },
+        /**
+         * Alias for animate('style')
+         * @param {boolean} loop
+         */
+        animateStyle: function (loop) {
+            return this.animate('style', loop);
+        },
+
+        attrKV: function (key, value) {
+            if (key !== 'style') {
+                Element.prototype.attrKV.call(this, key, value);
+            }
+            else {
+                this.style.set(value);
+            }
+        },
+
+        /**
+         * @param {Object|string} key
+         * @param {*} value
+         */
+        setStyle: function (key, value) {
+            this.style.set(key, value);
+            this.dirty(false);
+            return this;
+        },
+
+        /**
+         * Use given style object
+         * @param  {Object} obj
+         */
+        useStyle: function (obj) {
+            this.style = new Style(obj);
+            this.dirty(false);
+            return this;
+        }
+    };
+
+    zrUtil.inherits(Displayable, Element);
+
+    zrUtil.mixin(Displayable, RectText);
+    // zrUtil.mixin(Displayable, Stateful);
+
+    return Displayable;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * Path element
+ * @module zrender/graphic/Path
+ */
+
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var Displayable = __webpack_require__(19);
+    var zrUtil = __webpack_require__(0);
+    var PathProxy = __webpack_require__(14);
+    var pathContain = __webpack_require__(38);
+
+    var Pattern = __webpack_require__(21);
+    var getCanvasPattern = Pattern.prototype.getCanvasPattern;
+
+    var abs = Math.abs;
+
+    var pathProxyForDraw = new PathProxy(true);
+    /**
+     * @alias module:zrender/graphic/Path
+     * @extends module:zrender/graphic/Displayable
+     * @constructor
+     * @param {Object} opts
+     */
+    function Path(opts) {
+        Displayable.call(this, opts);
+
+        /**
+         * @type {module:zrender/core/PathProxy}
+         * @readOnly
+         */
+        this.path = null;
+    }
+
+    Path.prototype = {
+
+        constructor: Path,
+
+        type: 'path',
+
+        __dirtyPath: true,
+
+        strokeContainThreshold: 5,
+
+        brush: function (ctx, prevEl) {
+            var style = this.style;
+            var path = this.path || pathProxyForDraw;
+            var hasStroke = style.hasStroke();
+            var hasFill = style.hasFill();
+            var fill = style.fill;
+            var stroke = style.stroke;
+            var hasFillGradient = hasFill && !!(fill.colorStops);
+            var hasStrokeGradient = hasStroke && !!(stroke.colorStops);
+            var hasFillPattern = hasFill && !!(fill.image);
+            var hasStrokePattern = hasStroke && !!(stroke.image);
+
+            style.bind(ctx, this, prevEl);
+            this.setTransform(ctx);
+
+            if (this.__dirty) {
+                var rect;
+                // Update gradient because bounding rect may changed
+                if (hasFillGradient) {
+                    rect = rect || this.getBoundingRect();
+                    this._fillGradient = style.getGradient(ctx, fill, rect);
+                }
+                if (hasStrokeGradient) {
+                    rect = rect || this.getBoundingRect();
+                    this._strokeGradient = style.getGradient(ctx, stroke, rect);
+                }
+            }
+            // Use the gradient or pattern
+            if (hasFillGradient) {
+                // PENDING If may have affect the state
+                ctx.fillStyle = this._fillGradient;
+            }
+            else if (hasFillPattern) {
+                ctx.fillStyle = getCanvasPattern.call(fill, ctx);
+            }
+            if (hasStrokeGradient) {
+                ctx.strokeStyle = this._strokeGradient;
+            }
+            else if (hasStrokePattern) {
+                ctx.strokeStyle = getCanvasPattern.call(stroke, ctx);
+            }
+
+            var lineDash = style.lineDash;
+            var lineDashOffset = style.lineDashOffset;
+
+            var ctxLineDash = !!ctx.setLineDash;
+
+            // Update path sx, sy
+            var scale = this.getGlobalScale();
+            path.setScale(scale[0], scale[1]);
+
+            // Proxy context
+            // Rebuild path in following 2 cases
+            // 1. Path is dirty
+            // 2. Path needs javascript implemented lineDash stroking.
+            //    In this case, lineDash information will not be saved in PathProxy
+            if (this.__dirtyPath
+                || (lineDash && !ctxLineDash && hasStroke)
+            ) {
+                path.beginPath(ctx);
+
+                // Setting line dash before build path
+                if (lineDash && !ctxLineDash) {
+                    path.setLineDash(lineDash);
+                    path.setLineDashOffset(lineDashOffset);
+                }
+
+                this.buildPath(path, this.shape, false);
+
+                // Clear path dirty flag
+                if (this.path) {
+                    this.__dirtyPath = false;
+                }
+            }
+            else {
+                // Replay path building
+                ctx.beginPath();
+                this.path.rebuildPath(ctx);
+            }
+
+            hasFill && path.fill(ctx);
+
+            if (lineDash && ctxLineDash) {
+                ctx.setLineDash(lineDash);
+                ctx.lineDashOffset = lineDashOffset;
+            }
+
+            hasStroke && path.stroke(ctx);
+
+            if (lineDash && ctxLineDash) {
+                // PENDING
+                // Remove lineDash
+                ctx.setLineDash([]);
+            }
+
+
+            this.restoreTransform(ctx);
+
+            // Draw rect text
+            if (style.text != null) {
+                this.drawRectText(ctx, this.getBoundingRect());
+            }
+        },
+
+        // When bundling path, some shape may decide if use moveTo to begin a new subpath or closePath
+        // Like in circle
+        buildPath: function (ctx, shapeCfg, inBundle) {},
+
+        createPathProxy: function () {
+            this.path = new PathProxy();
+        },
+
+        getBoundingRect: function () {
+            var rect = this._rect;
+            var style = this.style;
+            var needsUpdateRect = !rect;
+            if (needsUpdateRect) {
+                var path = this.path;
+                if (!path) {
+                    // Create path on demand.
+                    path = this.path = new PathProxy();
+                }
+                if (this.__dirtyPath) {
+                    path.beginPath();
+                    this.buildPath(path, this.shape, false);
+                }
+                rect = path.getBoundingRect();
+            }
+            this._rect = rect;
+
+            if (style.hasStroke()) {
+                // Needs update rect with stroke lineWidth when
+                // 1. Element changes scale or lineWidth
+                // 2. Shape is changed
+                var rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
+                if (this.__dirty || needsUpdateRect) {
+                    rectWithStroke.copy(rect);
+                    // FIXME Must after updateTransform
+                    var w = style.lineWidth;
+                    // PENDING, Min line width is needed when line is horizontal or vertical
+                    var lineScale = style.strokeNoScale ? this.getLineScale() : 1;
+
+                    // Only add extra hover lineWidth when there are no fill
+                    if (!style.hasFill()) {
+                        w = Math.max(w, this.strokeContainThreshold || 4);
+                    }
+                    // Consider line width
+                    // Line scale can't be 0;
+                    if (lineScale > 1e-10) {
+                        rectWithStroke.width += w / lineScale;
+                        rectWithStroke.height += w / lineScale;
+                        rectWithStroke.x -= w / lineScale / 2;
+                        rectWithStroke.y -= w / lineScale / 2;
+                    }
+                }
+
+                // Return rect with stroke
+                return rectWithStroke;
+            }
+
+            return rect;
+        },
+
+        contain: function (x, y) {
+            var localPos = this.transformCoordToLocal(x, y);
+            var rect = this.getBoundingRect();
+            var style = this.style;
+            x = localPos[0];
+            y = localPos[1];
+
+            if (rect.contain(x, y)) {
+                var pathData = this.path.data;
+                if (style.hasStroke()) {
+                    var lineWidth = style.lineWidth;
+                    var lineScale = style.strokeNoScale ? this.getLineScale() : 1;
+                    // Line scale can't be 0;
+                    if (lineScale > 1e-10) {
+                        // Only add extra hover lineWidth when there are no fill
+                        if (!style.hasFill()) {
+                            lineWidth = Math.max(lineWidth, this.strokeContainThreshold);
+                        }
+                        if (pathContain.containStroke(
+                            pathData, lineWidth / lineScale, x, y
+                        )) {
+                            return true;
+                        }
+                    }
+                }
+                if (style.hasFill()) {
+                    return pathContain.contain(pathData, x, y);
+                }
+            }
+            return false;
+        },
+
+        /**
+         * @param  {boolean} dirtyPath
+         */
+        dirty: function (dirtyPath) {
+            if (dirtyPath == null) {
+                dirtyPath = true;
+            }
+            // Only mark dirty, not mark clean
+            if (dirtyPath) {
+                this.__dirtyPath = dirtyPath;
+                this._rect = null;
+            }
+
+            this.__dirty = true;
+
+            this.__zr && this.__zr.refresh();
+
+            // Used as a clipping path
+            if (this.__clipTarget) {
+                this.__clipTarget.dirty();
+            }
+        },
+
+        /**
+         * Alias for animate('shape')
+         * @param {boolean} loop
+         */
+        animateShape: function (loop) {
+            return this.animate('shape', loop);
+        },
+
+        // Overwrite attrKV
+        attrKV: function (key, value) {
+            // FIXME
+            if (key === 'shape') {
+                this.setShape(value);
+                this.__dirtyPath = true;
+                this._rect = null;
+            }
+            else {
+                Displayable.prototype.attrKV.call(this, key, value);
+            }
+        },
+
+        /**
+         * @param {Object|string} key
+         * @param {*} value
+         */
+        setShape: function (key, value) {
+            var shape = this.shape;
+            // Path from string may not have shape
+            if (shape) {
+                if (zrUtil.isObject(key)) {
+                    for (var name in key) {
+                        if (key.hasOwnProperty(name)) {
+                            shape[name] = key[name];
+                        }
+                    }
+                }
+                else {
+                    shape[key] = value;
+                }
+                this.dirty(true);
+            }
+            return this;
+        },
+
+        getLineScale: function () {
+            var m = this.transform;
+            // Get the line scale.
+            // Determinant of `m` means how much the area is enlarged by the
+            // transformation. So its square root can be used as a scale factor
+            // for width.
+            return m && abs(m[0] - 1) > 1e-10 && abs(m[3] - 1) > 1e-10
+                ? Math.sqrt(abs(m[0] * m[3] - m[2] * m[1]))
+                : 1;
+        }
+    };
+
+    /**
+     * 扩展一个 Path element, 比如星形，圆等。
+     * Extend a path element
+     * @param {Object} props
+     * @param {string} props.type Path type
+     * @param {Function} props.init Initialize
+     * @param {Function} props.buildPath Overwrite buildPath method
+     * @param {Object} [props.style] Extended default style config
+     * @param {Object} [props.shape] Extended default shape config
+     */
+    Path.extend = function (defaults) {
+        var Sub = function (opts) {
+            Path.call(this, opts);
+
+            if (defaults.style) {
+                // Extend default style
+                this.style.extendFrom(defaults.style, false);
+            }
+
+            // Extend default shape
+            var defaultShape = defaults.shape;
+            if (defaultShape) {
+                this.shape = this.shape || {};
+                var thisShape = this.shape;
+                for (var name in defaultShape) {
+                    if (
+                        ! thisShape.hasOwnProperty(name)
+                        && defaultShape.hasOwnProperty(name)
+                    ) {
+                        thisShape[name] = defaultShape[name];
+                    }
+                }
+            }
+
+            defaults.init && defaults.init.call(this, opts);
+        };
+
+        zrUtil.inherits(Sub, Path);
+
+        // FIXME 不能 extend position, rotation 等引用对象
+        for (var name in defaults) {
+            // Extending prototype values and methods
+            if (name !== 'style' && name !== 'shape') {
+                Sub.prototype[name] = defaults[name];
+            }
+        }
+
+        return Sub;
+    };
+
+    zrUtil.inherits(Path, Displayable);
+
+    return Path;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var Pattern = function (image, repeat) {
+        // Should do nothing more in this constructor. Because gradient can be
+        // declard by `color: {image: ...}`, where this constructor will not be called.
+
+        this.image = image;
+        this.repeat = repeat;
+
+        // Can be cloned
+        this.type = 'pattern';
+    };
+
+    Pattern.prototype.getCanvasPattern = function (ctx) {
+        return ctx.createPattern(this.image, this.repeat || 'repeat');
+    };
+
+    return Pattern;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @module zrender/graphic/Style
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var STYLE_COMMON_PROPS = [
+        ['shadowBlur', 0], ['shadowOffsetX', 0], ['shadowOffsetY', 0], ['shadowColor', '#000'],
+        ['lineCap', 'butt'], ['lineJoin', 'miter'], ['miterLimit', 10]
+    ];
+
+    // var SHADOW_PROPS = STYLE_COMMON_PROPS.slice(0, 4);
+    // var LINE_PROPS = STYLE_COMMON_PROPS.slice(4);
+
+    var Style = function (opts) {
+        this.extendFrom(opts);
+    };
+
+    function createLinearGradient(ctx, obj, rect) {
+        var x = obj.x == null ? 0 : obj.x;
+        var x2 = obj.x2 == null ? 1 : obj.x2;
+        var y = obj.y == null ? 0 : obj.y;
+        var y2 = obj.y2 == null ? 0 : obj.y2;
+
+        if (!obj.global) {
+            x = x * rect.width + rect.x;
+            x2 = x2 * rect.width + rect.x;
+            y = y * rect.height + rect.y;
+            y2 = y2 * rect.height + rect.y;
+        }
+
+        var canvasGradient = ctx.createLinearGradient(x, y, x2, y2);
+
+        return canvasGradient;
+    }
+
+    function createRadialGradient(ctx, obj, rect) {
+        var width = rect.width;
+        var height = rect.height;
+        var min = Math.min(width, height);
+
+        var x = obj.x == null ? 0.5 : obj.x;
+        var y = obj.y == null ? 0.5 : obj.y;
+        var r = obj.r == null ? 0.5 : obj.r;
+        if (!obj.global) {
+            x = x * width + rect.x;
+            y = y * height + rect.y;
+            r = r * min;
+        }
+
+        var canvasGradient = ctx.createRadialGradient(x, y, 0, x, y, r);
+
+        return canvasGradient;
+    }
+
+
+    Style.prototype = {
+
+        constructor: Style,
+
+        /**
+         * @type {string}
+         */
+        fill: '#000000',
+
+        /**
+         * @type {string}
+         */
+        stroke: null,
+
+        /**
+         * @type {number}
+         */
+        opacity: 1,
+
+        /**
+         * @type {Array.<number>}
+         */
+        lineDash: null,
+
+        /**
+         * @type {number}
+         */
+        lineDashOffset: 0,
+
+        /**
+         * @type {number}
+         */
+        shadowBlur: 0,
+
+        /**
+         * @type {number}
+         */
+        shadowOffsetX: 0,
+
+        /**
+         * @type {number}
+         */
+        shadowOffsetY: 0,
+
+        /**
+         * @type {number}
+         */
+        lineWidth: 1,
+
+        /**
+         * If stroke ignore scale
+         * @type {Boolean}
+         */
+        strokeNoScale: false,
+
+        // Bounding rect text configuration
+        // Not affected by element transform
+        /**
+         * @type {string}
+         */
+        text: null,
+
+        /**
+         * @type {string}
+         */
+        textFill: '#000',
+
+        /**
+         * @type {string}
+         */
+        textStroke: null,
+
+        /**
+         * 'inside', 'left', 'right', 'top', 'bottom'
+         * [x, y]
+         * @type {string|Array.<number>}
+         * @default 'inside'
+         */
+        textPosition: 'inside',
+
+        /**
+         * If not specified, use the boundingRect of a `displayable`.
+         * @type {Object}
+         */
+        textPositionRect: null,
+
+        /**
+         * [x, y]
+         * @type {Array.<number>}
+         */
+        textOffset: null,
+
+        /**
+         * @type {string}
+         */
+        textBaseline: null,
+
+        /**
+         * @type {string}
+         */
+        textAlign: null,
+
+        /**
+         * @type {string}
+         */
+        textVerticalAlign: null,
+
+        /**
+         * Only useful in Path and Image element
+         * @type {number}
+         */
+        textDistance: 5,
+
+        /**
+         * Only useful in Path and Image element
+         * @type {number}
+         */
+        textShadowBlur: 0,
+
+        /**
+         * Only useful in Path and Image element
+         * @type {number}
+         */
+        textShadowOffsetX: 0,
+
+        /**
+         * Only useful in Path and Image element
+         * @type {number}
+         */
+        textShadowOffsetY: 0,
+
+        /**
+         * If transform text
+         * Only useful in Path and Image element
+         * @type {boolean}
+         */
+        textTransform: false,
+
+        /**
+         * Text rotate around position of Path or Image
+         * Only useful in Path and Image element and textTransform is false.
+         */
+        textRotation: 0,
+
+        /**
+         * @type {string}
+         * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
+         */
+        blend: null,
+
+        /**
+         * @param {CanvasRenderingContext2D} ctx
+         */
+        bind: function (ctx, el, prevEl) {
+            var style = this;
+            var prevStyle = prevEl && prevEl.style;
+            var firstDraw = !prevStyle;
+
+            for (var i = 0; i < STYLE_COMMON_PROPS.length; i++) {
+                var prop = STYLE_COMMON_PROPS[i];
+                var styleName = prop[0];
+
+                if (firstDraw || style[styleName] !== prevStyle[styleName]) {
+                    // FIXME Invalid property value will cause style leak from previous element.
+                    ctx[styleName] = style[styleName] || prop[1];
+                }
+            }
+
+            if ((firstDraw || style.fill !== prevStyle.fill)) {
+                ctx.fillStyle = style.fill;
+            }
+            if ((firstDraw || style.stroke !== prevStyle.stroke)) {
+                ctx.strokeStyle = style.stroke;
+            }
+            if ((firstDraw || style.opacity !== prevStyle.opacity)) {
+                ctx.globalAlpha = style.opacity == null ? 1 : style.opacity;
+            }
+
+            if ((firstDraw || style.blend !== prevStyle.blend)) {
+                ctx.globalCompositeOperation = style.blend || 'source-over';
+            }
+            if (this.hasStroke()) {
+                var lineWidth = style.lineWidth;
+                ctx.lineWidth = lineWidth / (
+                    (this.strokeNoScale && el && el.getLineScale) ? el.getLineScale() : 1
+                );
+            }
+        },
+
+        hasFill: function () {
+            var fill = this.fill;
+            return fill != null && fill !== 'none';
+        },
+
+        hasStroke: function () {
+            var stroke = this.stroke;
+            return stroke != null && stroke !== 'none' && this.lineWidth > 0;
+        },
+
+        /**
+         * Extend from other style
+         * @param {zrender/graphic/Style} otherStyle
+         * @param {boolean} overwrite
+         */
+        extendFrom: function (otherStyle, overwrite) {
+            if (otherStyle) {
+                var target = this;
+                for (var name in otherStyle) {
+                    if (otherStyle.hasOwnProperty(name)
+                        && (overwrite || ! target.hasOwnProperty(name))
+                    ) {
+                        target[name] = otherStyle[name];
+                    }
+                }
+            }
+        },
+
+        /**
+         * Batch setting style with a given object
+         * @param {Object|string} obj
+         * @param {*} [obj]
+         */
+        set: function (obj, value) {
+            if (typeof obj === 'string') {
+                this[obj] = value;
+            }
+            else {
+                this.extendFrom(obj, true);
+            }
+        },
+
+        /**
+         * Clone
+         * @return {zrender/graphic/Style} [description]
+         */
+        clone: function () {
+            var newStyle = new this.constructor();
+            newStyle.extendFrom(this, true);
+            return newStyle;
+        },
+
+        getGradient: function (ctx, obj, rect) {
+            var method = obj.type === 'radial' ? createRadialGradient : createLinearGradient;
+            var canvasGradient = method(ctx, obj, rect);
+            var colorStops = obj.colorStops;
+            for (var i = 0; i < colorStops.length; i++) {
+                canvasGradient.addColorStop(
+                    colorStops[i].offset, colorStops[i].color
+                );
+            }
+            return canvasGradient;
+        }
+    };
+
+    var styleProto = Style.prototype;
+    for (var i = 0; i < STYLE_COMMON_PROPS.length; i++) {
+        var prop = STYLE_COMMON_PROPS[i];
+        if (!(prop[0] in styleProto)) {
+            styleProto[prop[0]] = prop[1];
+        }
+    }
+
+    // Provide for others
+    Style.getGradient = styleProto.getGradient;
+
+    return Style;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_zrender_src_graphic_shape_Polyline__ = __webpack_require__(75);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_zrender_src_graphic_shape_Polyline___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_zrender_src_graphic_shape_Polyline__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_zrender_src_container_Group__ = __webpack_require__(42);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_zrender_src_container_Group___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_zrender_src_container_Group__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_zrender_src_graphic_shape_Polyline__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_zrender_src_graphic_shape_Polyline___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_zrender_src_graphic_shape_Polyline__);
 
 
-var x_values = [];
-var y_values = [];
-var z_values = [];
+
+let x_values = [];
+let y_values = [];
+let z_values = [];
 
 class ZRenderGeoJSON {
-    constructor() {}
+    constructor() {
+        this.width = this.height = 0;
+    }
 
-    drawGeoJSON(json, radius, options) {
-        let objs = [];
+    drawGeoJSON(zr, json, radius, options) {
+        this.width = zr.getWidth();
+        this.height = zr.getHeight();
+
+        let g = new __WEBPACK_IMPORTED_MODULE_0_zrender_src_container_Group___default.a();
         let json_geom = this.parseGeoJSON(json);
-        var coordinate_array = [];
-        // console.log(json_geom);
+        let coordinate_array = [];
 
-        for (var geom_num = 0; geom_num < json_geom.length; geom_num++) {
+        for (let geom_num = 0; geom_num < json_geom.length; geom_num++) {
             if (json_geom[geom_num].type == 'Point') {
                 this.convertToPlaneCoords(json_geom[geom_num].coordinates, radius);
                 // drawParticle(y_values[0], z_values[0], x_values[0], options);
             } else if (json_geom[geom_num].type == 'MultiPoint') {
-                for (var point_num = 0; point_num < json_geom[geom_num].coordinates.length; point_num++) {
+                for (let point_num = 0; point_num < json_geom[geom_num].coordinates.length; point_num++) {
                     this.convertToPlaneCoords(json_geom[geom_num].coordinates[point_num], radius);
                     // drawParticle(y_values[0], z_values[0], x_values[0], options);
                 }
             } else if (json_geom[geom_num].type == 'LineString') {
                 coordinate_array = this.createCoordinateArray(json_geom[geom_num].coordinates);
 
-                for (var point_num = 0; point_num < coordinate_array.length; point_num++) {
+                for (let point_num = 0; point_num < coordinate_array.length; point_num++) {
                     this.convertToPlaneCoords(coordinate_array[point_num], radius);
                 }
-
-                objs.push(this.drawLine(y_values, z_values, x_values, options));
             } else if (json_geom[geom_num].type == 'Polygon') {
-                for (var segment_num = 0; segment_num < json_geom[geom_num].coordinates.length; segment_num++) {
+                for (let segment_num = 0; segment_num < json_geom[geom_num].coordinates.length; segment_num++) {
                     coordinate_array = this.createCoordinateArray(json_geom[geom_num].coordinates[segment_num]);
 
-                    for (var point_num = 0; point_num < coordinate_array.length; point_num++) {
+                    for (let point_num = 0; point_num < coordinate_array.length; point_num++) {
                         this.convertToPlaneCoords(coordinate_array[point_num], radius);
                     }
-
-                    objs.push(this.drawLine(y_values, z_values, x_values, options));
                 }
             } else if (json_geom[geom_num].type == 'MultiLineString') {
-                for (var segment_num = 0; segment_num < json_geom[geom_num].coordinates.length; segment_num++) {
+                for (let segment_num = 0; segment_num < json_geom[geom_num].coordinates.length; segment_num++) {
                     coordinate_array = this.createCoordinateArray(json_geom[geom_num].coordinates[segment_num]);
 
-                    for (var point_num = 0; point_num < coordinate_array.length; point_num++) {
+                    for (let point_num = 0; point_num < coordinate_array.length; point_num++) {
                         this.convertToPlaneCoords(coordinate_array[point_num], radius);
                     }
 
                     this.drawLine(y_values, z_values, x_values, options);
                 }
             } else if (json_geom[geom_num].type == 'MultiPolygon') {
-                for (var polygon_num = 0; polygon_num < json_geom[geom_num].coordinates.length; polygon_num++) {
-                    for (var segment_num = 0; segment_num < json_geom[geom_num].coordinates[polygon_num].length; segment_num++) {
+                for (let polygon_num = 0; polygon_num < json_geom[geom_num].coordinates.length; polygon_num++) {
+                    for (let segment_num = 0; segment_num < json_geom[geom_num].coordinates[polygon_num].length; segment_num++) {
                         coordinate_array = this.createCoordinateArray(json_geom[geom_num].coordinates[polygon_num][segment_num]);
 
-                        for (var point_num = 0; point_num < coordinate_array.length; point_num++) {
+                        for (let point_num = 0; point_num < coordinate_array.length; point_num++) {
                             this.convertToPlaneCoords(coordinate_array[point_num], radius);
                         }
-
-                        objs.push(this.drawLine(y_values, z_values, x_values, options));
                     }
                 }
             } else {
                 throw new Error('The geoJSON is not valid.');
             }
+
+            g.add(this.drawLine(y_values, z_values, x_values, options));
+            this.resetXYZ();
         }
 
-        return objs;
+        zr.add(g);
     }
 
     parseGeoJSON(json) {
-        var geometry_array = [];
+        let geometry_array = [];
 
         if (json.type == 'Feature') {
             geometry_array.push(json.geometry);
         } else if (json.type == 'FeatureCollection') {
-            for (var feature_num = 0; feature_num < json.features.length; feature_num++) {
+            for (let feature_num = 0; feature_num < json.features.length; feature_num++) {
                 geometry_array.push(json.features[feature_num].geometry);
             }
         } else if (json.type == 'GeometryCollection') {
-            for (var geom_num = 0; geom_num < json.geometries.length; geom_num++) {
+            for (let geom_num = 0; geom_num < json.geometries.length; geom_num++) {
                 geometry_array.push(json.geometries[geom_num]);
             }
         } else {
@@ -2833,8 +6350,8 @@ class ZRenderGeoJSON {
     }
 
     convertToPlaneCoords(coordinates_array, radius) {
-        var lon = coordinates_array[0];
-        var lat = coordinates_array[1];
+        let lon = coordinates_array[0];
+        let lat = coordinates_array[1];
 
         z_values.push(lat / 180 * radius);
         y_values.push(lon / 180 * radius);
@@ -2843,19 +6360,19 @@ class ZRenderGeoJSON {
 
     createCoordinateArray(feature) {
         //Loop through the coordinates and figure out if the points need interpolation.
-        var temp_array = [];
-        var interpolation_array = [];
+        let temp_array = [];
+        let interpolation_array = [];
 
-        for (var point_num = 0; point_num < feature.length; point_num++) {
-            var point1 = feature[point_num];
-            var point2 = feature[point_num - 1];
+        for (let point_num = 0; point_num < feature.length; point_num++) {
+            let point1 = feature[point_num];
+            let point2 = feature[point_num - 1];
 
             if (point_num > 0) {
                 if (this.needsInterpolation(point2, point1)) {
                     interpolation_array = [point2, point1];
                     interpolation_array = this.interpolatePoints(interpolation_array);
 
-                    for (var inter_point_num = 0; inter_point_num < interpolation_array.length; inter_point_num++) {
+                    for (let inter_point_num = 0; inter_point_num < interpolation_array.length; inter_point_num++) {
                         temp_array.push(interpolation_array[inter_point_num]);
                     }
                 } else {
@@ -2871,12 +6388,12 @@ class ZRenderGeoJSON {
     needsInterpolation(point2, point1) {
         //If the distance between two latitude and longitude values is
         //greater than five degrees, return true.
-        var lon1 = point1[0];
-        var lat1 = point1[1];
-        var lon2 = point2[0];
-        var lat2 = point2[1];
-        var lon_distance = Math.abs(lon1 - lon2);
-        var lat_distance = Math.abs(lat1 - lat2);
+        let lon1 = point1[0];
+        let lat1 = point1[1];
+        let lon2 = point2[0];
+        let lat2 = point2[1];
+        let lon_distance = Math.abs(lon1 - lon2);
+        let lat_distance = Math.abs(lat1 - lat2);
 
         if (lon_distance > 5 || lat_distance > 5) {
             return true;
@@ -2888,10 +6405,10 @@ class ZRenderGeoJSON {
     interpolatePoints(interpolation_array) {
         //This function is recursive. It will continue to add midpoints to the
         //interpolation array until needsInterpolation() returns false.
-        var temp_array = [];
-        var point1, point2;
+        let temp_array = [];
+        let point1, point2;
 
-        for (var point_num = 0; point_num < interpolation_array.length - 1; point_num++) {
+        for (let point_num = 0; point_num < interpolation_array.length - 1; point_num++) {
             point1 = interpolation_array[point_num];
             point2 = interpolation_array[point_num + 1];
 
@@ -2914,9 +6431,9 @@ class ZRenderGeoJSON {
     }
 
     getMidpoint(point1, point2) {
-        var midpoint_lon = (point1[0] + point2[0]) / 2;
-        var midpoint_lat = (point1[1] + point2[1]) / 2;
-        var midpoint = [midpoint_lon, midpoint_lat];
+        let midpoint_lon = (point1[0] + point2[0]) / 2;
+        let midpoint_lat = (point1[1] + point2[1]) / 2;
+        let midpoint = [midpoint_lon, midpoint_lat];
 
         return midpoint;
     }
@@ -2925,26 +6442,38 @@ class ZRenderGeoJSON {
         let points = [];
 
         for (let i = 0; i < x_values.length; i++) {
-            points.push([x_values[i], y_values[i]]);
+            points.push([x_values[i], this.height - y_values[i]]);
         }
 
-        let polyline = new __WEBPACK_IMPORTED_MODULE_0_zrender_src_graphic_shape_Polyline___default.a({
+        let polyline = new __WEBPACK_IMPORTED_MODULE_1_zrender_src_graphic_shape_Polyline___default.a({
             shape: {
                 points: points
             },
             style: {
-                stroke: '#ff0000'
-            }
+                stroke: this.getRandomColor(),
+                fill: this.getRandomColor()
+            },
+            draggable: true
         });
 
         return polyline;
+    }
+
+    getRandomColor() {
+        return `rgb(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)})`;
+    }
+
+    resetXYZ() {
+        x_values = [];
+        y_values = [];
+        z_values = [];
     }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = ZRenderGeoJSON;
 
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -13204,5751 +16733,7 @@ return jQuery;
 
 
 /***/ }),
-/* 26 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_ZRenderGeoJSON__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_zrender_src_graphic_shape_Circle__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_zrender_src_graphic_shape_Circle___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_zrender_src_graphic_shape_Circle__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_zrender_src_graphic_shape_Polyline__ = __webpack_require__(75);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_zrender_src_graphic_shape_Polyline___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_zrender_src_graphic_shape_Polyline__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_zrender_src_zrender__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_zrender_src_zrender___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_zrender_src_zrender__);
-
-
-
-
-
-
-let drawer = new __WEBPACK_IMPORTED_MODULE_1__src_ZRenderGeoJSON__["a" /* default */]();
-
-let getJSON = new Promise(function (resolve, reject) {
-    __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON({
-        url: '../dist/china.json',
-        success: function (data) {
-            resolve(data);
-        },
-        error: function (error) {
-            reject(error);
-        }
-    });
-});
-
-getJSON.then(function (data) {
-    let lines = drawer.drawGeoJSON(data, 500, {});
-
-    let circle = new __WEBPACK_IMPORTED_MODULE_2_zrender_src_graphic_shape_Circle___default.a({
-        shape: {
-            cx: 100,
-            cy: 100,
-            r: 30
-        },
-        style: {
-            fill: 'red'
-        }
-    });
-
-    let zr = __WEBPACK_IMPORTED_MODULE_4_zrender_src_zrender___default.a.init(document.getElementById('app'), {
-        width: 1000,
-        height: 1000
-    });
-
-    zr.add(circle);
-    for (let i = 0; i < lines.length; i++) {
-        zr.add(lines[i]);
-    }
-});
-
-/***/ }),
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @module zrender/Element
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
-    'use strict';
-
-    var guid = __webpack_require__(60);
-    var Eventful = __webpack_require__(69);
-    var Transformable = __webpack_require__(70);
-    var Animatable = __webpack_require__(68);
-    var zrUtil = __webpack_require__(1);
-
-    /**
-     * @alias module:zrender/Element
-     * @constructor
-     * @extends {module:zrender/mixin/Animatable}
-     * @extends {module:zrender/mixin/Transformable}
-     * @extends {module:zrender/mixin/Eventful}
-     */
-    var Element = function (opts) {
-
-        Transformable.call(this, opts);
-        Eventful.call(this, opts);
-        Animatable.call(this, opts);
-
-        /**
-         * 画布元素ID
-         * @type {string}
-         */
-        this.id = opts.id || guid();
-    };
-
-    Element.prototype = {
-
-        /**
-         * 元素类型
-         * Element type
-         * @type {string}
-         */
-        type: 'element',
-
-        /**
-         * 元素名字
-         * Element name
-         * @type {string}
-         */
-        name: '',
-
-        /**
-         * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
-         * ZRender instance will be assigned when element is associated with zrender
-         * @name module:/zrender/Element#__zr
-         * @type {module:zrender/ZRender}
-         */
-        __zr: null,
-
-        /**
-         * 图形是否忽略，为true时忽略图形的绘制以及事件触发
-         * If ignore drawing and events of the element object
-         * @name module:/zrender/Element#ignore
-         * @type {boolean}
-         * @default false
-         */
-        ignore: false,
-
-        /**
-         * 用于裁剪的路径(shape)，所有 Group 内的路径在绘制时都会被这个路径裁剪
-         * 该路径会继承被裁减对象的变换
-         * @type {module:zrender/graphic/Path}
-         * @see http://www.w3.org/TR/2dcontext/#clipping-region
-         * @readOnly
-         */
-        clipPath: null,
-
-        /**
-         * Drift element
-         * @param  {number} dx dx on the global space
-         * @param  {number} dy dy on the global space
-         */
-        drift: function (dx, dy) {
-            switch (this.draggable) {
-                case 'horizontal':
-                    dy = 0;
-                    break;
-                case 'vertical':
-                    dx = 0;
-                    break;
-            }
-
-            var m = this.transform;
-            if (!m) {
-                m = this.transform = [1, 0, 0, 1, 0, 0];
-            }
-            m[4] += dx;
-            m[5] += dy;
-
-            this.decomposeTransform();
-            this.dirty(false);
-        },
-
-        /**
-         * Hook before update
-         */
-        beforeUpdate: function () {},
-        /**
-         * Hook after update
-         */
-        afterUpdate: function () {},
-        /**
-         * Update each frame
-         */
-        update: function () {
-            this.updateTransform();
-        },
-
-        /**
-         * @param  {Function} cb
-         * @param  {}   context
-         */
-        traverse: function (cb, context) {},
-
-        /**
-         * @protected
-         */
-        attrKV: function (key, value) {
-            if (key === 'position' || key === 'scale' || key === 'origin') {
-                // Copy the array
-                if (value) {
-                    var target = this[key];
-                    if (!target) {
-                        target = this[key] = [];
-                    }
-                    target[0] = value[0];
-                    target[1] = value[1];
-                }
-            }
-            else {
-                this[key] = value;
-            }
-        },
-
-        /**
-         * Hide the element
-         */
-        hide: function () {
-            this.ignore = true;
-            this.__zr && this.__zr.refresh();
-        },
-
-        /**
-         * Show the element
-         */
-        show: function () {
-            this.ignore = false;
-            this.__zr && this.__zr.refresh();
-        },
-
-        /**
-         * @param {string|Object} key
-         * @param {*} value
-         */
-        attr: function (key, value) {
-            if (typeof key === 'string') {
-                this.attrKV(key, value);
-            }
-            else if (zrUtil.isObject(key)) {
-                for (var name in key) {
-                    if (key.hasOwnProperty(name)) {
-                        this.attrKV(name, key[name]);
-                    }
-                }
-            }
-
-            this.dirty(false);
-
-            return this;
-        },
-
-        /**
-         * @param {module:zrender/graphic/Path} clipPath
-         */
-        setClipPath: function (clipPath) {
-            var zr = this.__zr;
-            if (zr) {
-                clipPath.addSelfToZr(zr);
-            }
-
-            // Remove previous clip path
-            if (this.clipPath && this.clipPath !== clipPath) {
-                this.removeClipPath();
-            }
-
-            this.clipPath = clipPath;
-            clipPath.__zr = zr;
-            clipPath.__clipTarget = this;
-
-            this.dirty(false);
-        },
-
-        /**
-         */
-        removeClipPath: function () {
-            var clipPath = this.clipPath;
-            if (clipPath) {
-                if (clipPath.__zr) {
-                    clipPath.removeSelfFromZr(clipPath.__zr);
-                }
-
-                clipPath.__zr = null;
-                clipPath.__clipTarget = null;
-                this.clipPath = null;
-
-                this.dirty(false);
-            }
-        },
-
-        /**
-         * Add self from zrender instance.
-         * Not recursively because it will be invoked when element added to storage.
-         * @param {module:zrender/ZRender} zr
-         */
-        addSelfToZr: function (zr) {
-            this.__zr = zr;
-            // 添加动画
-            var animators = this.animators;
-            if (animators) {
-                for (var i = 0; i < animators.length; i++) {
-                    zr.animation.addAnimator(animators[i]);
-                }
-            }
-
-            if (this.clipPath) {
-                this.clipPath.addSelfToZr(zr);
-            }
-        },
-
-        /**
-         * Remove self from zrender instance.
-         * Not recursively because it will be invoked when element added to storage.
-         * @param {module:zrender/ZRender} zr
-         */
-        removeSelfFromZr: function (zr) {
-            this.__zr = null;
-            // 移除动画
-            var animators = this.animators;
-            if (animators) {
-                for (var i = 0; i < animators.length; i++) {
-                    zr.animation.removeAnimator(animators[i]);
-                }
-            }
-
-            if (this.clipPath) {
-                this.clipPath.removeSelfFromZr(zr);
-            }
-        }
-    };
-
-    zrUtil.mixin(Element, Animatable);
-    zrUtil.mixin(Element, Transformable);
-    zrUtil.mixin(Element, Eventful);
-
-    return Element;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @module echarts/animation/Animator
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var Clip = __webpack_require__(49);
-    var color = __webpack_require__(71);
-    var util = __webpack_require__(1);
-    var isArrayLike = util.isArrayLike;
-
-    var arraySlice = Array.prototype.slice;
-
-    function defaultGetter(target, key) {
-        return target[key];
-    }
-
-    function defaultSetter(target, key, value) {
-        target[key] = value;
-    }
-
-    /**
-     * @param  {number} p0
-     * @param  {number} p1
-     * @param  {number} percent
-     * @return {number}
-     */
-    function interpolateNumber(p0, p1, percent) {
-        return (p1 - p0) * percent + p0;
-    }
-
-    /**
-     * @param  {string} p0
-     * @param  {string} p1
-     * @param  {number} percent
-     * @return {string}
-     */
-    function interpolateString(p0, p1, percent) {
-        return percent > 0.5 ? p1 : p0;
-    }
-
-    /**
-     * @param  {Array} p0
-     * @param  {Array} p1
-     * @param  {number} percent
-     * @param  {Array} out
-     * @param  {number} arrDim
-     */
-    function interpolateArray(p0, p1, percent, out, arrDim) {
-        var len = p0.length;
-        if (arrDim == 1) {
-            for (var i = 0; i < len; i++) {
-                out[i] = interpolateNumber(p0[i], p1[i], percent);
-            }
-        }
-        else {
-            var len2 = len && p0[0].length;
-            for (var i = 0; i < len; i++) {
-                for (var j = 0; j < len2; j++) {
-                    out[i][j] = interpolateNumber(
-                        p0[i][j], p1[i][j], percent
-                    );
-                }
-            }
-        }
-    }
-
-    // arr0 is source array, arr1 is target array.
-    // Do some preprocess to avoid error happened when interpolating from arr0 to arr1
-    function fillArr(arr0, arr1, arrDim) {
-        var arr0Len = arr0.length;
-        var arr1Len = arr1.length;
-        if (arr0Len !== arr1Len) {
-            // FIXME Not work for TypedArray
-            var isPreviousLarger = arr0Len > arr1Len;
-            if (isPreviousLarger) {
-                // Cut the previous
-                arr0.length = arr1Len;
-            }
-            else {
-                // Fill the previous
-                for (var i = arr0Len; i < arr1Len; i++) {
-                    arr0.push(
-                        arrDim === 1 ? arr1[i] : arraySlice.call(arr1[i])
-                    );
-                }
-            }
-        }
-        // Handling NaN value
-        var len2 = arr0[0] && arr0[0].length;
-        for (var i = 0; i < arr0.length; i++) {
-            if (arrDim === 1) {
-                if (isNaN(arr0[i])) {
-                    arr0[i] = arr1[i];
-                }
-            }
-            else {
-                for (var j = 0; j < len2; j++) {
-                    if (isNaN(arr0[i][j])) {
-                        arr0[i][j] = arr1[i][j];
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @param  {Array} arr0
-     * @param  {Array} arr1
-     * @param  {number} arrDim
-     * @return {boolean}
-     */
-    function isArraySame(arr0, arr1, arrDim) {
-        if (arr0 === arr1) {
-            return true;
-        }
-        var len = arr0.length;
-        if (len !== arr1.length) {
-            return false;
-        }
-        if (arrDim === 1) {
-            for (var i = 0; i < len; i++) {
-                if (arr0[i] !== arr1[i]) {
-                    return false;
-                }
-            }
-        }
-        else {
-            var len2 = arr0[0].length;
-            for (var i = 0; i < len; i++) {
-                for (var j = 0; j < len2; j++) {
-                    if (arr0[i][j] !== arr1[i][j]) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Catmull Rom interpolate array
-     * @param  {Array} p0
-     * @param  {Array} p1
-     * @param  {Array} p2
-     * @param  {Array} p3
-     * @param  {number} t
-     * @param  {number} t2
-     * @param  {number} t3
-     * @param  {Array} out
-     * @param  {number} arrDim
-     */
-    function catmullRomInterpolateArray(
-        p0, p1, p2, p3, t, t2, t3, out, arrDim
-    ) {
-        var len = p0.length;
-        if (arrDim == 1) {
-            for (var i = 0; i < len; i++) {
-                out[i] = catmullRomInterpolate(
-                    p0[i], p1[i], p2[i], p3[i], t, t2, t3
-                );
-            }
-        }
-        else {
-            var len2 = p0[0].length;
-            for (var i = 0; i < len; i++) {
-                for (var j = 0; j < len2; j++) {
-                    out[i][j] = catmullRomInterpolate(
-                        p0[i][j], p1[i][j], p2[i][j], p3[i][j],
-                        t, t2, t3
-                    );
-                }
-            }
-        }
-    }
-
-    /**
-     * Catmull Rom interpolate number
-     * @param  {number} p0
-     * @param  {number} p1
-     * @param  {number} p2
-     * @param  {number} p3
-     * @param  {number} t
-     * @param  {number} t2
-     * @param  {number} t3
-     * @return {number}
-     */
-    function catmullRomInterpolate(p0, p1, p2, p3, t, t2, t3) {
-        var v0 = (p2 - p0) * 0.5;
-        var v1 = (p3 - p1) * 0.5;
-        return (2 * (p1 - p2) + v0 + v1) * t3
-                + (-3 * (p1 - p2) - 2 * v0 - v1) * t2
-                + v0 * t + p1;
-    }
-
-    function cloneValue(value) {
-        if (isArrayLike(value)) {
-            var len = value.length;
-            if (isArrayLike(value[0])) {
-                var ret = [];
-                for (var i = 0; i < len; i++) {
-                    ret.push(arraySlice.call(value[i]));
-                }
-                return ret;
-            }
-
-            return arraySlice.call(value);
-        }
-
-        return value;
-    }
-
-    function rgba2String(rgba) {
-        rgba[0] = Math.floor(rgba[0]);
-        rgba[1] = Math.floor(rgba[1]);
-        rgba[2] = Math.floor(rgba[2]);
-
-        return 'rgba(' + rgba.join(',') + ')';
-    }
-
-    function getArrayDim(keyframes) {
-        var lastValue = keyframes[keyframes.length - 1].value;
-        return isArrayLike(lastValue && lastValue[0]) ? 2 : 1;
-    }
-
-    function createTrackClip (animator, easing, oneTrackDone, keyframes, propName) {
-        var getter = animator._getter;
-        var setter = animator._setter;
-        var useSpline = easing === 'spline';
-
-        var trackLen = keyframes.length;
-        if (!trackLen) {
-            return;
-        }
-        // Guess data type
-        var firstVal = keyframes[0].value;
-        var isValueArray = isArrayLike(firstVal);
-        var isValueColor = false;
-        var isValueString = false;
-
-        // For vertices morphing
-        var arrDim = isValueArray ? getArrayDim(keyframes) : 0;
-
-        var trackMaxTime;
-        // Sort keyframe as ascending
-        keyframes.sort(function(a, b) {
-            return a.time - b.time;
-        });
-
-        trackMaxTime = keyframes[trackLen - 1].time;
-        // Percents of each keyframe
-        var kfPercents = [];
-        // Value of each keyframe
-        var kfValues = [];
-        var prevValue = keyframes[0].value;
-        var isAllValueEqual = true;
-        for (var i = 0; i < trackLen; i++) {
-            kfPercents.push(keyframes[i].time / trackMaxTime);
-            // Assume value is a color when it is a string
-            var value = keyframes[i].value;
-
-            // Check if value is equal, deep check if value is array
-            if (!((isValueArray && isArraySame(value, prevValue, arrDim))
-                || (!isValueArray && value === prevValue))) {
-                isAllValueEqual = false;
-            }
-            prevValue = value;
-
-            // Try converting a string to a color array
-            if (typeof value == 'string') {
-                var colorArray = color.parse(value);
-                if (colorArray) {
-                    value = colorArray;
-                    isValueColor = true;
-                }
-                else {
-                    isValueString = true;
-                }
-            }
-            kfValues.push(value);
-        }
-        if (isAllValueEqual) {
-            return;
-        }
-
-        var lastValue = kfValues[trackLen - 1];
-        // Polyfill array and NaN value
-        for (var i = 0; i < trackLen - 1; i++) {
-            if (isValueArray) {
-                fillArr(kfValues[i], lastValue, arrDim);
-            }
-            else {
-                if (isNaN(kfValues[i]) && !isNaN(lastValue) && !isValueString && !isValueColor) {
-                    kfValues[i] = lastValue;
-                }
-            }
-        }
-        isValueArray && fillArr(getter(animator._target, propName), lastValue, arrDim);
-
-        // Cache the key of last frame to speed up when
-        // animation playback is sequency
-        var lastFrame = 0;
-        var lastFramePercent = 0;
-        var start;
-        var w;
-        var p0;
-        var p1;
-        var p2;
-        var p3;
-
-        if (isValueColor) {
-            var rgba = [0, 0, 0, 0];
-        }
-
-        var onframe = function (target, percent) {
-            // Find the range keyframes
-            // kf1-----kf2---------current--------kf3
-            // find kf2 and kf3 and do interpolation
-            var frame;
-            // In the easing function like elasticOut, percent may less than 0
-            if (percent < 0) {
-                frame = 0;
-            }
-            else if (percent < lastFramePercent) {
-                // Start from next key
-                // PENDING start from lastFrame ?
-                start = Math.min(lastFrame + 1, trackLen - 1);
-                for (frame = start; frame >= 0; frame--) {
-                    if (kfPercents[frame] <= percent) {
-                        break;
-                    }
-                }
-                // PENDING really need to do this ?
-                frame = Math.min(frame, trackLen - 2);
-            }
-            else {
-                for (frame = lastFrame; frame < trackLen; frame++) {
-                    if (kfPercents[frame] > percent) {
-                        break;
-                    }
-                }
-                frame = Math.min(frame - 1, trackLen - 2);
-            }
-            lastFrame = frame;
-            lastFramePercent = percent;
-
-            var range = (kfPercents[frame + 1] - kfPercents[frame]);
-            if (range === 0) {
-                return;
-            }
-            else {
-                w = (percent - kfPercents[frame]) / range;
-            }
-            if (useSpline) {
-                p1 = kfValues[frame];
-                p0 = kfValues[frame === 0 ? frame : frame - 1];
-                p2 = kfValues[frame > trackLen - 2 ? trackLen - 1 : frame + 1];
-                p3 = kfValues[frame > trackLen - 3 ? trackLen - 1 : frame + 2];
-                if (isValueArray) {
-                    catmullRomInterpolateArray(
-                        p0, p1, p2, p3, w, w * w, w * w * w,
-                        getter(target, propName),
-                        arrDim
-                    );
-                }
-                else {
-                    var value;
-                    if (isValueColor) {
-                        value = catmullRomInterpolateArray(
-                            p0, p1, p2, p3, w, w * w, w * w * w,
-                            rgba, 1
-                        );
-                        value = rgba2String(rgba);
-                    }
-                    else if (isValueString) {
-                        // String is step(0.5)
-                        return interpolateString(p1, p2, w);
-                    }
-                    else {
-                        value = catmullRomInterpolate(
-                            p0, p1, p2, p3, w, w * w, w * w * w
-                        );
-                    }
-                    setter(
-                        target,
-                        propName,
-                        value
-                    );
-                }
-            }
-            else {
-                if (isValueArray) {
-                    interpolateArray(
-                        kfValues[frame], kfValues[frame + 1], w,
-                        getter(target, propName),
-                        arrDim
-                    );
-                }
-                else {
-                    var value;
-                    if (isValueColor) {
-                        interpolateArray(
-                            kfValues[frame], kfValues[frame + 1], w,
-                            rgba, 1
-                        );
-                        value = rgba2String(rgba);
-                    }
-                    else if (isValueString) {
-                        // String is step(0.5)
-                        return interpolateString(kfValues[frame], kfValues[frame + 1], w);
-                    }
-                    else {
-                        value = interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
-                    }
-                    setter(
-                        target,
-                        propName,
-                        value
-                    );
-                }
-            }
-        };
-
-        var clip = new Clip({
-            target: animator._target,
-            life: trackMaxTime,
-            loop: animator._loop,
-            delay: animator._delay,
-            onframe: onframe,
-            ondestroy: oneTrackDone
-        });
-
-        if (easing && easing !== 'spline') {
-            clip.easing = easing;
-        }
-
-        return clip;
-    }
-
-    /**
-     * @alias module:zrender/animation/Animator
-     * @constructor
-     * @param {Object} target
-     * @param {boolean} loop
-     * @param {Function} getter
-     * @param {Function} setter
-     */
-    var Animator = function(target, loop, getter, setter) {
-        this._tracks = {};
-        this._target = target;
-
-        this._loop = loop || false;
-
-        this._getter = getter || defaultGetter;
-        this._setter = setter || defaultSetter;
-
-        this._clipCount = 0;
-
-        this._delay = 0;
-
-        this._doneList = [];
-
-        this._onframeList = [];
-
-        this._clipList = [];
-    };
-
-    Animator.prototype = {
-        /**
-         * 设置动画关键帧
-         * @param  {number} time 关键帧时间，单位是ms
-         * @param  {Object} props 关键帧的属性值，key-value表示
-         * @return {module:zrender/animation/Animator}
-         */
-        when: function(time /* ms */, props) {
-            var tracks = this._tracks;
-            for (var propName in props) {
-                if (!props.hasOwnProperty(propName)) {
-                    continue;
-                }
-
-                if (!tracks[propName]) {
-                    tracks[propName] = [];
-                    // Invalid value
-                    var value = this._getter(this._target, propName);
-                    if (value == null) {
-                        // zrLog('Invalid property ' + propName);
-                        continue;
-                    }
-                    // If time is 0
-                    //  Then props is given initialize value
-                    // Else
-                    //  Initialize value from current prop value
-                    if (time !== 0) {
-                        tracks[propName].push({
-                            time: 0,
-                            value: cloneValue(value)
-                        });
-                    }
-                }
-                tracks[propName].push({
-                    time: time,
-                    value: props[propName]
-                });
-            }
-            return this;
-        },
-        /**
-         * 添加动画每一帧的回调函数
-         * @param  {Function} callback
-         * @return {module:zrender/animation/Animator}
-         */
-        during: function (callback) {
-            this._onframeList.push(callback);
-            return this;
-        },
-
-        pause: function () {
-            for (var i = 0; i < this._clipList.length; i++) {
-                this._clipList[i].pause();
-            }
-            this._paused = true;
-        },
-
-        resume: function () {
-            for (var i = 0; i < this._clipList.length; i++) {
-                this._clipList[i].resume();
-            }
-            this._paused = false;
-        },
-
-        isPaused: function () {
-            return !!this._paused;
-        },
-
-        _doneCallback: function () {
-            // Clear all tracks
-            this._tracks = {};
-            // Clear all clips
-            this._clipList.length = 0;
-
-            var doneList = this._doneList;
-            var len = doneList.length;
-            for (var i = 0; i < len; i++) {
-                doneList[i].call(this);
-            }
-        },
-        /**
-         * 开始执行动画
-         * @param  {string|Function} easing
-         *         动画缓动函数，详见{@link module:zrender/animation/easing}
-         * @return {module:zrender/animation/Animator}
-         */
-        start: function (easing) {
-
-            var self = this;
-            var clipCount = 0;
-
-            var oneTrackDone = function() {
-                clipCount--;
-                if (!clipCount) {
-                    self._doneCallback();
-                }
-            };
-
-            var lastClip;
-            for (var propName in this._tracks) {
-                if (!this._tracks.hasOwnProperty(propName)) {
-                    continue;
-                }
-                var clip = createTrackClip(
-                    this, easing, oneTrackDone,
-                    this._tracks[propName], propName
-                );
-                if (clip) {
-                    this._clipList.push(clip);
-                    clipCount++;
-
-                    // If start after added to animation
-                    if (this.animation) {
-                        this.animation.addClip(clip);
-                    }
-
-                    lastClip = clip;
-                }
-            }
-
-            // Add during callback on the last clip
-            if (lastClip) {
-                var oldOnFrame = lastClip.onframe;
-                lastClip.onframe = function (target, percent) {
-                    oldOnFrame(target, percent);
-
-                    for (var i = 0; i < self._onframeList.length; i++) {
-                        self._onframeList[i](target, percent);
-                    }
-                };
-            }
-
-            if (!clipCount) {
-                this._doneCallback();
-            }
-            return this;
-        },
-        /**
-         * 停止动画
-         * @param {boolean} forwardToLast If move to last frame before stop
-         */
-        stop: function (forwardToLast) {
-            var clipList = this._clipList;
-            var animation = this.animation;
-            for (var i = 0; i < clipList.length; i++) {
-                var clip = clipList[i];
-                if (forwardToLast) {
-                    // Move to last frame before stop
-                    clip.onframe(this._target, 1);
-                }
-                animation && animation.removeClip(clip);
-            }
-            clipList.length = 0;
-        },
-        /**
-         * 设置动画延迟开始的时间
-         * @param  {number} time 单位ms
-         * @return {module:zrender/animation/Animator}
-         */
-        delay: function (time) {
-            this._delay = time;
-            return this;
-        },
-        /**
-         * 添加动画结束的回调
-         * @param  {Function} cb
-         * @return {module:zrender/animation/Animator}
-         */
-        done: function(cb) {
-            if (cb) {
-                this._doneList.push(cb);
-            }
-            return this;
-        },
-
-        /**
-         * @return {Array.<module:zrender/animation/Clip>}
-         */
-        getClips: function () {
-            return this._clipList;
-        }
-    };
-
-    return Animator;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * 动画主控制器
- * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
- * @config life(1000) 动画时长
- * @config delay(0) 动画延迟时间
- * @config loop(true)
- * @config gap(0) 循环的间隔时间
- * @config onframe
- * @config easing(optional)
- * @config ondestroy(optional)
- * @config onrestart(optional)
- *
- * TODO pause
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
-
-    var easingFuncs = __webpack_require__(50);
-
-    function Clip(options) {
-
-        this._target = options.target;
-
-        // 生命周期
-        this._life = options.life || 1000;
-        // 延时
-        this._delay = options.delay || 0;
-        // 开始时间
-        // this._startTime = new Date().getTime() + this._delay;// 单位毫秒
-        this._initialized = false;
-
-        // 是否循环
-        this.loop = options.loop == null ? false : options.loop;
-
-        this.gap = options.gap || 0;
-
-        this.easing = options.easing || 'Linear';
-
-        this.onframe = options.onframe;
-        this.ondestroy = options.ondestroy;
-        this.onrestart = options.onrestart;
-
-        this._pausedTime = 0;
-        this._paused = false;
-    }
-
-    Clip.prototype = {
-
-        constructor: Clip,
-
-        step: function (globalTime, deltaTime) {
-            // Set startTime on first step, or _startTime may has milleseconds different between clips
-            // PENDING
-            if (!this._initialized) {
-                this._startTime = globalTime + this._delay;
-                this._initialized = true;
-            }
-
-            if (this._paused) {
-                this._pausedTime += deltaTime;
-                return;
-            }
-
-            var percent = (globalTime - this._startTime - this._pausedTime) / this._life;
-
-            // 还没开始
-            if (percent < 0) {
-                return;
-            }
-
-            percent = Math.min(percent, 1);
-
-            var easing = this.easing;
-            var easingFunc = typeof easing == 'string' ? easingFuncs[easing] : easing;
-            var schedule = typeof easingFunc === 'function'
-                ? easingFunc(percent)
-                : percent;
-
-            this.fire('frame', schedule);
-
-            // 结束
-            if (percent == 1) {
-                if (this.loop) {
-                    this.restart (globalTime);
-                    // 重新开始周期
-                    // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
-                    return 'restart';
-                }
-
-                // 动画完成将这个控制器标识为待删除
-                // 在Animation.update中进行批量删除
-                this._needsRemove = true;
-                return 'destroy';
-            }
-
-            return null;
-        },
-
-        restart: function (globalTime) {
-            var remainder = (globalTime - this._startTime - this._pausedTime) % this._life;
-            this._startTime = globalTime - remainder + this.gap;
-            this._pausedTime = 0;
-
-            this._needsRemove = false;
-        },
-
-        fire: function (eventType, arg) {
-            eventType = 'on' + eventType;
-            if (this[eventType]) {
-                this[eventType](this._target, arg);
-            }
-        },
-
-        pause: function () {
-            this._paused = true;
-        },
-
-        resume: function () {
-            this._paused = false;
-        }
-    };
-
-    return Clip;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * 缓动代码来自 https://github.com/sole/tween.js/blob/master/src/Tween.js
- * @see http://sole.github.io/tween.js/examples/03_graphs.html
- * @exports zrender/animation/easing
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-    var easing = {
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        linear: function (k) {
-            return k;
-        },
-
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quadraticIn: function (k) {
-            return k * k;
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quadraticOut: function (k) {
-            return k * (2 - k);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quadraticInOut: function (k) {
-            if ((k *= 2) < 1) {
-                return 0.5 * k * k;
-            }
-            return -0.5 * (--k * (k - 2) - 1);
-        },
-
-        // 三次方的缓动（t^3）
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        cubicIn: function (k) {
-            return k * k * k;
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        cubicOut: function (k) {
-            return --k * k * k + 1;
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        cubicInOut: function (k) {
-            if ((k *= 2) < 1) {
-                return 0.5 * k * k * k;
-            }
-            return 0.5 * ((k -= 2) * k * k + 2);
-        },
-
-        // 四次方的缓动（t^4）
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quarticIn: function (k) {
-            return k * k * k * k;
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quarticOut: function (k) {
-            return 1 - (--k * k * k * k);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quarticInOut: function (k) {
-            if ((k *= 2) < 1) {
-                return 0.5 * k * k * k * k;
-            }
-            return -0.5 * ((k -= 2) * k * k * k - 2);
-        },
-
-        // 五次方的缓动（t^5）
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quinticIn: function (k) {
-            return k * k * k * k * k;
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quinticOut: function (k) {
-            return --k * k * k * k * k + 1;
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        quinticInOut: function (k) {
-            if ((k *= 2) < 1) {
-                return 0.5 * k * k * k * k * k;
-            }
-            return 0.5 * ((k -= 2) * k * k * k * k + 2);
-        },
-
-        // 正弦曲线的缓动（sin(t)）
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        sinusoidalIn: function (k) {
-            return 1 - Math.cos(k * Math.PI / 2);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        sinusoidalOut: function (k) {
-            return Math.sin(k * Math.PI / 2);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        sinusoidalInOut: function (k) {
-            return 0.5 * (1 - Math.cos(Math.PI * k));
-        },
-
-        // 指数曲线的缓动（2^t）
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        exponentialIn: function (k) {
-            return k === 0 ? 0 : Math.pow(1024, k - 1);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        exponentialOut: function (k) {
-            return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        exponentialInOut: function (k) {
-            if (k === 0) {
-                return 0;
-            }
-            if (k === 1) {
-                return 1;
-            }
-            if ((k *= 2) < 1) {
-                return 0.5 * Math.pow(1024, k - 1);
-            }
-            return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
-        },
-
-        // 圆形曲线的缓动（sqrt(1-t^2)）
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        circularIn: function (k) {
-            return 1 - Math.sqrt(1 - k * k);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        circularOut: function (k) {
-            return Math.sqrt(1 - (--k * k));
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        circularInOut: function (k) {
-            if ((k *= 2) < 1) {
-                return -0.5 * (Math.sqrt(1 - k * k) - 1);
-            }
-            return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
-        },
-
-        // 创建类似于弹簧在停止前来回振荡的动画
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        elasticIn: function (k) {
-            var s;
-            var a = 0.1;
-            var p = 0.4;
-            if (k === 0) {
-                return 0;
-            }
-            if (k === 1) {
-                return 1;
-            }
-            if (!a || a < 1) {
-                a = 1; s = p / 4;
-            }
-            else {
-                s = p * Math.asin(1 / a) / (2 * Math.PI);
-            }
-            return -(a * Math.pow(2, 10 * (k -= 1)) *
-                        Math.sin((k - s) * (2 * Math.PI) / p));
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        elasticOut: function (k) {
-            var s;
-            var a = 0.1;
-            var p = 0.4;
-            if (k === 0) {
-                return 0;
-            }
-            if (k === 1) {
-                return 1;
-            }
-            if (!a || a < 1) {
-                a = 1; s = p / 4;
-            }
-            else {
-                s = p * Math.asin(1 / a) / (2 * Math.PI);
-            }
-            return (a * Math.pow(2, -10 * k) *
-                    Math.sin((k - s) * (2 * Math.PI) / p) + 1);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        elasticInOut: function (k) {
-            var s;
-            var a = 0.1;
-            var p = 0.4;
-            if (k === 0) {
-                return 0;
-            }
-            if (k === 1) {
-                return 1;
-            }
-            if (!a || a < 1) {
-                a = 1; s = p / 4;
-            }
-            else {
-                s = p * Math.asin(1 / a) / (2 * Math.PI);
-            }
-            if ((k *= 2) < 1) {
-                return -0.5 * (a * Math.pow(2, 10 * (k -= 1))
-                    * Math.sin((k - s) * (2 * Math.PI) / p));
-            }
-            return a * Math.pow(2, -10 * (k -= 1))
-                    * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
-
-        },
-
-        // 在某一动画开始沿指示的路径进行动画处理前稍稍收回该动画的移动
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        backIn: function (k) {
-            var s = 1.70158;
-            return k * k * ((s + 1) * k - s);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        backOut: function (k) {
-            var s = 1.70158;
-            return --k * k * ((s + 1) * k + s) + 1;
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        backInOut: function (k) {
-            var s = 1.70158 * 1.525;
-            if ((k *= 2) < 1) {
-                return 0.5 * (k * k * ((s + 1) * k - s));
-            }
-            return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
-        },
-
-        // 创建弹跳效果
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        bounceIn: function (k) {
-            return 1 - easing.bounceOut(1 - k);
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        bounceOut: function (k) {
-            if (k < (1 / 2.75)) {
-                return 7.5625 * k * k;
-            }
-            else if (k < (2 / 2.75)) {
-                return 7.5625 * (k -= (1.5 / 2.75)) * k + 0.75;
-            }
-            else if (k < (2.5 / 2.75)) {
-                return 7.5625 * (k -= (2.25 / 2.75)) * k + 0.9375;
-            }
-            else {
-                return 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375;
-            }
-        },
-        /**
-        * @param {number} k
-        * @return {number}
-        */
-        bounceInOut: function (k) {
-            if (k < 0.5) {
-                return easing.bounceIn(k * 2) * 0.5;
-            }
-            return easing.bounceOut(k * 2 - 1) * 0.5 + 0.5;
-        }
-    };
-
-    return easing;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-
-/***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var normalizeRadian = __webpack_require__(21).normalizeRadian;
-    var PI2 = Math.PI * 2;
-
-    return {
-        /**
-         * 圆弧描边包含判断
-         * @param  {number}  cx
-         * @param  {number}  cy
-         * @param  {number}  r
-         * @param  {number}  startAngle
-         * @param  {number}  endAngle
-         * @param  {boolean}  anticlockwise
-         * @param  {number} lineWidth
-         * @param  {number}  x
-         * @param  {number}  y
-         * @return {Boolean}
-         */
-        containStroke: function (
-            cx, cy, r, startAngle, endAngle, anticlockwise,
-            lineWidth, x, y
-        ) {
-
-            if (lineWidth === 0) {
-                return false;
-            }
-            var _l = lineWidth;
-
-            x -= cx;
-            y -= cy;
-            var d = Math.sqrt(x * x + y * y);
-
-            if ((d - _l > r) || (d + _l < r)) {
-                return false;
-            }
-            if (Math.abs(startAngle - endAngle) % PI2 < 1e-4) {
-                // Is a circle
-                return true;
-            }
-            if (anticlockwise) {
-                var tmp = startAngle;
-                startAngle = normalizeRadian(endAngle);
-                endAngle = normalizeRadian(tmp);
-            } else {
-                startAngle = normalizeRadian(startAngle);
-                endAngle = normalizeRadian(endAngle);
-            }
-            if (startAngle > endAngle) {
-                endAngle += PI2;
-            }
-
-            var angle = Math.atan2(y, x);
-            if (angle < 0) {
-                angle += PI2;
-            }
-            return (angle >= startAngle && angle <= endAngle)
-                || (angle + PI2 >= startAngle && angle + PI2 <= endAngle);
-        }
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var curve = __webpack_require__(3);
-
-    return {
-        /**
-         * 三次贝塞尔曲线描边包含判断
-         * @param  {number}  x0
-         * @param  {number}  y0
-         * @param  {number}  x1
-         * @param  {number}  y1
-         * @param  {number}  x2
-         * @param  {number}  y2
-         * @param  {number}  x3
-         * @param  {number}  y3
-         * @param  {number}  lineWidth
-         * @param  {number}  x
-         * @param  {number}  y
-         * @return {boolean}
-         */
-        containStroke: function(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {
-            if (lineWidth === 0) {
-                return false;
-            }
-            var _l = lineWidth;
-            // Quick reject
-            if (
-                (y > y0 + _l && y > y1 + _l && y > y2 + _l && y > y3 + _l)
-                || (y < y0 - _l && y < y1 - _l && y < y2 - _l && y < y3 - _l)
-                || (x > x0 + _l && x > x1 + _l && x > x2 + _l && x > x3 + _l)
-                || (x < x0 - _l && x < x1 - _l && x < x2 - _l && x < x3 - _l)
-            ) {
-                return false;
-            }
-            var d = curve.cubicProjectPoint(
-                x0, y0, x1, y1, x2, y2, x3, y3,
-                x, y, null
-            );
-            return d <= _l / 2;
-        }
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-    return {
-        /**
-         * 线段包含判断
-         * @param  {number}  x0
-         * @param  {number}  y0
-         * @param  {number}  x1
-         * @param  {number}  y1
-         * @param  {number}  lineWidth
-         * @param  {number}  x
-         * @param  {number}  y
-         * @return {boolean}
-         */
-        containStroke: function (x0, y0, x1, y1, lineWidth, x, y) {
-            if (lineWidth === 0) {
-                return false;
-            }
-            var _l = lineWidth;
-            var _a = 0;
-            var _b = x0;
-            // Quick reject
-            if (
-                (y > y0 + _l && y > y1 + _l)
-                || (y < y0 - _l && y < y1 - _l)
-                || (x > x0 + _l && x > x1 + _l)
-                || (x < x0 - _l && x < x1 - _l)
-            ) {
-                return false;
-            }
-
-            if (x0 !== x1) {
-                _a = (y0 - y1) / (x0 - x1);
-                _b = (x0 * y1 - x1 * y0) / (x0 - x1) ;
-            }
-            else {
-                return Math.abs(x - x0) <= _l / 2;
-            }
-            var tmp = _a * x - y + _b;
-            var _s = tmp * tmp / (_a * _a + 1);
-            return _s <= _l / 2 * _l / 2;
-        }
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    'use strict';
-
-    var CMD = __webpack_require__(22).CMD;
-    var line = __webpack_require__(53);
-    var cubic = __webpack_require__(52);
-    var quadratic = __webpack_require__(55);
-    var arc = __webpack_require__(51);
-    var normalizeRadian = __webpack_require__(21).normalizeRadian;
-    var curve = __webpack_require__(3);
-
-    var windingLine = __webpack_require__(57);
-
-    var containStroke = line.containStroke;
-
-    var PI2 = Math.PI * 2;
-
-    var EPSILON = 1e-4;
-
-    function isAroundEqual(a, b) {
-        return Math.abs(a - b) < EPSILON;
-    }
-
-    // 临时数组
-    var roots = [-1, -1, -1];
-    var extrema = [-1, -1];
-
-    function swapExtrema() {
-        var tmp = extrema[0];
-        extrema[0] = extrema[1];
-        extrema[1] = tmp;
-    }
-
-    function windingCubic(x0, y0, x1, y1, x2, y2, x3, y3, x, y) {
-        // Quick reject
-        if (
-            (y > y0 && y > y1 && y > y2 && y > y3)
-            || (y < y0 && y < y1 && y < y2 && y < y3)
-        ) {
-            return 0;
-        }
-        var nRoots = curve.cubicRootAt(y0, y1, y2, y3, y, roots);
-        if (nRoots === 0) {
-            return 0;
-        }
-        else {
-            var w = 0;
-            var nExtrema = -1;
-            var y0_, y1_;
-            for (var i = 0; i < nRoots; i++) {
-                var t = roots[i];
-
-                // Avoid winding error when intersection point is the connect point of two line of polygon
-                var unit = (t === 0 || t === 1) ? 0.5 : 1;
-
-                var x_ = curve.cubicAt(x0, x1, x2, x3, t);
-                if (x_ < x) { // Quick reject
-                    continue;
-                }
-                if (nExtrema < 0) {
-                    nExtrema = curve.cubicExtrema(y0, y1, y2, y3, extrema);
-                    if (extrema[1] < extrema[0] && nExtrema > 1) {
-                        swapExtrema();
-                    }
-                    y0_ = curve.cubicAt(y0, y1, y2, y3, extrema[0]);
-                    if (nExtrema > 1) {
-                        y1_ = curve.cubicAt(y0, y1, y2, y3, extrema[1]);
-                    }
-                }
-                if (nExtrema == 2) {
-                    // 分成三段单调函数
-                    if (t < extrema[0]) {
-                        w += y0_ < y0 ? unit : -unit;
-                    }
-                    else if (t < extrema[1]) {
-                        w += y1_ < y0_ ? unit : -unit;
-                    }
-                    else {
-                        w += y3 < y1_ ? unit : -unit;
-                    }
-                }
-                else {
-                    // 分成两段单调函数
-                    if (t < extrema[0]) {
-                        w += y0_ < y0 ? unit : -unit;
-                    }
-                    else {
-                        w += y3 < y0_ ? unit : -unit;
-                    }
-                }
-            }
-            return w;
-        }
-    }
-
-    function windingQuadratic(x0, y0, x1, y1, x2, y2, x, y) {
-        // Quick reject
-        if (
-            (y > y0 && y > y1 && y > y2)
-            || (y < y0 && y < y1 && y < y2)
-        ) {
-            return 0;
-        }
-        var nRoots = curve.quadraticRootAt(y0, y1, y2, y, roots);
-        if (nRoots === 0) {
-            return 0;
-        }
-        else {
-            var t = curve.quadraticExtremum(y0, y1, y2);
-            if (t >= 0 && t <= 1) {
-                var w = 0;
-                var y_ = curve.quadraticAt(y0, y1, y2, t);
-                for (var i = 0; i < nRoots; i++) {
-                    // Remove one endpoint.
-                    var unit = (roots[i] === 0 || roots[i] === 1) ? 0.5 : 1;
-
-                    var x_ = curve.quadraticAt(x0, x1, x2, roots[i]);
-                    if (x_ < x) {   // Quick reject
-                        continue;
-                    }
-                    if (roots[i] < t) {
-                        w += y_ < y0 ? unit : -unit;
-                    }
-                    else {
-                        w += y2 < y_ ? unit : -unit;
-                    }
-                }
-                return w;
-            }
-            else {
-                // Remove one endpoint.
-                var unit = (roots[0] === 0 || roots[0] === 1) ? 0.5 : 1;
-
-                var x_ = curve.quadraticAt(x0, x1, x2, roots[0]);
-                if (x_ < x) {   // Quick reject
-                    return 0;
-                }
-                return y2 < y0 ? unit : -unit;
-            }
-        }
-    }
-
-    // TODO
-    // Arc 旋转
-    function windingArc(
-        cx, cy, r, startAngle, endAngle, anticlockwise, x, y
-    ) {
-        y -= cy;
-        if (y > r || y < -r) {
-            return 0;
-        }
-        var tmp = Math.sqrt(r * r - y * y);
-        roots[0] = -tmp;
-        roots[1] = tmp;
-
-        var diff = Math.abs(startAngle - endAngle);
-        if (diff < 1e-4) {
-            return 0;
-        }
-        if (diff % PI2 < 1e-4) {
-            // Is a circle
-            startAngle = 0;
-            endAngle = PI2;
-            var dir = anticlockwise ? 1 : -1;
-            if (x >= roots[0] + cx && x <= roots[1] + cx) {
-                return dir;
-            } else {
-                return 0;
-            }
-        }
-
-        if (anticlockwise) {
-            var tmp = startAngle;
-            startAngle = normalizeRadian(endAngle);
-            endAngle = normalizeRadian(tmp);
-        }
-        else {
-            startAngle = normalizeRadian(startAngle);
-            endAngle = normalizeRadian(endAngle);
-        }
-        if (startAngle > endAngle) {
-            endAngle += PI2;
-        }
-
-        var w = 0;
-        for (var i = 0; i < 2; i++) {
-            var x_ = roots[i];
-            if (x_ + cx > x) {
-                var angle = Math.atan2(y, x_);
-                var dir = anticlockwise ? 1 : -1;
-                if (angle < 0) {
-                    angle = PI2 + angle;
-                }
-                if (
-                    (angle >= startAngle && angle <= endAngle)
-                    || (angle + PI2 >= startAngle && angle + PI2 <= endAngle)
-                ) {
-                    if (angle > Math.PI / 2 && angle < Math.PI * 1.5) {
-                        dir = -dir;
-                    }
-                    w += dir;
-                }
-            }
-        }
-        return w;
-    }
-
-    function containPath(data, lineWidth, isStroke, x, y) {
-        var w = 0;
-        var xi = 0;
-        var yi = 0;
-        var x0 = 0;
-        var y0 = 0;
-
-        for (var i = 0; i < data.length;) {
-            var cmd = data[i++];
-            // Begin a new subpath
-            if (cmd === CMD.M && i > 1) {
-                // Close previous subpath
-                if (!isStroke) {
-                    w += windingLine(xi, yi, x0, y0, x, y);
-                }
-                // 如果被任何一个 subpath 包含
-                // if (w !== 0) {
-                //     return true;
-                // }
-            }
-
-            if (i == 1) {
-                // 如果第一个命令是 L, C, Q
-                // 则 previous point 同绘制命令的第一个 point
-                //
-                // 第一个命令为 Arc 的情况下会在后面特殊处理
-                xi = data[i];
-                yi = data[i + 1];
-
-                x0 = xi;
-                y0 = yi;
-            }
-
-            switch (cmd) {
-                case CMD.M:
-                    // moveTo 命令重新创建一个新的 subpath, 并且更新新的起点
-                    // 在 closePath 的时候使用
-                    x0 = data[i++];
-                    y0 = data[i++];
-                    xi = x0;
-                    yi = y0;
-                    break;
-                case CMD.L:
-                    if (isStroke) {
-                        if (containStroke(xi, yi, data[i], data[i + 1], lineWidth, x, y)) {
-                            return true;
-                        }
-                    }
-                    else {
-                        // NOTE 在第一个命令为 L, C, Q 的时候会计算出 NaN
-                        w += windingLine(xi, yi, data[i], data[i + 1], x, y) || 0;
-                    }
-                    xi = data[i++];
-                    yi = data[i++];
-                    break;
-                case CMD.C:
-                    if (isStroke) {
-                        if (cubic.containStroke(xi, yi,
-                            data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1],
-                            lineWidth, x, y
-                        )) {
-                            return true;
-                        }
-                    }
-                    else {
-                        w += windingCubic(
-                            xi, yi,
-                            data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1],
-                            x, y
-                        ) || 0;
-                    }
-                    xi = data[i++];
-                    yi = data[i++];
-                    break;
-                case CMD.Q:
-                    if (isStroke) {
-                        if (quadratic.containStroke(xi, yi,
-                            data[i++], data[i++], data[i], data[i + 1],
-                            lineWidth, x, y
-                        )) {
-                            return true;
-                        }
-                    }
-                    else {
-                        w += windingQuadratic(
-                            xi, yi,
-                            data[i++], data[i++], data[i], data[i + 1],
-                            x, y
-                        ) || 0;
-                    }
-                    xi = data[i++];
-                    yi = data[i++];
-                    break;
-                case CMD.A:
-                    // TODO Arc 判断的开销比较大
-                    var cx = data[i++];
-                    var cy = data[i++];
-                    var rx = data[i++];
-                    var ry = data[i++];
-                    var theta = data[i++];
-                    var dTheta = data[i++];
-                    // TODO Arc 旋转
-                    var psi = data[i++];
-                    var anticlockwise = 1 - data[i++];
-                    var x1 = Math.cos(theta) * rx + cx;
-                    var y1 = Math.sin(theta) * ry + cy;
-                    // 不是直接使用 arc 命令
-                    if (i > 1) {
-                        w += windingLine(xi, yi, x1, y1, x, y);
-                    }
-                    else {
-                        // 第一个命令起点还未定义
-                        x0 = x1;
-                        y0 = y1;
-                    }
-                    // zr 使用scale来模拟椭圆, 这里也对x做一定的缩放
-                    var _x = (x - cx) * ry / rx + cx;
-                    if (isStroke) {
-                        if (arc.containStroke(
-                            cx, cy, ry, theta, theta + dTheta, anticlockwise,
-                            lineWidth, _x, y
-                        )) {
-                            return true;
-                        }
-                    }
-                    else {
-                        w += windingArc(
-                            cx, cy, ry, theta, theta + dTheta, anticlockwise,
-                            _x, y
-                        );
-                    }
-                    xi = Math.cos(theta + dTheta) * rx + cx;
-                    yi = Math.sin(theta + dTheta) * ry + cy;
-                    break;
-                case CMD.R:
-                    x0 = xi = data[i++];
-                    y0 = yi = data[i++];
-                    var width = data[i++];
-                    var height = data[i++];
-                    var x1 = x0 + width;
-                    var y1 = y0 + height;
-                    if (isStroke) {
-                        if (containStroke(x0, y0, x1, y0, lineWidth, x, y)
-                          || containStroke(x1, y0, x1, y1, lineWidth, x, y)
-                          || containStroke(x1, y1, x0, y1, lineWidth, x, y)
-                          || containStroke(x0, y1, x0, y0, lineWidth, x, y)
-                        ) {
-                            return true;
-                        }
-                    }
-                    else {
-                        // FIXME Clockwise ?
-                        w += windingLine(x1, y0, x1, y1, x, y);
-                        w += windingLine(x0, y1, x0, y0, x, y);
-                    }
-                    break;
-                case CMD.Z:
-                    if (isStroke) {
-                        if (containStroke(
-                            xi, yi, x0, y0, lineWidth, x, y
-                        )) {
-                            return true;
-                        }
-                    }
-                    else {
-                        // Close a subpath
-                        w += windingLine(xi, yi, x0, y0, x, y);
-                        // 如果被任何一个 subpath 包含
-                        // FIXME subpaths may overlap
-                        // if (w !== 0) {
-                        //     return true;
-                        // }
-                    }
-                    xi = x0;
-                    yi = y0;
-                    break;
-            }
-        }
-        if (!isStroke && !isAroundEqual(yi, y0)) {
-            w += windingLine(xi, yi, x0, y0, x, y) || 0;
-        }
-        return w !== 0;
-    }
-
-    return {
-        contain: function (pathData, x, y) {
-            return containPath(pathData, 0, false, x, y);
-        },
-
-        containStroke: function (pathData, lineWidth, x, y) {
-            return containPath(pathData, lineWidth, true, x, y);
-        }
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var curve = __webpack_require__(3);
-
-    return {
-        /**
-         * 二次贝塞尔曲线描边包含判断
-         * @param  {number}  x0
-         * @param  {number}  y0
-         * @param  {number}  x1
-         * @param  {number}  y1
-         * @param  {number}  x2
-         * @param  {number}  y2
-         * @param  {number}  lineWidth
-         * @param  {number}  x
-         * @param  {number}  y
-         * @return {boolean}
-         */
-        containStroke: function (x0, y0, x1, y1, x2, y2, lineWidth, x, y) {
-            if (lineWidth === 0) {
-                return false;
-            }
-            var _l = lineWidth;
-            // Quick reject
-            if (
-                (y > y0 + _l && y > y1 + _l && y > y2 + _l)
-                || (y < y0 - _l && y < y1 - _l && y < y2 - _l)
-                || (x > x0 + _l && x > x1 + _l && x > x2 + _l)
-                || (x < x0 - _l && x < x1 - _l && x < x2 - _l)
-            ) {
-                return false;
-            }
-            var d = curve.quadraticProjectPoint(
-                x0, y0, x1, y1, x2, y2,
-                x, y, null
-            );
-            return d <= _l / 2;
-        }
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var textWidthCache = {};
-    var textWidthCacheCounter = 0;
-    var TEXT_CACHE_MAX = 5000;
-
-    var util = __webpack_require__(1);
-    var BoundingRect = __webpack_require__(9);
-    var retrieve = util.retrieve;
-
-    function getTextWidth(text, textFont) {
-        var key = text + ':' + textFont;
-        if (textWidthCache[key]) {
-            return textWidthCache[key];
-        }
-
-        var textLines = (text + '').split('\n');
-        var width = 0;
-
-        for (var i = 0, l = textLines.length; i < l; i++) {
-            // measureText 可以被覆盖以兼容不支持 Canvas 的环境
-            width = Math.max(textContain.measureText(textLines[i], textFont).width, width);
-        }
-
-        if (textWidthCacheCounter > TEXT_CACHE_MAX) {
-            textWidthCacheCounter = 0;
-            textWidthCache = {};
-        }
-        textWidthCacheCounter++;
-        textWidthCache[key] = width;
-
-        return width;
-    }
-
-    function getTextRect(text, textFont, textAlign, textBaseline) {
-        var textLineLen = ((text || '') + '').split('\n').length;
-
-        var width = getTextWidth(text, textFont);
-        // FIXME 高度计算比较粗暴
-        var lineHeight = getTextWidth('国', textFont);
-        var height = textLineLen * lineHeight;
-
-        var rect = new BoundingRect(0, 0, width, height);
-        // Text has a special line height property
-        rect.lineHeight = lineHeight;
-
-        switch (textBaseline) {
-            case 'bottom':
-            case 'alphabetic':
-                rect.y -= lineHeight;
-                break;
-            case 'middle':
-                rect.y -= lineHeight / 2;
-                break;
-            // case 'hanging':
-            // case 'top':
-        }
-
-        // FIXME Right to left language
-        switch (textAlign) {
-            case 'end':
-            case 'right':
-                rect.x -= rect.width;
-                break;
-            case 'center':
-                rect.x -= rect.width / 2;
-                break;
-            // case 'start':
-            // case 'left':
-        }
-
-        return rect;
-    }
-
-    function adjustTextPositionOnRect(textPosition, rect, textRect, distance) {
-
-        var x = rect.x;
-        var y = rect.y;
-
-        var height = rect.height;
-        var width = rect.width;
-
-        var textHeight = textRect.height;
-
-        var lineHeight = textRect.lineHeight;
-        var halfHeight = height / 2 - textHeight / 2 + lineHeight;
-
-        var textAlign = 'left';
-
-        switch (textPosition) {
-            case 'left':
-                x -= distance;
-                y += halfHeight;
-                textAlign = 'right';
-                break;
-            case 'right':
-                x += distance + width;
-                y += halfHeight;
-                textAlign = 'left';
-                break;
-            case 'top':
-                x += width / 2;
-                y -= distance + textHeight - lineHeight;
-                textAlign = 'center';
-                break;
-            case 'bottom':
-                x += width / 2;
-                y += height + distance + lineHeight;
-                textAlign = 'center';
-                break;
-            case 'inside':
-                x += width / 2;
-                y += halfHeight;
-                textAlign = 'center';
-                break;
-            case 'insideLeft':
-                x += distance;
-                y += halfHeight;
-                textAlign = 'left';
-                break;
-            case 'insideRight':
-                x += width - distance;
-                y += halfHeight;
-                textAlign = 'right';
-                break;
-            case 'insideTop':
-                x += width / 2;
-                y += distance + lineHeight;
-                textAlign = 'center';
-                break;
-            case 'insideBottom':
-                x += width / 2;
-                y += height - textHeight - distance + lineHeight;
-                textAlign = 'center';
-                break;
-            case 'insideTopLeft':
-                x += distance;
-                y += distance + lineHeight;
-                textAlign = 'left';
-                break;
-            case 'insideTopRight':
-                x += width - distance;
-                y += distance + lineHeight;
-                textAlign = 'right';
-                break;
-            case 'insideBottomLeft':
-                x += distance;
-                y += height - textHeight - distance + lineHeight;
-                break;
-            case 'insideBottomRight':
-                x += width - distance;
-                y += height - textHeight - distance + lineHeight;
-                textAlign = 'right';
-                break;
-        }
-
-        return {
-            x: x,
-            y: y,
-            textAlign: textAlign,
-            textBaseline: 'alphabetic'
-        };
-    }
-
-    /**
-     * Show ellipsis if overflow.
-     *
-     * @param  {string} text
-     * @param  {string} containerWidth
-     * @param  {string} textFont
-     * @param  {number} [ellipsis='...']
-     * @param  {Object} [options]
-     * @param  {number} [options.maxIterations=3]
-     * @param  {number} [options.minChar=0] If truncate result are less
-     *                  then minChar, ellipsis will not show, which is
-     *                  better for user hint in some cases.
-     * @param  {number} [options.placeholder=''] When all truncated, use the placeholder.
-     * @return {string}
-     */
-    function truncateText(text, containerWidth, textFont, ellipsis, options) {
-        if (!containerWidth) {
-            return '';
-        }
-
-        options = options || {};
-
-        ellipsis = retrieve(ellipsis, '...');
-        var maxIterations = retrieve(options.maxIterations, 2);
-        var minChar = retrieve(options.minChar, 0);
-        // FIXME
-        // Other languages?
-        var cnCharWidth = getTextWidth('国', textFont);
-        // FIXME
-        // Consider proportional font?
-        var ascCharWidth = getTextWidth('a', textFont);
-        var placeholder = retrieve(options.placeholder, '');
-
-        // Example 1: minChar: 3, text: 'asdfzxcv', truncate result: 'asdf', but not: 'a...'.
-        // Example 2: minChar: 3, text: '维度', truncate result: '维', but not: '...'.
-        var contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
-        for (var i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
-            contentWidth -= ascCharWidth;
-        }
-
-        var ellipsisWidth = getTextWidth(ellipsis);
-        if (ellipsisWidth > contentWidth) {
-            ellipsis = '';
-            ellipsisWidth = 0;
-        }
-
-        contentWidth = containerWidth - ellipsisWidth;
-
-        var textLines = (text + '').split('\n');
-
-        for (var i = 0, len = textLines.length; i < len; i++) {
-            var textLine = textLines[i];
-            var lineWidth = getTextWidth(textLine, textFont);
-
-            if (lineWidth <= containerWidth) {
-                continue;
-            }
-
-            for (var j = 0;; j++) {
-                if (lineWidth <= contentWidth || j >= maxIterations) {
-                    textLine += ellipsis;
-                    break;
-                }
-
-                var subLength = j === 0
-                    ? estimateLength(textLine, contentWidth, ascCharWidth, cnCharWidth)
-                    : lineWidth > 0
-                    ? Math.floor(textLine.length * contentWidth / lineWidth)
-                    : 0;
-
-                textLine = textLine.substr(0, subLength);
-                lineWidth = getTextWidth(textLine, textFont);
-            }
-
-            if (textLine === '') {
-                textLine = placeholder;
-            }
-
-            textLines[i] = textLine;
-        }
-
-        return textLines.join('\n');
-    }
-
-    function estimateLength(text, contentWidth, ascCharWidth, cnCharWidth) {
-        var width = 0;
-        var i = 0;
-        for (var len = text.length; i < len && width < contentWidth; i++) {
-            var charCode = text.charCodeAt(i);
-            width += (0 <= charCode && charCode <= 127) ? ascCharWidth : cnCharWidth;
-        }
-        return i;
-    }
-
-    var textContain = {
-
-        getWidth: getTextWidth,
-
-        getBoundingRect: getTextRect,
-
-        adjustTextPositionOnRect: adjustTextPositionOnRect,
-
-        truncateText: truncateText,
-
-        measureText: function (text, textFont) {
-            var ctx = util.getContext();
-            ctx.font = textFont || '12px sans-serif';
-            return ctx.measureText(text);
-        }
-    };
-
-    return textContain;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-    return function windingLine(x0, y0, x1, y1, x, y) {
-        if ((y > y0 && y > y1) || (y < y0 && y < y1)) {
-            return 0;
-        }
-        // Ignore horizontal line
-        if (y1 === y0) {
-            return 0;
-        }
-        var dir = y1 < y0 ? 1 : -1;
-        var t = (y - y0) / (y1 - y0);
-
-        // Avoid winding error when intersection point is the connect point of two line of polygon
-        if (t === 1 || t === 0) {
-            dir = y1 < y0 ? 0.5 : -0.5;
-        }
-
-        var x_ = t * (x1 - x0) + x0;
-
-        return x_ > x ? dir : 0;
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;// Simple LRU cache use doubly linked list
-// @module zrender/core/LRU
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    /**
-     * Simple double linked list. Compared with array, it has O(1) remove operation.
-     * @constructor
-     */
-    var LinkedList = function () {
-
-        /**
-         * @type {module:zrender/core/LRU~Entry}
-         */
-        this.head = null;
-
-        /**
-         * @type {module:zrender/core/LRU~Entry}
-         */
-        this.tail = null;
-
-        this._len = 0;
-    };
-
-    var linkedListProto = LinkedList.prototype;
-    /**
-     * Insert a new value at the tail
-     * @param  {} val
-     * @return {module:zrender/core/LRU~Entry}
-     */
-    linkedListProto.insert = function (val) {
-        var entry = new Entry(val);
-        this.insertEntry(entry);
-        return entry;
-    };
-
-    /**
-     * Insert an entry at the tail
-     * @param  {module:zrender/core/LRU~Entry} entry
-     */
-    linkedListProto.insertEntry = function (entry) {
-        if (!this.head) {
-            this.head = this.tail = entry;
-        }
-        else {
-            this.tail.next = entry;
-            entry.prev = this.tail;
-            entry.next = null;
-            this.tail = entry;
-        }
-        this._len++;
-    };
-
-    /**
-     * Remove entry.
-     * @param  {module:zrender/core/LRU~Entry} entry
-     */
-    linkedListProto.remove = function (entry) {
-        var prev = entry.prev;
-        var next = entry.next;
-        if (prev) {
-            prev.next = next;
-        }
-        else {
-            // Is head
-            this.head = next;
-        }
-        if (next) {
-            next.prev = prev;
-        }
-        else {
-            // Is tail
-            this.tail = prev;
-        }
-        entry.next = entry.prev = null;
-        this._len--;
-    };
-
-    /**
-     * @return {number}
-     */
-    linkedListProto.len = function () {
-        return this._len;
-    };
-
-    /**
-     * Clear list
-     */
-    linkedListProto.clear = function () {
-        this.head = this.tail = null;
-        this._len = 0;
-    };
-
-    /**
-     * @constructor
-     * @param {} val
-     */
-    var Entry = function (val) {
-        /**
-         * @type {}
-         */
-        this.value = val;
-
-        /**
-         * @type {module:zrender/core/LRU~Entry}
-         */
-        this.next;
-
-        /**
-         * @type {module:zrender/core/LRU~Entry}
-         */
-        this.prev;
-    };
-
-    /**
-     * LRU Cache
-     * @constructor
-     * @alias module:zrender/core/LRU
-     */
-    var LRU = function (maxSize) {
-
-        this._list = new LinkedList();
-
-        this._map = {};
-
-        this._maxSize = maxSize || 10;
-
-        this._lastRemovedEntry = null;
-    };
-
-    var LRUProto = LRU.prototype;
-
-    /**
-     * @param  {string} key
-     * @param  {} value
-     * @return {} Removed value
-     */
-    LRUProto.put = function (key, value) {
-        var list = this._list;
-        var map = this._map;
-        var removed = null;
-        if (map[key] == null) {
-            var len = list.len();
-            // Reuse last removed entry
-            var entry = this._lastRemovedEntry;
-
-            if (len >= this._maxSize && len > 0) {
-                // Remove the least recently used
-                var leastUsedEntry = list.head;
-                list.remove(leastUsedEntry);
-                delete map[leastUsedEntry.key];
-
-                removed = leastUsedEntry.value;
-                this._lastRemovedEntry = leastUsedEntry;
-            }
-
-            if (entry) {
-                entry.value = value;
-            }
-            else {
-                entry = new Entry(value);
-            }
-            entry.key = key;
-            list.insertEntry(entry);
-            map[key] = entry;
-        }
-
-        return removed;
-    };
-
-    /**
-     * @param  {string} key
-     * @return {}
-     */
-    LRUProto.get = function (key) {
-        var entry = this._map[key];
-        var list = this._list;
-        if (entry != null) {
-            // Put the latest used entry in the tail
-            if (entry !== list.tail) {
-                list.remove(entry);
-                list.insertEntry(entry);
-            }
-
-            return entry.value;
-        }
-    };
-
-    /**
-     * Clear the cache
-     */
-    LRUProto.clear = function () {
-        this._list.clear();
-        this._map = {};
-    };
-
-    return LRU;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @author Yi Shen(https://github.com/pissang)
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var vec2 = __webpack_require__(4);
-    var curve = __webpack_require__(3);
-
-    var bbox = {};
-    var mathMin = Math.min;
-    var mathMax = Math.max;
-    var mathSin = Math.sin;
-    var mathCos = Math.cos;
-
-    var start = vec2.create();
-    var end = vec2.create();
-    var extremity = vec2.create();
-
-    var PI2 = Math.PI * 2;
-    /**
-     * 从顶点数组中计算出最小包围盒，写入`min`和`max`中
-     * @module zrender/core/bbox
-     * @param {Array<Object>} points 顶点数组
-     * @param {number} min
-     * @param {number} max
-     */
-    bbox.fromPoints = function(points, min, max) {
-        if (points.length === 0) {
-            return;
-        }
-        var p = points[0];
-        var left = p[0];
-        var right = p[0];
-        var top = p[1];
-        var bottom = p[1];
-        var i;
-
-        for (i = 1; i < points.length; i++) {
-            p = points[i];
-            left = mathMin(left, p[0]);
-            right = mathMax(right, p[0]);
-            top = mathMin(top, p[1]);
-            bottom = mathMax(bottom, p[1]);
-        }
-
-        min[0] = left;
-        min[1] = top;
-        max[0] = right;
-        max[1] = bottom;
-    };
-
-    /**
-     * @memberOf module:zrender/core/bbox
-     * @param {number} x0
-     * @param {number} y0
-     * @param {number} x1
-     * @param {number} y1
-     * @param {Array.<number>} min
-     * @param {Array.<number>} max
-     */
-    bbox.fromLine = function (x0, y0, x1, y1, min, max) {
-        min[0] = mathMin(x0, x1);
-        min[1] = mathMin(y0, y1);
-        max[0] = mathMax(x0, x1);
-        max[1] = mathMax(y0, y1);
-    };
-
-    var xDim = [];
-    var yDim = [];
-    /**
-     * 从三阶贝塞尔曲线(p0, p1, p2, p3)中计算出最小包围盒，写入`min`和`max`中
-     * @memberOf module:zrender/core/bbox
-     * @param {number} x0
-     * @param {number} y0
-     * @param {number} x1
-     * @param {number} y1
-     * @param {number} x2
-     * @param {number} y2
-     * @param {number} x3
-     * @param {number} y3
-     * @param {Array.<number>} min
-     * @param {Array.<number>} max
-     */
-    bbox.fromCubic = function(
-        x0, y0, x1, y1, x2, y2, x3, y3, min, max
-    ) {
-        var cubicExtrema = curve.cubicExtrema;
-        var cubicAt = curve.cubicAt;
-        var i;
-        var n = cubicExtrema(x0, x1, x2, x3, xDim);
-        min[0] = Infinity;
-        min[1] = Infinity;
-        max[0] = -Infinity;
-        max[1] = -Infinity;
-
-        for (i = 0; i < n; i++) {
-            var x = cubicAt(x0, x1, x2, x3, xDim[i]);
-            min[0] = mathMin(x, min[0]);
-            max[0] = mathMax(x, max[0]);
-        }
-        n = cubicExtrema(y0, y1, y2, y3, yDim);
-        for (i = 0; i < n; i++) {
-            var y = cubicAt(y0, y1, y2, y3, yDim[i]);
-            min[1] = mathMin(y, min[1]);
-            max[1] = mathMax(y, max[1]);
-        }
-
-        min[0] = mathMin(x0, min[0]);
-        max[0] = mathMax(x0, max[0]);
-        min[0] = mathMin(x3, min[0]);
-        max[0] = mathMax(x3, max[0]);
-
-        min[1] = mathMin(y0, min[1]);
-        max[1] = mathMax(y0, max[1]);
-        min[1] = mathMin(y3, min[1]);
-        max[1] = mathMax(y3, max[1]);
-    };
-
-    /**
-     * 从二阶贝塞尔曲线(p0, p1, p2)中计算出最小包围盒，写入`min`和`max`中
-     * @memberOf module:zrender/core/bbox
-     * @param {number} x0
-     * @param {number} y0
-     * @param {number} x1
-     * @param {number} y1
-     * @param {number} x2
-     * @param {number} y2
-     * @param {Array.<number>} min
-     * @param {Array.<number>} max
-     */
-    bbox.fromQuadratic = function(x0, y0, x1, y1, x2, y2, min, max) {
-        var quadraticExtremum = curve.quadraticExtremum;
-        var quadraticAt = curve.quadraticAt;
-        // Find extremities, where derivative in x dim or y dim is zero
-        var tx =
-            mathMax(
-                mathMin(quadraticExtremum(x0, x1, x2), 1), 0
-            );
-        var ty =
-            mathMax(
-                mathMin(quadraticExtremum(y0, y1, y2), 1), 0
-            );
-
-        var x = quadraticAt(x0, x1, x2, tx);
-        var y = quadraticAt(y0, y1, y2, ty);
-
-        min[0] = mathMin(x0, x2, x);
-        min[1] = mathMin(y0, y2, y);
-        max[0] = mathMax(x0, x2, x);
-        max[1] = mathMax(y0, y2, y);
-    };
-
-    /**
-     * 从圆弧中计算出最小包围盒，写入`min`和`max`中
-     * @method
-     * @memberOf module:zrender/core/bbox
-     * @param {number} x
-     * @param {number} y
-     * @param {number} rx
-     * @param {number} ry
-     * @param {number} startAngle
-     * @param {number} endAngle
-     * @param {number} anticlockwise
-     * @param {Array.<number>} min
-     * @param {Array.<number>} max
-     */
-    bbox.fromArc = function (
-        x, y, rx, ry, startAngle, endAngle, anticlockwise, min, max
-    ) {
-        var vec2Min = vec2.min;
-        var vec2Max = vec2.max;
-
-        var diff = Math.abs(startAngle - endAngle);
-
-
-        if (diff % PI2 < 1e-4 && diff > 1e-4) {
-            // Is a circle
-            min[0] = x - rx;
-            min[1] = y - ry;
-            max[0] = x + rx;
-            max[1] = y + ry;
-            return;
-        }
-
-        start[0] = mathCos(startAngle) * rx + x;
-        start[1] = mathSin(startAngle) * ry + y;
-
-        end[0] = mathCos(endAngle) * rx + x;
-        end[1] = mathSin(endAngle) * ry + y;
-
-        vec2Min(min, start, end);
-        vec2Max(max, start, end);
-
-        // Thresh to [0, Math.PI * 2]
-        startAngle = startAngle % (PI2);
-        if (startAngle < 0) {
-            startAngle = startAngle + PI2;
-        }
-        endAngle = endAngle % (PI2);
-        if (endAngle < 0) {
-            endAngle = endAngle + PI2;
-        }
-
-        if (startAngle > endAngle && !anticlockwise) {
-            endAngle += PI2;
-        }
-        else if (startAngle < endAngle && anticlockwise) {
-            startAngle += PI2;
-        }
-        if (anticlockwise) {
-            var tmp = endAngle;
-            endAngle = startAngle;
-            startAngle = tmp;
-        }
-
-        // var number = 0;
-        // var step = (anticlockwise ? -Math.PI : Math.PI) / 2;
-        for (var angle = 0; angle < endAngle; angle += Math.PI / 2) {
-            if (angle > startAngle) {
-                extremity[0] = mathCos(angle) * rx + x;
-                extremity[1] = mathSin(angle) * ry + y;
-
-                vec2Min(min, extremity, min);
-                vec2Max(max, extremity, max);
-            }
-        }
-    };
-
-    return bbox;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * zrender: 生成唯一id
- *
- * @author errorrik (errorrik@gmail.com)
- */
-
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
-    var idStart = 0x0907;
-
-    return function () {
-        return idStart++;
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-        var config = __webpack_require__(20);
-
-        /**
-         * @exports zrender/tool/log
-         * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
-         */
-        return function() {
-            if (config.debugMode === 0) {
-                return;
-            }
-            else if (config.debugMode == 1) {
-                for (var k in arguments) {
-                    throw new Error(arguments[k]);
-                }
-            }
-            else if (config.debugMode > 1) {
-                for (var k in arguments) {
-                    console.log(arguments[k]);
-                }
-            }
-        };
-
-        /* for debug
-        return function(mes) {
-            document.getElementById('wrong-message').innerHTML =
-                mes + ' ' + (new Date() - 0)
-                + '<br/>'
-                + document.getElementById('wrong-message').innerHTML;
-        };
-        */
-    }.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * 可绘制的图形基类
- * Base class of all displayable graphic objects
- * @module zrender/graphic/Displayable
- */
-
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var zrUtil = __webpack_require__(1);
-
-    var Style = __webpack_require__(65);
-
-    var Element = __webpack_require__(47);
-    var RectText = __webpack_require__(66);
-    // var Stateful = require('./mixin/Stateful');
-
-    /**
-     * @alias module:zrender/graphic/Displayable
-     * @extends module:zrender/Element
-     * @extends module:zrender/graphic/mixin/RectText
-     */
-    function Displayable(opts) {
-
-        opts = opts || {};
-
-        Element.call(this, opts);
-
-        // Extend properties
-        for (var name in opts) {
-            if (
-                opts.hasOwnProperty(name) &&
-                name !== 'style'
-            ) {
-                this[name] = opts[name];
-            }
-        }
-
-        /**
-         * @type {module:zrender/graphic/Style}
-         */
-        this.style = new Style(opts.style);
-
-        this._rect = null;
-        // Shapes for cascade clipping.
-        this.__clipPaths = [];
-
-        // FIXME Stateful must be mixined after style is setted
-        // Stateful.call(this, opts);
-    }
-
-    Displayable.prototype = {
-
-        constructor: Displayable,
-
-        type: 'displayable',
-
-        /**
-         * Displayable 是否为脏，Painter 中会根据该标记判断是否需要是否需要重新绘制
-         * Dirty flag. From which painter will determine if this displayable object needs brush
-         * @name module:zrender/graphic/Displayable#__dirty
-         * @type {boolean}
-         */
-        __dirty: true,
-
-        /**
-         * 图形是否可见，为true时不绘制图形，但是仍能触发鼠标事件
-         * If ignore drawing of the displayable object. Mouse event will still be triggered
-         * @name module:/zrender/graphic/Displayable#invisible
-         * @type {boolean}
-         * @default false
-         */
-        invisible: false,
-
-        /**
-         * @name module:/zrender/graphic/Displayable#z
-         * @type {number}
-         * @default 0
-         */
-        z: 0,
-
-        /**
-         * @name module:/zrender/graphic/Displayable#z
-         * @type {number}
-         * @default 0
-         */
-        z2: 0,
-
-        /**
-         * z层level，决定绘画在哪层canvas中
-         * @name module:/zrender/graphic/Displayable#zlevel
-         * @type {number}
-         * @default 0
-         */
-        zlevel: 0,
-
-        /**
-         * 是否可拖拽
-         * @name module:/zrender/graphic/Displayable#draggable
-         * @type {boolean}
-         * @default false
-         */
-        draggable: false,
-
-        /**
-         * 是否正在拖拽
-         * @name module:/zrender/graphic/Displayable#draggable
-         * @type {boolean}
-         * @default false
-         */
-        dragging: false,
-
-        /**
-         * 是否相应鼠标事件
-         * @name module:/zrender/graphic/Displayable#silent
-         * @type {boolean}
-         * @default false
-         */
-        silent: false,
-
-        /**
-         * If enable culling
-         * @type {boolean}
-         * @default false
-         */
-        culling: false,
-
-        /**
-         * Mouse cursor when hovered
-         * @name module:/zrender/graphic/Displayable#cursor
-         * @type {string}
-         */
-        cursor: 'pointer',
-
-        /**
-         * If hover area is bounding rect
-         * @name module:/zrender/graphic/Displayable#rectHover
-         * @type {string}
-         */
-        rectHover: false,
-
-        /**
-         * Render the element progressively when the value >= 0,
-         * usefull for large data.
-         * @type {number}
-         */
-        progressive: -1,
-
-        beforeBrush: function (ctx) {},
-
-        afterBrush: function (ctx) {},
-
-        /**
-         * 图形绘制方法
-         * @param {Canvas2DRenderingContext} ctx
-         */
-        // Interface
-        brush: function (ctx, prevEl) {},
-
-        /**
-         * 获取最小包围盒
-         * @return {module:zrender/core/BoundingRect}
-         */
-        // Interface
-        getBoundingRect: function () {},
-
-        /**
-         * 判断坐标 x, y 是否在图形上
-         * If displayable element contain coord x, y
-         * @param  {number} x
-         * @param  {number} y
-         * @return {boolean}
-         */
-        contain: function (x, y) {
-            return this.rectContain(x, y);
-        },
-
-        /**
-         * @param  {Function} cb
-         * @param  {}   context
-         */
-        traverse: function (cb, context) {
-            cb.call(context, this);
-        },
-
-        /**
-         * 判断坐标 x, y 是否在图形的包围盒上
-         * If bounding rect of element contain coord x, y
-         * @param  {number} x
-         * @param  {number} y
-         * @return {boolean}
-         */
-        rectContain: function (x, y) {
-            var coord = this.transformCoordToLocal(x, y);
-            var rect = this.getBoundingRect();
-            return rect.contain(coord[0], coord[1]);
-        },
-
-        /**
-         * 标记图形元素为脏，并且在下一帧重绘
-         * Mark displayable element dirty and refresh next frame
-         */
-        dirty: function () {
-            this.__dirty = true;
-
-            this._rect = null;
-
-            this.__zr && this.__zr.refresh();
-        },
-
-        /**
-         * 图形是否会触发事件
-         * If displayable object binded any event
-         * @return {boolean}
-         */
-        // TODO, 通过 bind 绑定的事件
-        // isSilent: function () {
-        //     return !(
-        //         this.hoverable || this.draggable
-        //         || this.onmousemove || this.onmouseover || this.onmouseout
-        //         || this.onmousedown || this.onmouseup || this.onclick
-        //         || this.ondragenter || this.ondragover || this.ondragleave
-        //         || this.ondrop
-        //     );
-        // },
-        /**
-         * Alias for animate('style')
-         * @param {boolean} loop
-         */
-        animateStyle: function (loop) {
-            return this.animate('style', loop);
-        },
-
-        attrKV: function (key, value) {
-            if (key !== 'style') {
-                Element.prototype.attrKV.call(this, key, value);
-            }
-            else {
-                this.style.set(value);
-            }
-        },
-
-        /**
-         * @param {Object|string} key
-         * @param {*} value
-         */
-        setStyle: function (key, value) {
-            this.style.set(key, value);
-            this.dirty(false);
-            return this;
-        },
-
-        /**
-         * Use given style object
-         * @param  {Object} obj
-         */
-        useStyle: function (obj) {
-            this.style = new Style(obj);
-            this.dirty(false);
-            return this;
-        }
-    };
-
-    zrUtil.inherits(Displayable, Element);
-
-    zrUtil.mixin(Displayable, RectText);
-    // zrUtil.mixin(Displayable, Stateful);
-
-    return Displayable;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * Path element
- * @module zrender/graphic/Path
- */
-
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var Displayable = __webpack_require__(62);
-    var zrUtil = __webpack_require__(1);
-    var PathProxy = __webpack_require__(22);
-    var pathContain = __webpack_require__(54);
-
-    var Pattern = __webpack_require__(64);
-    var getCanvasPattern = Pattern.prototype.getCanvasPattern;
-
-    var abs = Math.abs;
-
-    var pathProxyForDraw = new PathProxy(true);
-    /**
-     * @alias module:zrender/graphic/Path
-     * @extends module:zrender/graphic/Displayable
-     * @constructor
-     * @param {Object} opts
-     */
-    function Path(opts) {
-        Displayable.call(this, opts);
-
-        /**
-         * @type {module:zrender/core/PathProxy}
-         * @readOnly
-         */
-        this.path = null;
-    }
-
-    Path.prototype = {
-
-        constructor: Path,
-
-        type: 'path',
-
-        __dirtyPath: true,
-
-        strokeContainThreshold: 5,
-
-        brush: function (ctx, prevEl) {
-            var style = this.style;
-            var path = this.path || pathProxyForDraw;
-            var hasStroke = style.hasStroke();
-            var hasFill = style.hasFill();
-            var fill = style.fill;
-            var stroke = style.stroke;
-            var hasFillGradient = hasFill && !!(fill.colorStops);
-            var hasStrokeGradient = hasStroke && !!(stroke.colorStops);
-            var hasFillPattern = hasFill && !!(fill.image);
-            var hasStrokePattern = hasStroke && !!(stroke.image);
-
-            style.bind(ctx, this, prevEl);
-            this.setTransform(ctx);
-
-            if (this.__dirty) {
-                var rect;
-                // Update gradient because bounding rect may changed
-                if (hasFillGradient) {
-                    rect = rect || this.getBoundingRect();
-                    this._fillGradient = style.getGradient(ctx, fill, rect);
-                }
-                if (hasStrokeGradient) {
-                    rect = rect || this.getBoundingRect();
-                    this._strokeGradient = style.getGradient(ctx, stroke, rect);
-                }
-            }
-            // Use the gradient or pattern
-            if (hasFillGradient) {
-                // PENDING If may have affect the state
-                ctx.fillStyle = this._fillGradient;
-            }
-            else if (hasFillPattern) {
-                ctx.fillStyle = getCanvasPattern.call(fill, ctx);
-            }
-            if (hasStrokeGradient) {
-                ctx.strokeStyle = this._strokeGradient;
-            }
-            else if (hasStrokePattern) {
-                ctx.strokeStyle = getCanvasPattern.call(stroke, ctx);
-            }
-
-            var lineDash = style.lineDash;
-            var lineDashOffset = style.lineDashOffset;
-
-            var ctxLineDash = !!ctx.setLineDash;
-
-            // Update path sx, sy
-            var scale = this.getGlobalScale();
-            path.setScale(scale[0], scale[1]);
-
-            // Proxy context
-            // Rebuild path in following 2 cases
-            // 1. Path is dirty
-            // 2. Path needs javascript implemented lineDash stroking.
-            //    In this case, lineDash information will not be saved in PathProxy
-            if (this.__dirtyPath
-                || (lineDash && !ctxLineDash && hasStroke)
-            ) {
-                path.beginPath(ctx);
-
-                // Setting line dash before build path
-                if (lineDash && !ctxLineDash) {
-                    path.setLineDash(lineDash);
-                    path.setLineDashOffset(lineDashOffset);
-                }
-
-                this.buildPath(path, this.shape, false);
-
-                // Clear path dirty flag
-                if (this.path) {
-                    this.__dirtyPath = false;
-                }
-            }
-            else {
-                // Replay path building
-                ctx.beginPath();
-                this.path.rebuildPath(ctx);
-            }
-
-            hasFill && path.fill(ctx);
-
-            if (lineDash && ctxLineDash) {
-                ctx.setLineDash(lineDash);
-                ctx.lineDashOffset = lineDashOffset;
-            }
-
-            hasStroke && path.stroke(ctx);
-
-            if (lineDash && ctxLineDash) {
-                // PENDING
-                // Remove lineDash
-                ctx.setLineDash([]);
-            }
-
-
-            this.restoreTransform(ctx);
-
-            // Draw rect text
-            if (style.text != null) {
-                this.drawRectText(ctx, this.getBoundingRect());
-            }
-        },
-
-        // When bundling path, some shape may decide if use moveTo to begin a new subpath or closePath
-        // Like in circle
-        buildPath: function (ctx, shapeCfg, inBundle) {},
-
-        createPathProxy: function () {
-            this.path = new PathProxy();
-        },
-
-        getBoundingRect: function () {
-            var rect = this._rect;
-            var style = this.style;
-            var needsUpdateRect = !rect;
-            if (needsUpdateRect) {
-                var path = this.path;
-                if (!path) {
-                    // Create path on demand.
-                    path = this.path = new PathProxy();
-                }
-                if (this.__dirtyPath) {
-                    path.beginPath();
-                    this.buildPath(path, this.shape, false);
-                }
-                rect = path.getBoundingRect();
-            }
-            this._rect = rect;
-
-            if (style.hasStroke()) {
-                // Needs update rect with stroke lineWidth when
-                // 1. Element changes scale or lineWidth
-                // 2. Shape is changed
-                var rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
-                if (this.__dirty || needsUpdateRect) {
-                    rectWithStroke.copy(rect);
-                    // FIXME Must after updateTransform
-                    var w = style.lineWidth;
-                    // PENDING, Min line width is needed when line is horizontal or vertical
-                    var lineScale = style.strokeNoScale ? this.getLineScale() : 1;
-
-                    // Only add extra hover lineWidth when there are no fill
-                    if (!style.hasFill()) {
-                        w = Math.max(w, this.strokeContainThreshold || 4);
-                    }
-                    // Consider line width
-                    // Line scale can't be 0;
-                    if (lineScale > 1e-10) {
-                        rectWithStroke.width += w / lineScale;
-                        rectWithStroke.height += w / lineScale;
-                        rectWithStroke.x -= w / lineScale / 2;
-                        rectWithStroke.y -= w / lineScale / 2;
-                    }
-                }
-
-                // Return rect with stroke
-                return rectWithStroke;
-            }
-
-            return rect;
-        },
-
-        contain: function (x, y) {
-            var localPos = this.transformCoordToLocal(x, y);
-            var rect = this.getBoundingRect();
-            var style = this.style;
-            x = localPos[0];
-            y = localPos[1];
-
-            if (rect.contain(x, y)) {
-                var pathData = this.path.data;
-                if (style.hasStroke()) {
-                    var lineWidth = style.lineWidth;
-                    var lineScale = style.strokeNoScale ? this.getLineScale() : 1;
-                    // Line scale can't be 0;
-                    if (lineScale > 1e-10) {
-                        // Only add extra hover lineWidth when there are no fill
-                        if (!style.hasFill()) {
-                            lineWidth = Math.max(lineWidth, this.strokeContainThreshold);
-                        }
-                        if (pathContain.containStroke(
-                            pathData, lineWidth / lineScale, x, y
-                        )) {
-                            return true;
-                        }
-                    }
-                }
-                if (style.hasFill()) {
-                    return pathContain.contain(pathData, x, y);
-                }
-            }
-            return false;
-        },
-
-        /**
-         * @param  {boolean} dirtyPath
-         */
-        dirty: function (dirtyPath) {
-            if (dirtyPath == null) {
-                dirtyPath = true;
-            }
-            // Only mark dirty, not mark clean
-            if (dirtyPath) {
-                this.__dirtyPath = dirtyPath;
-                this._rect = null;
-            }
-
-            this.__dirty = true;
-
-            this.__zr && this.__zr.refresh();
-
-            // Used as a clipping path
-            if (this.__clipTarget) {
-                this.__clipTarget.dirty();
-            }
-        },
-
-        /**
-         * Alias for animate('shape')
-         * @param {boolean} loop
-         */
-        animateShape: function (loop) {
-            return this.animate('shape', loop);
-        },
-
-        // Overwrite attrKV
-        attrKV: function (key, value) {
-            // FIXME
-            if (key === 'shape') {
-                this.setShape(value);
-                this.__dirtyPath = true;
-                this._rect = null;
-            }
-            else {
-                Displayable.prototype.attrKV.call(this, key, value);
-            }
-        },
-
-        /**
-         * @param {Object|string} key
-         * @param {*} value
-         */
-        setShape: function (key, value) {
-            var shape = this.shape;
-            // Path from string may not have shape
-            if (shape) {
-                if (zrUtil.isObject(key)) {
-                    for (var name in key) {
-                        if (key.hasOwnProperty(name)) {
-                            shape[name] = key[name];
-                        }
-                    }
-                }
-                else {
-                    shape[key] = value;
-                }
-                this.dirty(true);
-            }
-            return this;
-        },
-
-        getLineScale: function () {
-            var m = this.transform;
-            // Get the line scale.
-            // Determinant of `m` means how much the area is enlarged by the
-            // transformation. So its square root can be used as a scale factor
-            // for width.
-            return m && abs(m[0] - 1) > 1e-10 && abs(m[3] - 1) > 1e-10
-                ? Math.sqrt(abs(m[0] * m[3] - m[2] * m[1]))
-                : 1;
-        }
-    };
-
-    /**
-     * 扩展一个 Path element, 比如星形，圆等。
-     * Extend a path element
-     * @param {Object} props
-     * @param {string} props.type Path type
-     * @param {Function} props.init Initialize
-     * @param {Function} props.buildPath Overwrite buildPath method
-     * @param {Object} [props.style] Extended default style config
-     * @param {Object} [props.shape] Extended default shape config
-     */
-    Path.extend = function (defaults) {
-        var Sub = function (opts) {
-            Path.call(this, opts);
-
-            if (defaults.style) {
-                // Extend default style
-                this.style.extendFrom(defaults.style, false);
-            }
-
-            // Extend default shape
-            var defaultShape = defaults.shape;
-            if (defaultShape) {
-                this.shape = this.shape || {};
-                var thisShape = this.shape;
-                for (var name in defaultShape) {
-                    if (
-                        ! thisShape.hasOwnProperty(name)
-                        && defaultShape.hasOwnProperty(name)
-                    ) {
-                        thisShape[name] = defaultShape[name];
-                    }
-                }
-            }
-
-            defaults.init && defaults.init.call(this, opts);
-        };
-
-        zrUtil.inherits(Sub, Path);
-
-        // FIXME 不能 extend position, rotation 等引用对象
-        for (var name in defaults) {
-            // Extending prototype values and methods
-            if (name !== 'style' && name !== 'shape') {
-                Sub.prototype[name] = defaults[name];
-            }
-        }
-
-        return Sub;
-    };
-
-    zrUtil.inherits(Path, Displayable);
-
-    return Path;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var Pattern = function (image, repeat) {
-        // Should do nothing more in this constructor. Because gradient can be
-        // declard by `color: {image: ...}`, where this constructor will not be called.
-
-        this.image = image;
-        this.repeat = repeat;
-
-        // Can be cloned
-        this.type = 'pattern';
-    };
-
-    Pattern.prototype.getCanvasPattern = function (ctx) {
-        return ctx.createPattern(this.image, this.repeat || 'repeat');
-    };
-
-    return Pattern;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @module zrender/graphic/Style
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var STYLE_COMMON_PROPS = [
-        ['shadowBlur', 0], ['shadowOffsetX', 0], ['shadowOffsetY', 0], ['shadowColor', '#000'],
-        ['lineCap', 'butt'], ['lineJoin', 'miter'], ['miterLimit', 10]
-    ];
-
-    // var SHADOW_PROPS = STYLE_COMMON_PROPS.slice(0, 4);
-    // var LINE_PROPS = STYLE_COMMON_PROPS.slice(4);
-
-    var Style = function (opts) {
-        this.extendFrom(opts);
-    };
-
-    function createLinearGradient(ctx, obj, rect) {
-        var x = obj.x == null ? 0 : obj.x;
-        var x2 = obj.x2 == null ? 1 : obj.x2;
-        var y = obj.y == null ? 0 : obj.y;
-        var y2 = obj.y2 == null ? 0 : obj.y2;
-
-        if (!obj.global) {
-            x = x * rect.width + rect.x;
-            x2 = x2 * rect.width + rect.x;
-            y = y * rect.height + rect.y;
-            y2 = y2 * rect.height + rect.y;
-        }
-
-        var canvasGradient = ctx.createLinearGradient(x, y, x2, y2);
-
-        return canvasGradient;
-    }
-
-    function createRadialGradient(ctx, obj, rect) {
-        var width = rect.width;
-        var height = rect.height;
-        var min = Math.min(width, height);
-
-        var x = obj.x == null ? 0.5 : obj.x;
-        var y = obj.y == null ? 0.5 : obj.y;
-        var r = obj.r == null ? 0.5 : obj.r;
-        if (!obj.global) {
-            x = x * width + rect.x;
-            y = y * height + rect.y;
-            r = r * min;
-        }
-
-        var canvasGradient = ctx.createRadialGradient(x, y, 0, x, y, r);
-
-        return canvasGradient;
-    }
-
-
-    Style.prototype = {
-
-        constructor: Style,
-
-        /**
-         * @type {string}
-         */
-        fill: '#000000',
-
-        /**
-         * @type {string}
-         */
-        stroke: null,
-
-        /**
-         * @type {number}
-         */
-        opacity: 1,
-
-        /**
-         * @type {Array.<number>}
-         */
-        lineDash: null,
-
-        /**
-         * @type {number}
-         */
-        lineDashOffset: 0,
-
-        /**
-         * @type {number}
-         */
-        shadowBlur: 0,
-
-        /**
-         * @type {number}
-         */
-        shadowOffsetX: 0,
-
-        /**
-         * @type {number}
-         */
-        shadowOffsetY: 0,
-
-        /**
-         * @type {number}
-         */
-        lineWidth: 1,
-
-        /**
-         * If stroke ignore scale
-         * @type {Boolean}
-         */
-        strokeNoScale: false,
-
-        // Bounding rect text configuration
-        // Not affected by element transform
-        /**
-         * @type {string}
-         */
-        text: null,
-
-        /**
-         * @type {string}
-         */
-        textFill: '#000',
-
-        /**
-         * @type {string}
-         */
-        textStroke: null,
-
-        /**
-         * 'inside', 'left', 'right', 'top', 'bottom'
-         * [x, y]
-         * @type {string|Array.<number>}
-         * @default 'inside'
-         */
-        textPosition: 'inside',
-
-        /**
-         * If not specified, use the boundingRect of a `displayable`.
-         * @type {Object}
-         */
-        textPositionRect: null,
-
-        /**
-         * [x, y]
-         * @type {Array.<number>}
-         */
-        textOffset: null,
-
-        /**
-         * @type {string}
-         */
-        textBaseline: null,
-
-        /**
-         * @type {string}
-         */
-        textAlign: null,
-
-        /**
-         * @type {string}
-         */
-        textVerticalAlign: null,
-
-        /**
-         * Only useful in Path and Image element
-         * @type {number}
-         */
-        textDistance: 5,
-
-        /**
-         * Only useful in Path and Image element
-         * @type {number}
-         */
-        textShadowBlur: 0,
-
-        /**
-         * Only useful in Path and Image element
-         * @type {number}
-         */
-        textShadowOffsetX: 0,
-
-        /**
-         * Only useful in Path and Image element
-         * @type {number}
-         */
-        textShadowOffsetY: 0,
-
-        /**
-         * If transform text
-         * Only useful in Path and Image element
-         * @type {boolean}
-         */
-        textTransform: false,
-
-        /**
-         * Text rotate around position of Path or Image
-         * Only useful in Path and Image element and textTransform is false.
-         */
-        textRotation: 0,
-
-        /**
-         * @type {string}
-         * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
-         */
-        blend: null,
-
-        /**
-         * @param {CanvasRenderingContext2D} ctx
-         */
-        bind: function (ctx, el, prevEl) {
-            var style = this;
-            var prevStyle = prevEl && prevEl.style;
-            var firstDraw = !prevStyle;
-
-            for (var i = 0; i < STYLE_COMMON_PROPS.length; i++) {
-                var prop = STYLE_COMMON_PROPS[i];
-                var styleName = prop[0];
-
-                if (firstDraw || style[styleName] !== prevStyle[styleName]) {
-                    // FIXME Invalid property value will cause style leak from previous element.
-                    ctx[styleName] = style[styleName] || prop[1];
-                }
-            }
-
-            if ((firstDraw || style.fill !== prevStyle.fill)) {
-                ctx.fillStyle = style.fill;
-            }
-            if ((firstDraw || style.stroke !== prevStyle.stroke)) {
-                ctx.strokeStyle = style.stroke;
-            }
-            if ((firstDraw || style.opacity !== prevStyle.opacity)) {
-                ctx.globalAlpha = style.opacity == null ? 1 : style.opacity;
-            }
-
-            if ((firstDraw || style.blend !== prevStyle.blend)) {
-                ctx.globalCompositeOperation = style.blend || 'source-over';
-            }
-            if (this.hasStroke()) {
-                var lineWidth = style.lineWidth;
-                ctx.lineWidth = lineWidth / (
-                    (this.strokeNoScale && el && el.getLineScale) ? el.getLineScale() : 1
-                );
-            }
-        },
-
-        hasFill: function () {
-            var fill = this.fill;
-            return fill != null && fill !== 'none';
-        },
-
-        hasStroke: function () {
-            var stroke = this.stroke;
-            return stroke != null && stroke !== 'none' && this.lineWidth > 0;
-        },
-
-        /**
-         * Extend from other style
-         * @param {zrender/graphic/Style} otherStyle
-         * @param {boolean} overwrite
-         */
-        extendFrom: function (otherStyle, overwrite) {
-            if (otherStyle) {
-                var target = this;
-                for (var name in otherStyle) {
-                    if (otherStyle.hasOwnProperty(name)
-                        && (overwrite || ! target.hasOwnProperty(name))
-                    ) {
-                        target[name] = otherStyle[name];
-                    }
-                }
-            }
-        },
-
-        /**
-         * Batch setting style with a given object
-         * @param {Object|string} obj
-         * @param {*} [obj]
-         */
-        set: function (obj, value) {
-            if (typeof obj === 'string') {
-                this[obj] = value;
-            }
-            else {
-                this.extendFrom(obj, true);
-            }
-        },
-
-        /**
-         * Clone
-         * @return {zrender/graphic/Style} [description]
-         */
-        clone: function () {
-            var newStyle = new this.constructor();
-            newStyle.extendFrom(this, true);
-            return newStyle;
-        },
-
-        getGradient: function (ctx, obj, rect) {
-            var method = obj.type === 'radial' ? createRadialGradient : createLinearGradient;
-            var canvasGradient = method(ctx, obj, rect);
-            var colorStops = obj.colorStops;
-            for (var i = 0; i < colorStops.length; i++) {
-                canvasGradient.addColorStop(
-                    colorStops[i].offset, colorStops[i].color
-                );
-            }
-            return canvasGradient;
-        }
-    };
-
-    var styleProto = Style.prototype;
-    for (var i = 0; i < STYLE_COMMON_PROPS.length; i++) {
-        var prop = STYLE_COMMON_PROPS[i];
-        if (!(prop[0] in styleProto)) {
-            styleProto[prop[0]] = prop[1];
-        }
-    }
-
-    // Provide for others
-    Style.getGradient = styleProto.getGradient;
-
-    return Style;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * Mixin for drawing text in a element bounding rect
- * @module zrender/mixin/RectText
- */
-
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var textContain = __webpack_require__(56);
-    var BoundingRect = __webpack_require__(9);
-
-    var tmpRect = new BoundingRect();
-
-    var RectText = function () {};
-
-    function parsePercent(value, maxValue) {
-        if (typeof value === 'string') {
-            if (value.lastIndexOf('%') >= 0) {
-                return parseFloat(value) / 100 * maxValue;
-            }
-            return parseFloat(value);
-        }
-        return value;
-    }
-
-    RectText.prototype = {
-
-        constructor: RectText,
-
-        /**
-         * Draw text in a rect with specified position.
-         * @param  {CanvasRenderingContext} ctx
-         * @param  {Object} rect Displayable rect
-         * @return {Object} textRect Alternative precalculated text bounding rect
-         */
-        drawRectText: function (ctx, rect, textRect) {
-            var style = this.style;
-            var text = style.text;
-            // Convert to string
-            text != null && (text += '');
-            if (!text) {
-                return;
-            }
-
-            // FIXME
-            ctx.save();
-
-            var x;
-            var y;
-            var textPosition = style.textPosition;
-            var textOffset = style.textOffset;
-            var distance = style.textDistance;
-            var align = style.textAlign;
-            var font = style.textFont || style.font;
-            var baseline = style.textBaseline;
-            var verticalAlign = style.textVerticalAlign;
-            rect = style.textPositionRect || rect;
-
-            textRect = textRect || textContain.getBoundingRect(text, font, align, baseline);
-
-            // Transform rect to view space
-            var transform = this.transform;
-            if (!style.textTransform) {
-                if (transform) {
-                    tmpRect.copy(rect);
-                    tmpRect.applyTransform(transform);
-                    rect = tmpRect;
-                }
-            }
-            else {
-                this.setTransform(ctx);
-            }
-
-            // Text position represented by coord
-            if (textPosition instanceof Array) {
-                // Percent
-                x = rect.x + parsePercent(textPosition[0], rect.width);
-                y = rect.y + parsePercent(textPosition[1], rect.height);
-                align = align || 'left';
-                baseline = baseline || 'top';
-
-                if (verticalAlign) {
-                    switch (verticalAlign) {
-                        case 'middle':
-                            y -= textRect.height / 2 - textRect.lineHeight / 2;
-                            break;
-                        case 'bottom':
-                            y -= textRect.height - textRect.lineHeight / 2;
-                            break;
-                        default:
-                            y += textRect.lineHeight / 2;
-                    }
-                    // Force bseline to be middle
-                    baseline = 'middle';
-                }
-            }
-            else {
-                var res = textContain.adjustTextPositionOnRect(
-                    textPosition, rect, textRect, distance
-                );
-                x = res.x;
-                y = res.y;
-                // Default align and baseline when has textPosition
-                align = align || res.textAlign;
-                baseline = baseline || res.textBaseline;
-            }
-
-            if (textOffset) {
-                x += textOffset[0];
-                y += textOffset[1];
-            }
-
-            // Use canvas default left textAlign. Giving invalid value will cause state not change
-            ctx.textAlign = align || 'left';
-            // Use canvas default alphabetic baseline
-            ctx.textBaseline = baseline || 'alphabetic';
-
-            var textFill = style.textFill;
-            var textStroke = style.textStroke;
-            textFill && (ctx.fillStyle = textFill);
-            textStroke && (ctx.strokeStyle = textStroke);
-
-            // TODO Invalid font
-            ctx.font = font || '12px sans-serif';
-
-            // Text shadow
-            // Always set shadowBlur and shadowOffset to avoid leak from displayable
-            ctx.shadowBlur = style.textShadowBlur;
-            ctx.shadowColor = style.textShadowColor || 'transparent';
-            ctx.shadowOffsetX = style.textShadowOffsetX;
-            ctx.shadowOffsetY = style.textShadowOffsetY;
-
-            var textLines = text.split('\n');
-
-            if (style.textRotation) {
-                transform && ctx.translate(transform[4], transform[5]);
-                ctx.rotate(style.textRotation);
-                transform && ctx.translate(-transform[4], -transform[5]);
-            }
-
-            for (var i = 0; i < textLines.length; i++) {
-                // Fill after stroke so the outline will not cover the main part.
-                textStroke && ctx.strokeText(textLines[i], x, y);
-                textFill && ctx.fillText(textLines[i], x, y);
-                y += textRect.lineHeight;
-            }
-
-            ctx.restore();
-        }
-    };
-
-    return RectText;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 67 */,
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @module zrender/mixin/Animatable
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
-
-    'use strict';
-
-    var Animator = __webpack_require__(48);
-    var util = __webpack_require__(1);
-    var isString = util.isString;
-    var isFunction = util.isFunction;
-    var isObject = util.isObject;
-    var log = __webpack_require__(61);
-
-    /**
-     * @alias modue:zrender/mixin/Animatable
-     * @constructor
-     */
-    var Animatable = function () {
-
-        /**
-         * @type {Array.<module:zrender/animation/Animator>}
-         * @readOnly
-         */
-        this.animators = [];
-    };
-
-    Animatable.prototype = {
-
-        constructor: Animatable,
-
-        /**
-         * 动画
-         *
-         * @param {string} path 需要添加动画的属性获取路径，可以通过a.b.c来获取深层的属性
-         * @param {boolean} [loop] 动画是否循环
-         * @return {module:zrender/animation/Animator}
-         * @example:
-         *     el.animate('style', false)
-         *         .when(1000, {x: 10} )
-         *         .done(function(){ // Animation done })
-         *         .start()
-         */
-        animate: function (path, loop) {
-            var target;
-            var animatingShape = false;
-            var el = this;
-            var zr = this.__zr;
-            if (path) {
-                var pathSplitted = path.split('.');
-                var prop = el;
-                // If animating shape
-                animatingShape = pathSplitted[0] === 'shape';
-                for (var i = 0, l = pathSplitted.length; i < l; i++) {
-                    if (!prop) {
-                        continue;
-                    }
-                    prop = prop[pathSplitted[i]];
-                }
-                if (prop) {
-                    target = prop;
-                }
-            }
-            else {
-                target = el;
-            }
-
-            if (!target) {
-                log(
-                    'Property "'
-                    + path
-                    + '" is not existed in element '
-                    + el.id
-                );
-                return;
-            }
-
-            var animators = el.animators;
-
-            var animator = new Animator(target, loop);
-
-            animator.during(function (target) {
-                el.dirty(animatingShape);
-            })
-            .done(function () {
-                // FIXME Animator will not be removed if use `Animator#stop` to stop animation
-                animators.splice(util.indexOf(animators, animator), 1);
-            });
-
-            animators.push(animator);
-
-            // If animate after added to the zrender
-            if (zr) {
-                zr.animation.addAnimator(animator);
-            }
-
-            return animator;
-        },
-
-        /**
-         * 停止动画
-         * @param {boolean} forwardToLast If move to last frame before stop
-         */
-        stopAnimation: function (forwardToLast) {
-            var animators = this.animators;
-            var len = animators.length;
-            for (var i = 0; i < len; i++) {
-                animators[i].stop(forwardToLast);
-            }
-            animators.length = 0;
-
-            return this;
-        },
-
-        /**
-         * @param {Object} target
-         * @param {number} [time=500] Time in ms
-         * @param {string} [easing='linear']
-         * @param {number} [delay=0]
-         * @param {Function} [callback]
-         *
-         * @example
-         *  // Animate position
-         *  el.animateTo({
-         *      position: [10, 10]
-         *  }, function () { // done })
-         *
-         *  // Animate shape, style and position in 100ms, delayed 100ms, with cubicOut easing
-         *  el.animateTo({
-         *      shape: {
-         *          width: 500
-         *      },
-         *      style: {
-         *          fill: 'red'
-         *      }
-         *      position: [10, 10]
-         *  }, 100, 100, 'cubicOut', function () { // done })
-         */
-         // TODO Return animation key
-        animateTo: function (target, time, delay, easing, callback) {
-            // animateTo(target, time, easing, callback);
-            if (isString(delay)) {
-                callback = easing;
-                easing = delay;
-                delay = 0;
-            }
-            // animateTo(target, time, delay, callback);
-            else if (isFunction(easing)) {
-                callback = easing;
-                easing = 'linear';
-                delay = 0;
-            }
-            // animateTo(target, time, callback);
-            else if (isFunction(delay)) {
-                callback = delay;
-                delay = 0;
-            }
-            // animateTo(target, callback)
-            else if (isFunction(time)) {
-                callback = time;
-                time = 500;
-            }
-            // animateTo(target)
-            else if (!time) {
-                time = 500;
-            }
-            // Stop all previous animations
-            this.stopAnimation();
-            this._animateToShallow('', this, target, time, delay, easing, callback);
-
-            // Animators may be removed immediately after start
-            // if there is nothing to animate
-            var animators = this.animators.slice();
-            var count = animators.length;
-            function done() {
-                count--;
-                if (!count) {
-                    callback && callback();
-                }
-            }
-
-            // No animators. This should be checked before animators[i].start(),
-            // because 'done' may be executed immediately if no need to animate.
-            if (!count) {
-                callback && callback();
-            }
-            // Start after all animators created
-            // Incase any animator is done immediately when all animation properties are not changed
-            for (var i = 0; i < animators.length; i++) {
-                animators[i]
-                    .done(done)
-                    .start(easing);
-            }
-        },
-
-        /**
-         * @private
-         * @param {string} path=''
-         * @param {Object} source=this
-         * @param {Object} target
-         * @param {number} [time=500]
-         * @param {number} [delay=0]
-         *
-         * @example
-         *  // Animate position
-         *  el._animateToShallow({
-         *      position: [10, 10]
-         *  })
-         *
-         *  // Animate shape, style and position in 100ms, delayed 100ms
-         *  el._animateToShallow({
-         *      shape: {
-         *          width: 500
-         *      },
-         *      style: {
-         *          fill: 'red'
-         *      }
-         *      position: [10, 10]
-         *  }, 100, 100)
-         */
-        _animateToShallow: function (path, source, target, time, delay) {
-            var objShallow = {};
-            var propertyCount = 0;
-            for (var name in target) {
-                if (!target.hasOwnProperty(name)) {
-                    continue;
-                }
-
-                if (source[name] != null) {
-                    if (isObject(target[name]) && !util.isArrayLike(target[name])) {
-                        this._animateToShallow(
-                            path ? path + '.' + name : name,
-                            source[name],
-                            target[name],
-                            time,
-                            delay
-                        );
-                    }
-                    else {
-                        objShallow[name] = target[name];
-                        propertyCount++;
-                    }
-                }
-                else if (target[name] != null) {
-                    // Attr directly if not has property
-                    // FIXME, if some property not needed for element ?
-                    if (!path) {
-                        this.attr(name, target[name]);
-                    }
-                    else {  // Shape or style
-                        var props = {};
-                        props[path] = {};
-                        props[path][name] = target[name];
-                        this.attr(props);
-                    }
-                }
-            }
-
-            if (propertyCount > 0) {
-                this.animate(path, false)
-                    .when(time == null ? 500 : time, objShallow)
-                    .delay(delay || 0);
-            }
-
-            return this;
-        }
-    };
-
-    return Animatable;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * 事件扩展
- * @module zrender/mixin/Eventful
- * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
- *         pissang (https://www.github.com/pissang)
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var arrySlice = Array.prototype.slice;
-
-    /**
-     * 事件分发器
-     * @alias module:zrender/mixin/Eventful
-     * @constructor
-     */
-    var Eventful = function () {
-        this._$handlers = {};
-    };
-
-    Eventful.prototype = {
-
-        constructor: Eventful,
-
-        /**
-         * 单次触发绑定，trigger后销毁
-         *
-         * @param {string} event 事件名
-         * @param {Function} handler 响应函数
-         * @param {Object} context
-         */
-        one: function (event, handler, context) {
-            var _h = this._$handlers;
-
-            if (!handler || !event) {
-                return this;
-            }
-
-            if (!_h[event]) {
-                _h[event] = [];
-            }
-
-            for (var i = 0; i < _h[event].length; i++) {
-                if (_h[event][i].h === handler) {
-                    return this;
-                }
-            }
-
-            _h[event].push({
-                h: handler,
-                one: true,
-                ctx: context || this
-            });
-
-            return this;
-        },
-
-        /**
-         * 绑定事件
-         * @param {string} event 事件名
-         * @param {Function} handler 事件处理函数
-         * @param {Object} [context]
-         */
-        on: function (event, handler, context) {
-            var _h = this._$handlers;
-
-            if (!handler || !event) {
-                return this;
-            }
-
-            if (!_h[event]) {
-                _h[event] = [];
-            }
-
-            for (var i = 0; i < _h[event].length; i++) {
-                if (_h[event][i].h === handler) {
-                    return this;
-                }
-            }
-
-            _h[event].push({
-                h: handler,
-                one: false,
-                ctx: context || this
-            });
-
-            return this;
-        },
-
-        /**
-         * 是否绑定了事件
-         * @param  {string}  event
-         * @return {boolean}
-         */
-        isSilent: function (event) {
-            var _h = this._$handlers;
-            return _h[event] && _h[event].length;
-        },
-
-        /**
-         * 解绑事件
-         * @param {string} event 事件名
-         * @param {Function} [handler] 事件处理函数
-         */
-        off: function (event, handler) {
-            var _h = this._$handlers;
-
-            if (!event) {
-                this._$handlers = {};
-                return this;
-            }
-
-            if (handler) {
-                if (_h[event]) {
-                    var newList = [];
-                    for (var i = 0, l = _h[event].length; i < l; i++) {
-                        if (_h[event][i]['h'] != handler) {
-                            newList.push(_h[event][i]);
-                        }
-                    }
-                    _h[event] = newList;
-                }
-
-                if (_h[event] && _h[event].length === 0) {
-                    delete _h[event];
-                }
-            }
-            else {
-                delete _h[event];
-            }
-
-            return this;
-        },
-
-        /**
-         * 事件分发
-         *
-         * @param {string} type 事件类型
-         */
-        trigger: function (type) {
-            if (this._$handlers[type]) {
-                var args = arguments;
-                var argLen = args.length;
-
-                if (argLen > 3) {
-                    args = arrySlice.call(args, 1);
-                }
-
-                var _h = this._$handlers[type];
-                var len = _h.length;
-                for (var i = 0; i < len;) {
-                    // Optimize advise from backbone
-                    switch (argLen) {
-                        case 1:
-                            _h[i]['h'].call(_h[i]['ctx']);
-                            break;
-                        case 2:
-                            _h[i]['h'].call(_h[i]['ctx'], args[1]);
-                            break;
-                        case 3:
-                            _h[i]['h'].call(_h[i]['ctx'], args[1], args[2]);
-                            break;
-                        default:
-                            // have more than 2 given arguments
-                            _h[i]['h'].apply(_h[i]['ctx'], args);
-                            break;
-                    }
-
-                    if (_h[i]['one']) {
-                        _h.splice(i, 1);
-                        len--;
-                    }
-                    else {
-                        i++;
-                    }
-                }
-            }
-
-            return this;
-        },
-
-        /**
-         * 带有context的事件分发, 最后一个参数是事件回调的context
-         * @param {string} type 事件类型
-         */
-        triggerWithContext: function (type) {
-            if (this._$handlers[type]) {
-                var args = arguments;
-                var argLen = args.length;
-
-                if (argLen > 4) {
-                    args = arrySlice.call(args, 1, args.length - 1);
-                }
-                var ctx = args[args.length - 1];
-
-                var _h = this._$handlers[type];
-                var len = _h.length;
-                for (var i = 0; i < len;) {
-                    // Optimize advise from backbone
-                    switch (argLen) {
-                        case 1:
-                            _h[i]['h'].call(ctx);
-                            break;
-                        case 2:
-                            _h[i]['h'].call(ctx, args[1]);
-                            break;
-                        case 3:
-                            _h[i]['h'].call(ctx, args[1], args[2]);
-                            break;
-                        default:
-                            // have more than 2 given arguments
-                            _h[i]['h'].apply(ctx, args);
-                            break;
-                    }
-
-                    if (_h[i]['one']) {
-                        _h.splice(i, 1);
-                        len--;
-                    }
-                    else {
-                        i++;
-                    }
-                }
-            }
-
-            return this;
-        }
-    };
-
-    // 对象可以通过 onxxxx 绑定事件
-    /**
-     * @event module:zrender/mixin/Eventful#onclick
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#onmouseover
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#onmouseout
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#onmousemove
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#onmousewheel
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#onmousedown
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#onmouseup
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#ondrag
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#ondragstart
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#ondragend
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#ondragenter
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#ondragleave
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#ondragover
-     * @type {Function}
-     * @default null
-     */
-    /**
-     * @event module:zrender/mixin/Eventful#ondrop
-     * @type {Function}
-     * @default null
-     */
-
-    return Eventful;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * 提供变换扩展
- * @module zrender/mixin/Transformable
- * @author pissang (https://www.github.com/pissang)
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    'use strict';
-
-    var matrix = __webpack_require__(23);
-    var vector = __webpack_require__(4);
-    var mIdentity = matrix.identity;
-
-    var EPSILON = 5e-5;
-
-    function isNotAroundZero(val) {
-        return val > EPSILON || val < -EPSILON;
-    }
-
-    /**
-     * @alias module:zrender/mixin/Transformable
-     * @constructor
-     */
-    var Transformable = function (opts) {
-        opts = opts || {};
-        // If there are no given position, rotation, scale
-        if (!opts.position) {
-            /**
-             * 平移
-             * @type {Array.<number>}
-             * @default [0, 0]
-             */
-            this.position = [0, 0];
-        }
-        if (opts.rotation == null) {
-            /**
-             * 旋转
-             * @type {Array.<number>}
-             * @default 0
-             */
-            this.rotation = 0;
-        }
-        if (!opts.scale) {
-            /**
-             * 缩放
-             * @type {Array.<number>}
-             * @default [1, 1]
-             */
-            this.scale = [1, 1];
-        }
-        /**
-         * 旋转和缩放的原点
-         * @type {Array.<number>}
-         * @default null
-         */
-        this.origin = this.origin || null;
-    };
-
-    var transformableProto = Transformable.prototype;
-    transformableProto.transform = null;
-
-    /**
-     * 判断是否需要有坐标变换
-     * 如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
-     */
-    transformableProto.needLocalTransform = function () {
-        return isNotAroundZero(this.rotation)
-            || isNotAroundZero(this.position[0])
-            || isNotAroundZero(this.position[1])
-            || isNotAroundZero(this.scale[0] - 1)
-            || isNotAroundZero(this.scale[1] - 1);
-    };
-
-    transformableProto.updateTransform = function () {
-        var parent = this.parent;
-        var parentHasTransform = parent && parent.transform;
-        var needLocalTransform = this.needLocalTransform();
-
-        var m = this.transform;
-        if (!(needLocalTransform || parentHasTransform)) {
-            m && mIdentity(m);
-            return;
-        }
-
-        m = m || matrix.create();
-
-        if (needLocalTransform) {
-            this.getLocalTransform(m);
-        }
-        else {
-            mIdentity(m);
-        }
-
-        // 应用父节点变换
-        if (parentHasTransform) {
-            if (needLocalTransform) {
-                matrix.mul(m, parent.transform, m);
-            }
-            else {
-                matrix.copy(m, parent.transform);
-            }
-        }
-        // 保存这个变换矩阵
-        this.transform = m;
-
-        this.invTransform = this.invTransform || matrix.create();
-        matrix.invert(this.invTransform, m);
-    };
-
-    transformableProto.getLocalTransform = function (m) {
-        return Transformable.getLocalTransform(this, m);
-    };
-
-    /**
-     * 将自己的transform应用到context上
-     * @param {Context2D} ctx
-     */
-    transformableProto.setTransform = function (ctx) {
-        var m = this.transform;
-        var dpr = ctx.dpr || 1;
-        if (m) {
-            ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
-        }
-        else {
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-    };
-
-    transformableProto.restoreTransform = function (ctx) {
-        var dpr = ctx.dpr || 1;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-
-    var tmpTransform = [];
-
-    /**
-     * 分解`transform`矩阵到`position`, `rotation`, `scale`
-     */
-    transformableProto.decomposeTransform = function () {
-        if (!this.transform) {
-            return;
-        }
-        var parent = this.parent;
-        var m = this.transform;
-        if (parent && parent.transform) {
-            // Get local transform and decompose them to position, scale, rotation
-            matrix.mul(tmpTransform, parent.invTransform, m);
-            m = tmpTransform;
-        }
-        var sx = m[0] * m[0] + m[1] * m[1];
-        var sy = m[2] * m[2] + m[3] * m[3];
-        var position = this.position;
-        var scale = this.scale;
-        if (isNotAroundZero(sx - 1)) {
-            sx = Math.sqrt(sx);
-        }
-        if (isNotAroundZero(sy - 1)) {
-            sy = Math.sqrt(sy);
-        }
-        if (m[0] < 0) {
-            sx = -sx;
-        }
-        if (m[3] < 0) {
-            sy = -sy;
-        }
-        position[0] = m[4];
-        position[1] = m[5];
-        scale[0] = sx;
-        scale[1] = sy;
-        this.rotation = Math.atan2(-m[1] / sy, m[0] / sx);
-    };
-
-    /**
-     * Get global scale
-     * @return {Array.<number>}
-     */
-    transformableProto.getGlobalScale = function () {
-        var m = this.transform;
-        if (!m) {
-            return [1, 1];
-        }
-        var sx = Math.sqrt(m[0] * m[0] + m[1] * m[1]);
-        var sy = Math.sqrt(m[2] * m[2] + m[3] * m[3]);
-        if (m[0] < 0) {
-            sx = -sx;
-        }
-        if (m[3] < 0) {
-            sy = -sy;
-        }
-        return [sx, sy];
-    };
-    /**
-     * 变换坐标位置到 shape 的局部坐标空间
-     * @method
-     * @param {number} x
-     * @param {number} y
-     * @return {Array.<number>}
-     */
-    transformableProto.transformCoordToLocal = function (x, y) {
-        var v2 = [x, y];
-        var invTransform = this.invTransform;
-        if (invTransform) {
-            vector.applyTransform(v2, v2, invTransform);
-        }
-        return v2;
-    };
-
-    /**
-     * 变换局部坐标位置到全局坐标空间
-     * @method
-     * @param {number} x
-     * @param {number} y
-     * @return {Array.<number>}
-     */
-    transformableProto.transformCoordToGlobal = function (x, y) {
-        var v2 = [x, y];
-        var transform = this.transform;
-        if (transform) {
-            vector.applyTransform(v2, v2, transform);
-        }
-        return v2;
-    };
-
-    /**
-     * @static
-     * @param {Object} target
-     * @param {Array.<number>} target.origin
-     * @param {number} target.rotation
-     * @param {Array.<number>} target.position
-     * @param {Array.<number>} [m]
-     */
-    Transformable.getLocalTransform = function (target, m) {
-        m = m || [];
-        mIdentity(m);
-
-        var origin = target.origin;
-        var scale = target.scale || [1, 1];
-        var rotation = target.rotation || 0;
-        var position = target.position || [0, 0];
-
-        if (origin) {
-            // Translate to origin
-            m[4] -= origin[0];
-            m[5] -= origin[1];
-        }
-        matrix.scale(m, m, scale);
-        if (rotation) {
-            matrix.rotate(m, m, rotation);
-        }
-        if (origin) {
-            // Translate back from origin
-            m[4] += origin[0];
-            m[5] += origin[1];
-        }
-
-        m[4] += position[0];
-        m[5] += position[1];
-
-        return m;
-    };
-
-    return Transformable;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @module zrender/tool/color
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
-
-    var LRU = __webpack_require__(58);
-
-    var kCSSColorTable = {
-        'transparent': [0,0,0,0], 'aliceblue': [240,248,255,1],
-        'antiquewhite': [250,235,215,1], 'aqua': [0,255,255,1],
-        'aquamarine': [127,255,212,1], 'azure': [240,255,255,1],
-        'beige': [245,245,220,1], 'bisque': [255,228,196,1],
-        'black': [0,0,0,1], 'blanchedalmond': [255,235,205,1],
-        'blue': [0,0,255,1], 'blueviolet': [138,43,226,1],
-        'brown': [165,42,42,1], 'burlywood': [222,184,135,1],
-        'cadetblue': [95,158,160,1], 'chartreuse': [127,255,0,1],
-        'chocolate': [210,105,30,1], 'coral': [255,127,80,1],
-        'cornflowerblue': [100,149,237,1], 'cornsilk': [255,248,220,1],
-        'crimson': [220,20,60,1], 'cyan': [0,255,255,1],
-        'darkblue': [0,0,139,1], 'darkcyan': [0,139,139,1],
-        'darkgoldenrod': [184,134,11,1], 'darkgray': [169,169,169,1],
-        'darkgreen': [0,100,0,1], 'darkgrey': [169,169,169,1],
-        'darkkhaki': [189,183,107,1], 'darkmagenta': [139,0,139,1],
-        'darkolivegreen': [85,107,47,1], 'darkorange': [255,140,0,1],
-        'darkorchid': [153,50,204,1], 'darkred': [139,0,0,1],
-        'darksalmon': [233,150,122,1], 'darkseagreen': [143,188,143,1],
-        'darkslateblue': [72,61,139,1], 'darkslategray': [47,79,79,1],
-        'darkslategrey': [47,79,79,1], 'darkturquoise': [0,206,209,1],
-        'darkviolet': [148,0,211,1], 'deeppink': [255,20,147,1],
-        'deepskyblue': [0,191,255,1], 'dimgray': [105,105,105,1],
-        'dimgrey': [105,105,105,1], 'dodgerblue': [30,144,255,1],
-        'firebrick': [178,34,34,1], 'floralwhite': [255,250,240,1],
-        'forestgreen': [34,139,34,1], 'fuchsia': [255,0,255,1],
-        'gainsboro': [220,220,220,1], 'ghostwhite': [248,248,255,1],
-        'gold': [255,215,0,1], 'goldenrod': [218,165,32,1],
-        'gray': [128,128,128,1], 'green': [0,128,0,1],
-        'greenyellow': [173,255,47,1], 'grey': [128,128,128,1],
-        'honeydew': [240,255,240,1], 'hotpink': [255,105,180,1],
-        'indianred': [205,92,92,1], 'indigo': [75,0,130,1],
-        'ivory': [255,255,240,1], 'khaki': [240,230,140,1],
-        'lavender': [230,230,250,1], 'lavenderblush': [255,240,245,1],
-        'lawngreen': [124,252,0,1], 'lemonchiffon': [255,250,205,1],
-        'lightblue': [173,216,230,1], 'lightcoral': [240,128,128,1],
-        'lightcyan': [224,255,255,1], 'lightgoldenrodyellow': [250,250,210,1],
-        'lightgray': [211,211,211,1], 'lightgreen': [144,238,144,1],
-        'lightgrey': [211,211,211,1], 'lightpink': [255,182,193,1],
-        'lightsalmon': [255,160,122,1], 'lightseagreen': [32,178,170,1],
-        'lightskyblue': [135,206,250,1], 'lightslategray': [119,136,153,1],
-        'lightslategrey': [119,136,153,1], 'lightsteelblue': [176,196,222,1],
-        'lightyellow': [255,255,224,1], 'lime': [0,255,0,1],
-        'limegreen': [50,205,50,1], 'linen': [250,240,230,1],
-        'magenta': [255,0,255,1], 'maroon': [128,0,0,1],
-        'mediumaquamarine': [102,205,170,1], 'mediumblue': [0,0,205,1],
-        'mediumorchid': [186,85,211,1], 'mediumpurple': [147,112,219,1],
-        'mediumseagreen': [60,179,113,1], 'mediumslateblue': [123,104,238,1],
-        'mediumspringgreen': [0,250,154,1], 'mediumturquoise': [72,209,204,1],
-        'mediumvioletred': [199,21,133,1], 'midnightblue': [25,25,112,1],
-        'mintcream': [245,255,250,1], 'mistyrose': [255,228,225,1],
-        'moccasin': [255,228,181,1], 'navajowhite': [255,222,173,1],
-        'navy': [0,0,128,1], 'oldlace': [253,245,230,1],
-        'olive': [128,128,0,1], 'olivedrab': [107,142,35,1],
-        'orange': [255,165,0,1], 'orangered': [255,69,0,1],
-        'orchid': [218,112,214,1], 'palegoldenrod': [238,232,170,1],
-        'palegreen': [152,251,152,1], 'paleturquoise': [175,238,238,1],
-        'palevioletred': [219,112,147,1], 'papayawhip': [255,239,213,1],
-        'peachpuff': [255,218,185,1], 'peru': [205,133,63,1],
-        'pink': [255,192,203,1], 'plum': [221,160,221,1],
-        'powderblue': [176,224,230,1], 'purple': [128,0,128,1],
-        'red': [255,0,0,1], 'rosybrown': [188,143,143,1],
-        'royalblue': [65,105,225,1], 'saddlebrown': [139,69,19,1],
-        'salmon': [250,128,114,1], 'sandybrown': [244,164,96,1],
-        'seagreen': [46,139,87,1], 'seashell': [255,245,238,1],
-        'sienna': [160,82,45,1], 'silver': [192,192,192,1],
-        'skyblue': [135,206,235,1], 'slateblue': [106,90,205,1],
-        'slategray': [112,128,144,1], 'slategrey': [112,128,144,1],
-        'snow': [255,250,250,1], 'springgreen': [0,255,127,1],
-        'steelblue': [70,130,180,1], 'tan': [210,180,140,1],
-        'teal': [0,128,128,1], 'thistle': [216,191,216,1],
-        'tomato': [255,99,71,1], 'turquoise': [64,224,208,1],
-        'violet': [238,130,238,1], 'wheat': [245,222,179,1],
-        'white': [255,255,255,1], 'whitesmoke': [245,245,245,1],
-        'yellow': [255,255,0,1], 'yellowgreen': [154,205,50,1]
-    };
-
-    function clampCssByte(i) {  // Clamp to integer 0 .. 255.
-        i = Math.round(i);  // Seems to be what Chrome does (vs truncation).
-        return i < 0 ? 0 : i > 255 ? 255 : i;
-    }
-
-    function clampCssAngle(i) {  // Clamp to integer 0 .. 360.
-        i = Math.round(i);  // Seems to be what Chrome does (vs truncation).
-        return i < 0 ? 0 : i > 360 ? 360 : i;
-    }
-
-    function clampCssFloat(f) {  // Clamp to float 0.0 .. 1.0.
-        return f < 0 ? 0 : f > 1 ? 1 : f;
-    }
-
-    function parseCssInt(str) {  // int or percentage.
-        if (str.length && str.charAt(str.length - 1) === '%') {
-            return clampCssByte(parseFloat(str) / 100 * 255);
-        }
-        return clampCssByte(parseInt(str, 10));
-    }
-
-    function parseCssFloat(str) {  // float or percentage.
-        if (str.length && str.charAt(str.length - 1) === '%') {
-            return clampCssFloat(parseFloat(str) / 100);
-        }
-        return clampCssFloat(parseFloat(str));
-    }
-
-    function cssHueToRgb(m1, m2, h) {
-        if (h < 0) {
-            h += 1;
-        }
-        else if (h > 1) {
-            h -= 1;
-        }
-
-        if (h * 6 < 1) {
-            return m1 + (m2 - m1) * h * 6;
-        }
-        if (h * 2 < 1) {
-            return m2;
-        }
-        if (h * 3 < 2) {
-            return m1 + (m2 - m1) * (2/3 - h) * 6;
-        }
-        return m1;
-    }
-
-    function lerp(a, b, p) {
-        return a + (b - a) * p;
-    }
-
-    function setRgba(out, r, g, b, a) {
-        out[0] = r; out[1] = g; out[2] = b; out[3] = a;
-        return out;
-    }
-    function copyRgba(out, a) {
-        out[0] = a[0]; out[1] = a[1]; out[2] = a[2]; out[3] = a[3];
-        return out;
-    }
-    var colorCache = new LRU(20);
-    var lastRemovedArr = null;
-    function putToCache(colorStr, rgbaArr) {
-        // Reuse removed array
-        if (lastRemovedArr) {
-            copyRgba(lastRemovedArr, rgbaArr);
-        }
-        lastRemovedArr = colorCache.put(colorStr, lastRemovedArr || (rgbaArr.slice()));
-    }
-    /**
-     * @param {string} colorStr
-     * @param {Array.<number>} out
-     * @return {Array.<number>}
-     * @memberOf module:zrender/util/color
-     */
-    function parse(colorStr, rgbaArr) {
-        if (!colorStr) {
-            return;
-        }
-        rgbaArr = rgbaArr || [];
-
-        var cached = colorCache.get(colorStr);
-        if (cached) {
-            return copyRgba(rgbaArr, cached);
-        }
-
-        // colorStr may be not string
-        colorStr = colorStr + '';
-        // Remove all whitespace, not compliant, but should just be more accepting.
-        var str = colorStr.replace(/ /g, '').toLowerCase();
-
-        // Color keywords (and transparent) lookup.
-        if (str in kCSSColorTable) {
-            copyRgba(rgbaArr, kCSSColorTable[str]);
-            putToCache(colorStr, rgbaArr);
-            return rgbaArr;
-        }
-
-        // #abc and #abc123 syntax.
-        if (str.charAt(0) === '#') {
-            if (str.length === 4) {
-                var iv = parseInt(str.substr(1), 16);  // TODO(deanm): Stricter parsing.
-                if (!(iv >= 0 && iv <= 0xfff)) {
-                    setRgba(rgbaArr, 0, 0, 0, 1);
-                    return;  // Covers NaN.
-                }
-                setRgba(rgbaArr,
-                    ((iv & 0xf00) >> 4) | ((iv & 0xf00) >> 8),
-                    (iv & 0xf0) | ((iv & 0xf0) >> 4),
-                    (iv & 0xf) | ((iv & 0xf) << 4),
-                    1
-                );
-                putToCache(colorStr, rgbaArr);
-                return rgbaArr;
-            }
-            else if (str.length === 7) {
-                var iv = parseInt(str.substr(1), 16);  // TODO(deanm): Stricter parsing.
-                if (!(iv >= 0 && iv <= 0xffffff)) {
-                    setRgba(rgbaArr, 0, 0, 0, 1);
-                    return;  // Covers NaN.
-                }
-                setRgba(rgbaArr,
-                    (iv & 0xff0000) >> 16,
-                    (iv & 0xff00) >> 8,
-                    iv & 0xff,
-                    1
-                );
-                putToCache(colorStr, rgbaArr);
-                return rgbaArr;
-            }
-
-            return;
-        }
-        var op = str.indexOf('('), ep = str.indexOf(')');
-        if (op !== -1 && ep + 1 === str.length) {
-            var fname = str.substr(0, op);
-            var params = str.substr(op + 1, ep - (op + 1)).split(',');
-            var alpha = 1;  // To allow case fallthrough.
-            switch (fname) {
-                case 'rgba':
-                    if (params.length !== 4) {
-                        setRgba(rgbaArr, 0, 0, 0, 1);
-                        return;
-                    }
-                    alpha = parseCssFloat(params.pop()); // jshint ignore:line
-                // Fall through.
-                case 'rgb':
-                    if (params.length !== 3) {
-                        setRgba(rgbaArr, 0, 0, 0, 1);
-                        return;
-                    }
-                    setRgba(rgbaArr,
-                        parseCssInt(params[0]),
-                        parseCssInt(params[1]),
-                        parseCssInt(params[2]),
-                        alpha
-                    );
-                    putToCache(colorStr, rgbaArr);
-                    return rgbaArr;
-                case 'hsla':
-                    if (params.length !== 4) {
-                        setRgba(rgbaArr, 0, 0, 0, 1);
-                        return;
-                    }
-                    params[3] = parseCssFloat(params[3]);
-                    hsla2rgba(params, rgbaArr);
-                    putToCache(colorStr, rgbaArr);
-                    return rgbaArr;
-                case 'hsl':
-                    if (params.length !== 3) {
-                        setRgba(rgbaArr, 0, 0, 0, 1);
-                        return;
-                    }
-                    hsla2rgba(params, rgbaArr);
-                    putToCache(colorStr, rgbaArr);
-                    return rgbaArr;
-                default:
-                    return;
-            }
-        }
-
-        setRgba(rgbaArr, 0, 0, 0, 1);
-        return;
-    }
-
-    /**
-     * @param {Array.<number>} hsla
-     * @param {Array.<number>} rgba
-     * @return {Array.<number>} rgba
-     */
-    function hsla2rgba(hsla, rgba) {
-        var h = (((parseFloat(hsla[0]) % 360) + 360) % 360) / 360;  // 0 .. 1
-        // NOTE(deanm): According to the CSS spec s/l should only be
-        // percentages, but we don't bother and let float or percentage.
-        var s = parseCssFloat(hsla[1]);
-        var l = parseCssFloat(hsla[2]);
-        var m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s;
-        var m1 = l * 2 - m2;
-
-        rgba = rgba || [];
-        setRgba(rgba,
-            clampCssByte(cssHueToRgb(m1, m2, h + 1 / 3) * 255),
-            clampCssByte(cssHueToRgb(m1, m2, h) * 255),
-            clampCssByte(cssHueToRgb(m1, m2, h - 1 / 3) * 255),
-            1
-        );
-
-        if (hsla.length === 4) {
-            rgba[3] = hsla[3];
-        }
-
-        return rgba;
-    }
-
-    /**
-     * @param {Array.<number>} rgba
-     * @return {Array.<number>} hsla
-     */
-    function rgba2hsla(rgba) {
-        if (!rgba) {
-            return;
-        }
-
-        // RGB from 0 to 255
-        var R = rgba[0] / 255;
-        var G = rgba[1] / 255;
-        var B = rgba[2] / 255;
-
-        var vMin = Math.min(R, G, B); // Min. value of RGB
-        var vMax = Math.max(R, G, B); // Max. value of RGB
-        var delta = vMax - vMin; // Delta RGB value
-
-        var L = (vMax + vMin) / 2;
-        var H;
-        var S;
-        // HSL results from 0 to 1
-        if (delta === 0) {
-            H = 0;
-            S = 0;
-        }
-        else {
-            if (L < 0.5) {
-                S = delta / (vMax + vMin);
-            }
-            else {
-                S = delta / (2 - vMax - vMin);
-            }
-
-            var deltaR = (((vMax - R) / 6) + (delta / 2)) / delta;
-            var deltaG = (((vMax - G) / 6) + (delta / 2)) / delta;
-            var deltaB = (((vMax - B) / 6) + (delta / 2)) / delta;
-
-            if (R === vMax) {
-                H = deltaB - deltaG;
-            }
-            else if (G === vMax) {
-                H = (1 / 3) + deltaR - deltaB;
-            }
-            else if (B === vMax) {
-                H = (2 / 3) + deltaG - deltaR;
-            }
-
-            if (H < 0) {
-                H += 1;
-            }
-
-            if (H > 1) {
-                H -= 1;
-            }
-        }
-
-        var hsla = [H * 360, S, L];
-
-        if (rgba[3] != null) {
-            hsla.push(rgba[3]);
-        }
-
-        return hsla;
-    }
-
-    /**
-     * @param {string} color
-     * @param {number} level
-     * @return {string}
-     * @memberOf module:zrender/util/color
-     */
-    function lift(color, level) {
-        var colorArr = parse(color);
-        if (colorArr) {
-            for (var i = 0; i < 3; i++) {
-                if (level < 0) {
-                    colorArr[i] = colorArr[i] * (1 - level) | 0;
-                }
-                else {
-                    colorArr[i] = ((255 - colorArr[i]) * level + colorArr[i]) | 0;
-                }
-            }
-            return stringify(colorArr, colorArr.length === 4 ? 'rgba' : 'rgb');
-        }
-    }
-
-    /**
-     * @param {string} color
-     * @return {string}
-     * @memberOf module:zrender/util/color
-     */
-    function toHex(color, level) {
-        var colorArr = parse(color);
-        if (colorArr) {
-            return ((1 << 24) + (colorArr[0] << 16) + (colorArr[1] << 8) + (+colorArr[2])).toString(16).slice(1);
-        }
-    }
-
-    /**
-     * Map value to color. Faster than mapToColor methods because color is represented by rgba array.
-     * @param {number} normalizedValue A float between 0 and 1.
-     * @param {Array.<Array.<number>>} colors List of rgba color array
-     * @param {Array.<number>} [out] Mapped gba color array
-     * @return {Array.<number>} will be null/undefined if input illegal.
-     */
-    function fastMapToColor(normalizedValue, colors, out) {
-        if (!(colors && colors.length)
-            || !(normalizedValue >= 0 && normalizedValue <= 1)
-        ) {
-            return;
-        }
-
-        out = out || [];
-
-        var value = normalizedValue * (colors.length - 1);
-        var leftIndex = Math.floor(value);
-        var rightIndex = Math.ceil(value);
-        var leftColor = colors[leftIndex];
-        var rightColor = colors[rightIndex];
-        var dv = value - leftIndex;
-        out[0] = clampCssByte(lerp(leftColor[0], rightColor[0], dv));
-        out[1] = clampCssByte(lerp(leftColor[1], rightColor[1], dv));
-        out[2] = clampCssByte(lerp(leftColor[2], rightColor[2], dv));
-        out[3] = clampCssFloat(lerp(leftColor[3], rightColor[3], dv));
-
-        return out;
-    }
-    /**
-     * @param {number} normalizedValue A float between 0 and 1.
-     * @param {Array.<string>} colors Color list.
-     * @param {boolean=} fullOutput Default false.
-     * @return {(string|Object)} Result color. If fullOutput,
-     *                           return {color: ..., leftIndex: ..., rightIndex: ..., value: ...},
-     * @memberOf module:zrender/util/color
-     */
-    function mapToColor(normalizedValue, colors, fullOutput) {
-        if (!(colors && colors.length)
-            || !(normalizedValue >= 0 && normalizedValue <= 1)
-        ) {
-            return;
-        }
-
-        var value = normalizedValue * (colors.length - 1);
-        var leftIndex = Math.floor(value);
-        var rightIndex = Math.ceil(value);
-        var leftColor = parse(colors[leftIndex]);
-        var rightColor = parse(colors[rightIndex]);
-        var dv = value - leftIndex;
-
-        var color = stringify(
-            [
-                clampCssByte(lerp(leftColor[0], rightColor[0], dv)),
-                clampCssByte(lerp(leftColor[1], rightColor[1], dv)),
-                clampCssByte(lerp(leftColor[2], rightColor[2], dv)),
-                clampCssFloat(lerp(leftColor[3], rightColor[3], dv))
-            ],
-            'rgba'
-        );
-
-        return fullOutput
-            ? {
-                color: color,
-                leftIndex: leftIndex,
-                rightIndex: rightIndex,
-                value: value
-            }
-            : color;
-    }
-
-    /**
-     * @param {string} color
-     * @param {number=} h 0 ~ 360, ignore when null.
-     * @param {number=} s 0 ~ 1, ignore when null.
-     * @param {number=} l 0 ~ 1, ignore when null.
-     * @return {string} Color string in rgba format.
-     * @memberOf module:zrender/util/color
-     */
-    function modifyHSL(color, h, s, l) {
-        color = parse(color);
-
-        if (color) {
-            color = rgba2hsla(color);
-            h != null && (color[0] = clampCssAngle(h));
-            s != null && (color[1] = parseCssFloat(s));
-            l != null && (color[2] = parseCssFloat(l));
-
-            return stringify(hsla2rgba(color), 'rgba');
-        }
-    }
-
-    /**
-     * @param {string} color
-     * @param {number=} alpha 0 ~ 1
-     * @return {string} Color string in rgba format.
-     * @memberOf module:zrender/util/color
-     */
-    function modifyAlpha(color, alpha) {
-        color = parse(color);
-
-        if (color && alpha != null) {
-            color[3] = clampCssFloat(alpha);
-            return stringify(color, 'rgba');
-        }
-    }
-
-    /**
-     * @param {Array.<number>} arrColor like [12,33,44,0.4]
-     * @param {string} type 'rgba', 'hsva', ...
-     * @return {string} Result color. (If input illegal, return undefined).
-     */
-    function stringify(arrColor, type) {
-        if (!arrColor || !arrColor.length) {
-            return;
-        }
-        var colorStr = arrColor[0] + ',' + arrColor[1] + ',' + arrColor[2];
-        if (type === 'rgba' || type === 'hsva' || type === 'hsla') {
-            colorStr += ',' + arrColor[3];
-        }
-        return type + '(' + colorStr + ')';
-    }
-
-    return {
-        parse: parse,
-        lift: lift,
-        toHex: toHex,
-        fastMapToColor: fastMapToColor,
-        mapToColor: mapToColor,
-        modifyHSL: modifyHSL,
-        modifyAlpha: modifyAlpha,
-        stringify: stringify
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var smoothSpline = __webpack_require__(74);
-    var smoothBezier = __webpack_require__(73);
-
-    return {
-        buildPath: function (ctx, shape, closePath) {
-            var points = shape.points;
-            var smooth = shape.smooth;
-            if (points && points.length >= 2) {
-                if (smooth && smooth !== 'spline') {
-                    var controlPoints = smoothBezier(
-                        points, smooth, closePath, shape.smoothConstraint
-                    );
-
-                    ctx.moveTo(points[0][0], points[0][1]);
-                    var len = points.length;
-                    for (var i = 0; i < (closePath ? len : len - 1); i++) {
-                        var cp1 = controlPoints[i * 2];
-                        var cp2 = controlPoints[i * 2 + 1];
-                        var p = points[(i + 1) % len];
-                        ctx.bezierCurveTo(
-                            cp1[0], cp1[1], cp2[0], cp2[1], p[0], p[1]
-                        );
-                    }
-                }
-                else {
-                    if (smooth === 'spline') {
-                        points = smoothSpline(points, closePath);
-                    }
-
-                    ctx.moveTo(points[0][0], points[0][1]);
-                    for (var i = 1, l = points.length; i < l; i++) {
-                        ctx.lineTo(points[i][0], points[i][1]);
-                    }
-                }
-
-                closePath && ctx.closePath();
-            }
-        }
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * 贝塞尔平滑曲线
- * @module zrender/shape/util/smoothBezier
- * @author pissang (https://www.github.com/pissang)
- *         Kener (@Kener-林峰, kener.linfeng@gmail.com)
- *         errorrik (errorrik@gmail.com)
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var vec2 = __webpack_require__(4);
-    var v2Min = vec2.min;
-    var v2Max = vec2.max;
-    var v2Scale = vec2.scale;
-    var v2Distance = vec2.distance;
-    var v2Add = vec2.add;
-
-    /**
-     * 贝塞尔平滑曲线
-     * @alias module:zrender/shape/util/smoothBezier
-     * @param {Array} points 线段顶点数组
-     * @param {number} smooth 平滑等级, 0-1
-     * @param {boolean} isLoop
-     * @param {Array} constraint 将计算出来的控制点约束在一个包围盒内
-     *                           比如 [[0, 0], [100, 100]], 这个包围盒会与
-     *                           整个折线的包围盒做一个并集用来约束控制点。
-     * @param {Array} 计算出来的控制点数组
-     */
-    return function (points, smooth, isLoop, constraint) {
-        var cps = [];
-
-        var v = [];
-        var v1 = [];
-        var v2 = [];
-        var prevPoint;
-        var nextPoint;
-
-        var min, max;
-        if (constraint) {
-            min = [Infinity, Infinity];
-            max = [-Infinity, -Infinity];
-            for (var i = 0, len = points.length; i < len; i++) {
-                v2Min(min, min, points[i]);
-                v2Max(max, max, points[i]);
-            }
-            // 与指定的包围盒做并集
-            v2Min(min, min, constraint[0]);
-            v2Max(max, max, constraint[1]);
-        }
-
-        for (var i = 0, len = points.length; i < len; i++) {
-            var point = points[i];
-
-            if (isLoop) {
-                prevPoint = points[i ? i - 1 : len - 1];
-                nextPoint = points[(i + 1) % len];
-            }
-            else {
-                if (i === 0 || i === len - 1) {
-                    cps.push(vec2.clone(points[i]));
-                    continue;
-                }
-                else {
-                    prevPoint = points[i - 1];
-                    nextPoint = points[i + 1];
-                }
-            }
-
-            vec2.sub(v, nextPoint, prevPoint);
-
-            // use degree to scale the handle length
-            v2Scale(v, v, smooth);
-
-            var d0 = v2Distance(point, prevPoint);
-            var d1 = v2Distance(point, nextPoint);
-            var sum = d0 + d1;
-            if (sum !== 0) {
-                d0 /= sum;
-                d1 /= sum;
-            }
-
-            v2Scale(v1, v, -d0);
-            v2Scale(v2, v, d1);
-            var cp0 = v2Add([], point, v1);
-            var cp1 = v2Add([], point, v2);
-            if (constraint) {
-                v2Max(cp0, cp0, min);
-                v2Min(cp0, cp0, max);
-                v2Max(cp1, cp1, min);
-                v2Min(cp1, cp1, max);
-            }
-            cps.push(cp0);
-            cps.push(cp1);
-        }
-
-        if (isLoop) {
-            cps.push(cps.shift());
-        }
-
-        return cps;
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * Catmull-Rom spline 插值折线
- * @module zrender/shape/util/smoothSpline
- * @author pissang (https://www.github.com/pissang)
- *         Kener (@Kener-林峰, kener.linfeng@gmail.com)
- *         errorrik (errorrik@gmail.com)
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-    var vec2 = __webpack_require__(4);
-
-    /**
-     * @inner
-     */
-    function interpolate(p0, p1, p2, p3, t, t2, t3) {
-        var v0 = (p2 - p0) * 0.5;
-        var v1 = (p3 - p1) * 0.5;
-        return (2 * (p1 - p2) + v0 + v1) * t3
-                + (-3 * (p1 - p2) - 2 * v0 - v1) * t2
-                + v0 * t + p1;
-    }
-
-    /**
-     * @alias module:zrender/shape/util/smoothSpline
-     * @param {Array} points 线段顶点数组
-     * @param {boolean} isLoop
-     * @return {Array}
-     */
-    return function (points, isLoop) {
-        var len = points.length;
-        var ret = [];
-
-        var distance = 0;
-        for (var i = 1; i < len; i++) {
-            distance += vec2.distance(points[i - 1], points[i]);
-        }
-
-        var segs = distance / 2;
-        segs = segs < len ? len : segs;
-        for (var i = 0; i < segs; i++) {
-            var pos = i / (segs - 1) * (isLoop ? len : len - 1);
-            var idx = Math.floor(pos);
-
-            var w = pos - idx;
-
-            var p0;
-            var p1 = points[idx % len];
-            var p2;
-            var p3;
-            if (!isLoop) {
-                p0 = points[idx === 0 ? idx : idx - 1];
-                p2 = points[idx > len - 2 ? len - 1 : idx + 1];
-                p3 = points[idx > len - 3 ? len - 1 : idx + 2];
-            }
-            else {
-                p0 = points[(idx - 1 + len) % len];
-                p2 = points[(idx + 1) % len];
-                p3 = points[(idx + 2) % len];
-            }
-
-            var w2 = w * w;
-            var w3 = w * w2;
-
-            ret.push([
-                interpolate(p0[0], p1[0], p2[0], p3[0], w, w2, w3),
-                interpolate(p0[1], p1[1], p2[1], p3[1], w, w2, w3)
-            ]);
-        }
-        return ret;
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * @module zrender/graphic/shape/Polyline
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
-
-    var polyHelper = __webpack_require__(72);
-
-    return __webpack_require__(63).extend({
-        
-        type: 'polyline',
-
-        shape: {
-            points: null,
-
-            smooth: false,
-
-            smoothConstraint: null
-        },
-
-        style: {
-            stroke: '#000',
-
-            fill: null
-        },
-
-        buildPath: function (ctx, shape) {
-            polyHelper.buildPath(ctx, shape, false);
-        }
-    });
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 76 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -18959,7 +16744,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 !(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
     'use strict';
 
-    return __webpack_require__(63).extend({
+    return __webpack_require__(20).extend({
 
         type: 'circle',
 
@@ -18991,997 +16776,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 
 /***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * echarts设备环境识别
- *
- * @desc echarts基于Canvas，纯Javascript图表库，提供直观，生动，可交互，可个性化定制的数据统计图表。
- * @author firede[firede@firede.us]
- * @desc thanks zepto.
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-    var env = {};
-    if (typeof navigator === 'undefined') {
-        // In node
-        env = {
-            browser: {},
-            os: {},
-            node: true,
-            // Assume canvas is supported
-            canvasSupported: true
-        };
-    }
-    else {
-        env = detect(navigator.userAgent);
-    }
-
-    return env;
-
-    // Zepto.js
-    // (c) 2010-2013 Thomas Fuchs
-    // Zepto.js may be freely distributed under the MIT license.
-
-    function detect(ua) {
-        var os = {};
-        var browser = {};
-        // var webkit = ua.match(/Web[kK]it[\/]{0,1}([\d.]+)/);
-        // var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/);
-        // var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
-        // var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
-        // var iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/);
-        // var webos = ua.match(/(webOS|hpwOS)[\s\/]([\d.]+)/);
-        // var touchpad = webos && ua.match(/TouchPad/);
-        // var kindle = ua.match(/Kindle\/([\d.]+)/);
-        // var silk = ua.match(/Silk\/([\d._]+)/);
-        // var blackberry = ua.match(/(BlackBerry).*Version\/([\d.]+)/);
-        // var bb10 = ua.match(/(BB10).*Version\/([\d.]+)/);
-        // var rimtabletos = ua.match(/(RIM\sTablet\sOS)\s([\d.]+)/);
-        // var playbook = ua.match(/PlayBook/);
-        // var chrome = ua.match(/Chrome\/([\d.]+)/) || ua.match(/CriOS\/([\d.]+)/);
-        var firefox = ua.match(/Firefox\/([\d.]+)/);
-        // var safari = webkit && ua.match(/Mobile\//) && !chrome;
-        // var webview = ua.match(/(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/) && !chrome;
-        var ie = ua.match(/MSIE\s([\d.]+)/)
-            // IE 11 Trident/7.0; rv:11.0
-            || ua.match(/Trident\/.+?rv:(([\d.]+))/);
-        var edge = ua.match(/Edge\/([\d.]+)/); // IE 12 and 12+
-
-        var weChat = (/micromessenger/i).test(ua);
-
-        // Todo: clean this up with a better OS/browser seperation:
-        // - discern (more) between multiple browsers on android
-        // - decide if kindle fire in silk mode is android or not
-        // - Firefox on Android doesn't specify the Android version
-        // - possibly devide in os, device and browser hashes
-
-        // if (browser.webkit = !!webkit) browser.version = webkit[1];
-
-        // if (android) os.android = true, os.version = android[2];
-        // if (iphone && !ipod) os.ios = os.iphone = true, os.version = iphone[2].replace(/_/g, '.');
-        // if (ipad) os.ios = os.ipad = true, os.version = ipad[2].replace(/_/g, '.');
-        // if (ipod) os.ios = os.ipod = true, os.version = ipod[3] ? ipod[3].replace(/_/g, '.') : null;
-        // if (webos) os.webos = true, os.version = webos[2];
-        // if (touchpad) os.touchpad = true;
-        // if (blackberry) os.blackberry = true, os.version = blackberry[2];
-        // if (bb10) os.bb10 = true, os.version = bb10[2];
-        // if (rimtabletos) os.rimtabletos = true, os.version = rimtabletos[2];
-        // if (playbook) browser.playbook = true;
-        // if (kindle) os.kindle = true, os.version = kindle[1];
-        // if (silk) browser.silk = true, browser.version = silk[1];
-        // if (!silk && os.android && ua.match(/Kindle Fire/)) browser.silk = true;
-        // if (chrome) browser.chrome = true, browser.version = chrome[1];
-        if (firefox) {
-            browser.firefox = true;
-            browser.version = firefox[1];
-        }
-        // if (safari && (ua.match(/Safari/) || !!os.ios)) browser.safari = true;
-        // if (webview) browser.webview = true;
-
-        if (ie) {
-            browser.ie = true;
-            browser.version = ie[1];
-        }
-
-        if (edge) {
-            browser.edge = true;
-            browser.version = edge[1];
-        }
-
-        // It is difficult to detect WeChat in Win Phone precisely, because ua can
-        // not be set on win phone. So we do not consider Win Phone.
-        if (weChat) {
-            browser.weChat = true;
-        }
-
-        // os.tablet = !!(ipad || playbook || (android && !ua.match(/Mobile/)) ||
-        //     (firefox && ua.match(/Tablet/)) || (ie && !ua.match(/Phone/) && ua.match(/Touch/)));
-        // os.phone  = !!(!os.tablet && !os.ipod && (android || iphone || webos ||
-        //     (chrome && ua.match(/Android/)) || (chrome && ua.match(/CriOS\/([\d.]+)/)) ||
-        //     (firefox && ua.match(/Mobile/)) || (ie && ua.match(/Touch/))));
-
-        return {
-            browser: browser,
-            os: os,
-            node: false,
-            // 原生canvas支持，改极端点了
-            // canvasSupported : !(browser.ie && parseFloat(browser.version) < 9)
-            canvasSupported : document.createElement('canvas').getContext ? true : false,
-            // @see <http://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript>
-            // works on most browsers
-            // IE10/11 does not support touch event, and MS Edge supports them but not by
-            // default, so we dont check navigator.maxTouchPoints for them here.
-            touchEventsSupported: 'ontouchstart' in window && !browser.ie && !browser.edge,
-            // <http://caniuse.com/#search=pointer%20event>.
-            pointerEventsSupported: 'onpointerdown' in window
-                // Firefox supports pointer but not by default, only MS browsers are reliable on pointer
-                // events currently. So we dont use that on other browsers unless tested sufficiently.
-                // Although IE 10 supports pointer event, it use old style and is different from the
-                // standard. So we exclude that. (IE 10 is hardly used on touch device)
-                && (browser.edge || (browser.ie && browser.version >= 11))
-        };
-    }
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;/**
- * 事件辅助类
- * @module zrender/core/event
- * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
- */
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
-
-    'use strict';
-
-    var Eventful = __webpack_require__(69);
-    var env = __webpack_require__(77);
-
-    var isDomLevel2 = (typeof window !== 'undefined') && !!window.addEventListener;
-
-    function getBoundingClientRect(el) {
-        // BlackBerry 5, iOS 3 (original iPhone) don't have getBoundingRect
-        return el.getBoundingClientRect ? el.getBoundingClientRect() : {left: 0, top: 0};
-    }
-
-    // `calculate` is optional, default false
-    function clientToLocal(el, e, out, calculate) {
-        out = out || {};
-
-        // According to the W3C Working Draft, offsetX and offsetY should be relative
-        // to the padding edge of the target element. The only browser using this convention
-        // is IE. Webkit uses the border edge, Opera uses the content edge, and FireFox does
-        // not support the properties.
-        // (see http://www.jacklmoore.com/notes/mouse-position/)
-        // In zr painter.dom, padding edge equals to border edge.
-
-        // FIXME
-        // When mousemove event triggered on ec tooltip, target is not zr painter.dom, and
-        // offsetX/Y is relative to e.target, where the calculation of zrX/Y via offsetX/Y
-        // is too complex. So css-transfrom dont support in this case temporarily.
-        if (calculate || !env.canvasSupported) {
-            defaultGetZrXY(el, e, out);
-        }
-        // Caution: In FireFox, layerX/layerY Mouse position relative to the closest positioned
-        // ancestor element, so we should make sure el is positioned (e.g., not position:static).
-        // BTW1, Webkit don't return the same results as FF in non-simple cases (like add
-        // zoom-factor, overflow / opacity layers, transforms ...)
-        // BTW2, (ev.offsetY || ev.pageY - $(ev.target).offset().top) is not correct in preserve-3d.
-        // <https://bugs.jquery.com/ticket/8523#comment:14>
-        // BTW3, In ff, offsetX/offsetY is always 0.
-        else if (env.browser.firefox && e.layerX != null && e.layerX !== e.offsetX) {
-            out.zrX = e.layerX;
-            out.zrY = e.layerY;
-        }
-        // For IE6+, chrome, safari, opera. (When will ff support offsetX?)
-        else if (e.offsetX != null) {
-            out.zrX = e.offsetX;
-            out.zrY = e.offsetY;
-        }
-        // For some other device, e.g., IOS safari.
-        else {
-            defaultGetZrXY(el, e, out);
-        }
-
-        return out;
-    }
-
-    function defaultGetZrXY(el, e, out) {
-        // This well-known method below does not support css transform.
-        var box = getBoundingClientRect(el);
-        out.zrX = e.clientX - box.left;
-        out.zrY = e.clientY - box.top;
-    }
-
-    /**
-     * 如果存在第三方嵌入的一些dom触发的事件，或touch事件，需要转换一下事件坐标.
-     * `calculate` is optional, default false.
-     */
-    function normalizeEvent(el, e, calculate) {
-
-        e = e || window.event;
-
-        if (e.zrX != null) {
-            return e;
-        }
-
-        var eventType = e.type;
-        var isTouch = eventType && eventType.indexOf('touch') >= 0;
-
-        if (!isTouch) {
-            clientToLocal(el, e, e, calculate);
-            e.zrDelta = (e.wheelDelta) ? e.wheelDelta / 120 : -(e.detail || 0) / 3;
-        }
-        else {
-            var touch = eventType != 'touchend'
-                ? e.targetTouches[0]
-                : e.changedTouches[0];
-            touch && clientToLocal(el, touch, e, calculate);
-        }
-
-        return e;
-    }
-
-    function addEventListener(el, name, handler) {
-        if (isDomLevel2) {
-            el.addEventListener(name, handler);
-        }
-        else {
-            el.attachEvent('on' + name, handler);
-        }
-    }
-
-    function removeEventListener(el, name, handler) {
-        if (isDomLevel2) {
-            el.removeEventListener(name, handler);
-        }
-        else {
-            el.detachEvent('on' + name, handler);
-        }
-    }
-
-    /**
-     * preventDefault and stopPropagation.
-     * Notice: do not do that in zrender. Upper application
-     * do that if necessary.
-     *
-     * @memberOf module:zrender/core/event
-     * @method
-     * @param {Event} e : event对象
-     */
-    var stop = isDomLevel2
-        ? function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.cancelBubble = true;
-        }
-        : function (e) {
-            e.returnValue = false;
-            e.cancelBubble = true;
-        };
-
-    return {
-        clientToLocal: clientToLocal,
-        normalizeEvent: normalizeEvent,
-        addEventListener: addEventListener,
-        removeEventListener: removeEventListener,
-
-        stop: stop,
-        // 做向上兼容
-        Dispatcher: Eventful
-    };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
-
-    return (typeof window !== 'undefined' &&
-                ((window.requestAnimationFrame && window.requestAnimationFrame.bind(window))
-                // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
-                || (window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window))
-                || window.mozRequestAnimationFrame
-                || window.webkitRequestAnimationFrame)
-            )
-            || function (func) {
-                setTimeout(func, 16);
-            };
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_RESULT__;// https://github.com/mziccard/node-timsort
-!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-    var DEFAULT_MIN_MERGE = 32;
-
-    var DEFAULT_MIN_GALLOPING = 7;
-
-    var DEFAULT_TMP_STORAGE_LENGTH = 256;
-
-    function minRunLength(n) {
-        var r = 0;
-
-        while (n >= DEFAULT_MIN_MERGE) {
-            r |= n & 1;
-            n >>= 1;
-        }
-
-        return n + r;
-    }
-
-    function makeAscendingRun(array, lo, hi, compare) {
-        var runHi = lo + 1;
-
-        if (runHi === hi) {
-            return 1;
-        }
-
-        if (compare(array[runHi++], array[lo]) < 0) {
-            while (runHi < hi && compare(array[runHi], array[runHi - 1]) < 0) {
-                runHi++;
-            }
-
-            reverseRun(array, lo, runHi);
-        }
-        else {
-            while (runHi < hi && compare(array[runHi], array[runHi - 1]) >= 0) {
-                runHi++;
-            }
-        }
-
-        return runHi - lo;
-    }
-
-    function reverseRun(array, lo, hi) {
-        hi--;
-
-        while (lo < hi) {
-            var t = array[lo];
-            array[lo++] = array[hi];
-            array[hi--] = t;
-        }
-    }
-
-    function binaryInsertionSort(array, lo, hi, start, compare) {
-        if (start === lo) {
-            start++;
-        }
-
-        for (; start < hi; start++) {
-            var pivot = array[start];
-
-            var left = lo;
-            var right = start;
-            var mid;
-
-            while (left < right) {
-                mid = left + right >>> 1;
-
-                if (compare(pivot, array[mid]) < 0) {
-                    right = mid;
-                }
-                else {
-                    left = mid + 1;
-                }
-            }
-
-            var n = start - left;
-
-            switch (n) {
-                case 3:
-                    array[left + 3] = array[left + 2];
-
-                case 2:
-                    array[left + 2] = array[left + 1];
-
-                case 1:
-                    array[left + 1] = array[left];
-                    break;
-                default:
-                    while (n > 0) {
-                        array[left + n] = array[left + n - 1];
-                        n--;
-                    }
-            }
-
-            array[left] = pivot;
-        }
-    }
-
-    function gallopLeft(value, array, start, length, hint, compare) {
-        var lastOffset = 0;
-        var maxOffset = 0;
-        var offset = 1;
-
-        if (compare(value, array[start + hint]) > 0) {
-            maxOffset = length - hint;
-
-            while (offset < maxOffset && compare(value, array[start + hint + offset]) > 0) {
-                lastOffset = offset;
-                offset = (offset << 1) + 1;
-
-                if (offset <= 0) {
-                    offset = maxOffset;
-                }
-            }
-
-            if (offset > maxOffset) {
-                offset = maxOffset;
-            }
-
-            lastOffset += hint;
-            offset += hint;
-        }
-        else {
-            maxOffset = hint + 1;
-            while (offset < maxOffset && compare(value, array[start + hint - offset]) <= 0) {
-                lastOffset = offset;
-                offset = (offset << 1) + 1;
-
-                if (offset <= 0) {
-                    offset = maxOffset;
-                }
-            }
-            if (offset > maxOffset) {
-                offset = maxOffset;
-            }
-
-            var tmp = lastOffset;
-            lastOffset = hint - offset;
-            offset = hint - tmp;
-        }
-
-        lastOffset++;
-        while (lastOffset < offset) {
-            var m = lastOffset + (offset - lastOffset >>> 1);
-
-            if (compare(value, array[start + m]) > 0) {
-                lastOffset = m + 1;
-            }
-            else {
-                offset = m;
-            }
-        }
-        return offset;
-    }
-
-    function gallopRight(value, array, start, length, hint, compare) {
-        var lastOffset = 0;
-        var maxOffset = 0;
-        var offset = 1;
-
-        if (compare(value, array[start + hint]) < 0) {
-            maxOffset = hint + 1;
-
-            while (offset < maxOffset && compare(value, array[start + hint - offset]) < 0) {
-                lastOffset = offset;
-                offset = (offset << 1) + 1;
-
-                if (offset <= 0) {
-                    offset = maxOffset;
-                }
-            }
-
-            if (offset > maxOffset) {
-                offset = maxOffset;
-            }
-
-            var tmp = lastOffset;
-            lastOffset = hint - offset;
-            offset = hint - tmp;
-        }
-        else {
-            maxOffset = length - hint;
-
-            while (offset < maxOffset && compare(value, array[start + hint + offset]) >= 0) {
-                lastOffset = offset;
-                offset = (offset << 1) + 1;
-
-                if (offset <= 0) {
-                    offset = maxOffset;
-                }
-            }
-
-            if (offset > maxOffset) {
-                offset = maxOffset;
-            }
-
-            lastOffset += hint;
-            offset += hint;
-        }
-
-        lastOffset++;
-
-        while (lastOffset < offset) {
-            var m = lastOffset + (offset - lastOffset >>> 1);
-
-            if (compare(value, array[start + m]) < 0) {
-                offset = m;
-            }
-            else {
-                lastOffset = m + 1;
-            }
-        }
-
-        return offset;
-    }
-
-    function TimSort(array, compare) {
-        var minGallop = DEFAULT_MIN_GALLOPING;
-        var length = 0;
-        var tmpStorageLength = DEFAULT_TMP_STORAGE_LENGTH;
-        var stackLength = 0;
-        var runStart;
-        var runLength;
-        var stackSize = 0;
-
-        length = array.length;
-
-        if (length < 2 * DEFAULT_TMP_STORAGE_LENGTH) {
-            tmpStorageLength = length >>> 1;
-        }
-
-        var tmp = [];
-
-        stackLength = length < 120 ? 5 : length < 1542 ? 10 : length < 119151 ? 19 : 40;
-
-        runStart = [];
-        runLength = [];
-
-        function pushRun(_runStart, _runLength) {
-            runStart[stackSize] = _runStart;
-            runLength[stackSize] = _runLength;
-            stackSize += 1;
-        }
-
-        function mergeRuns() {
-            while (stackSize > 1) {
-                var n = stackSize - 2;
-
-                if (n >= 1 && runLength[n - 1] <= runLength[n] + runLength[n + 1] || n >= 2 && runLength[n - 2] <= runLength[n] + runLength[n - 1]) {
-                    if (runLength[n - 1] < runLength[n + 1]) {
-                        n--;
-                    }
-                }
-                else if (runLength[n] > runLength[n + 1]) {
-                    break;
-                }
-                mergeAt(n);
-            }
-        }
-
-        function forceMergeRuns() {
-            while (stackSize > 1) {
-                var n = stackSize - 2;
-
-                if (n > 0 && runLength[n - 1] < runLength[n + 1]) {
-                    n--;
-                }
-
-                mergeAt(n);
-            }
-        }
-
-        function mergeAt(i) {
-            var start1 = runStart[i];
-            var length1 = runLength[i];
-            var start2 = runStart[i + 1];
-            var length2 = runLength[i + 1];
-
-            runLength[i] = length1 + length2;
-
-            if (i === stackSize - 3) {
-                runStart[i + 1] = runStart[i + 2];
-                runLength[i + 1] = runLength[i + 2];
-            }
-
-            stackSize--;
-
-            var k = gallopRight(array[start2], array, start1, length1, 0, compare);
-            start1 += k;
-            length1 -= k;
-
-            if (length1 === 0) {
-                return;
-            }
-
-            length2 = gallopLeft(array[start1 + length1 - 1], array, start2, length2, length2 - 1, compare);
-
-            if (length2 === 0) {
-                return;
-            }
-
-            if (length1 <= length2) {
-                mergeLow(start1, length1, start2, length2);
-            }
-            else {
-                mergeHigh(start1, length1, start2, length2);
-            }
-        }
-
-        function mergeLow(start1, length1, start2, length2) {
-            var i = 0;
-
-            for (i = 0; i < length1; i++) {
-                tmp[i] = array[start1 + i];
-            }
-
-            var cursor1 = 0;
-            var cursor2 = start2;
-            var dest = start1;
-
-            array[dest++] = array[cursor2++];
-
-            if (--length2 === 0) {
-                for (i = 0; i < length1; i++) {
-                    array[dest + i] = tmp[cursor1 + i];
-                }
-                return;
-            }
-
-            if (length1 === 1) {
-                for (i = 0; i < length2; i++) {
-                    array[dest + i] = array[cursor2 + i];
-                }
-                array[dest + length2] = tmp[cursor1];
-                return;
-            }
-
-            var _minGallop = minGallop;
-            var count1, count2, exit;
-
-            while (1) {
-                count1 = 0;
-                count2 = 0;
-                exit = false;
-
-                do {
-                    if (compare(array[cursor2], tmp[cursor1]) < 0) {
-                        array[dest++] = array[cursor2++];
-                        count2++;
-                        count1 = 0;
-
-                        if (--length2 === 0) {
-                            exit = true;
-                            break;
-                        }
-                    }
-                    else {
-                        array[dest++] = tmp[cursor1++];
-                        count1++;
-                        count2 = 0;
-                        if (--length1 === 1) {
-                            exit = true;
-                            break;
-                        }
-                    }
-                } while ((count1 | count2) < _minGallop);
-
-                if (exit) {
-                    break;
-                }
-
-                do {
-                    count1 = gallopRight(array[cursor2], tmp, cursor1, length1, 0, compare);
-
-                    if (count1 !== 0) {
-                        for (i = 0; i < count1; i++) {
-                            array[dest + i] = tmp[cursor1 + i];
-                        }
-
-                        dest += count1;
-                        cursor1 += count1;
-                        length1 -= count1;
-                        if (length1 <= 1) {
-                            exit = true;
-                            break;
-                        }
-                    }
-
-                    array[dest++] = array[cursor2++];
-
-                    if (--length2 === 0) {
-                        exit = true;
-                        break;
-                    }
-
-                    count2 = gallopLeft(tmp[cursor1], array, cursor2, length2, 0, compare);
-
-                    if (count2 !== 0) {
-                        for (i = 0; i < count2; i++) {
-                            array[dest + i] = array[cursor2 + i];
-                        }
-
-                        dest += count2;
-                        cursor2 += count2;
-                        length2 -= count2;
-
-                        if (length2 === 0) {
-                            exit = true;
-                            break;
-                        }
-                    }
-                    array[dest++] = tmp[cursor1++];
-
-                    if (--length1 === 1) {
-                        exit = true;
-                        break;
-                    }
-
-                    _minGallop--;
-                } while (count1 >= DEFAULT_MIN_GALLOPING || count2 >= DEFAULT_MIN_GALLOPING);
-
-                if (exit) {
-                    break;
-                }
-
-                if (_minGallop < 0) {
-                    _minGallop = 0;
-                }
-
-                _minGallop += 2;
-            }
-
-            minGallop = _minGallop;
-
-            minGallop < 1 && (minGallop = 1);
-
-            if (length1 === 1) {
-                for (i = 0; i < length2; i++) {
-                    array[dest + i] = array[cursor2 + i];
-                }
-                array[dest + length2] = tmp[cursor1];
-            }
-            else if (length1 === 0) {
-                throw new Error();
-                // throw new Error('mergeLow preconditions were not respected');
-            }
-            else {
-                for (i = 0; i < length1; i++) {
-                    array[dest + i] = tmp[cursor1 + i];
-                }
-            }
-        }
-
-        function mergeHigh (start1, length1, start2, length2) {
-            var i = 0;
-
-            for (i = 0; i < length2; i++) {
-                tmp[i] = array[start2 + i];
-            }
-
-            var cursor1 = start1 + length1 - 1;
-            var cursor2 = length2 - 1;
-            var dest = start2 + length2 - 1;
-            var customCursor = 0;
-            var customDest = 0;
-
-            array[dest--] = array[cursor1--];
-
-            if (--length1 === 0) {
-                customCursor = dest - (length2 - 1);
-
-                for (i = 0; i < length2; i++) {
-                    array[customCursor + i] = tmp[i];
-                }
-
-                return;
-            }
-
-            if (length2 === 1) {
-                dest -= length1;
-                cursor1 -= length1;
-                customDest = dest + 1;
-                customCursor = cursor1 + 1;
-
-                for (i = length1 - 1; i >= 0; i--) {
-                    array[customDest + i] = array[customCursor + i];
-                }
-
-                array[dest] = tmp[cursor2];
-                return;
-            }
-
-            var _minGallop = minGallop;
-
-            while (true) {
-                var count1 = 0;
-                var count2 = 0;
-                var exit = false;
-
-                do {
-                    if (compare(tmp[cursor2], array[cursor1]) < 0) {
-                        array[dest--] = array[cursor1--];
-                        count1++;
-                        count2 = 0;
-                        if (--length1 === 0) {
-                            exit = true;
-                            break;
-                        }
-                    }
-                    else {
-                        array[dest--] = tmp[cursor2--];
-                        count2++;
-                        count1 = 0;
-                        if (--length2 === 1) {
-                            exit = true;
-                            break;
-                        }
-                    }
-                } while ((count1 | count2) < _minGallop);
-
-                if (exit) {
-                    break;
-                }
-
-                do {
-                    count1 = length1 - gallopRight(tmp[cursor2], array, start1, length1, length1 - 1, compare);
-
-                    if (count1 !== 0) {
-                        dest -= count1;
-                        cursor1 -= count1;
-                        length1 -= count1;
-                        customDest = dest + 1;
-                        customCursor = cursor1 + 1;
-
-                        for (i = count1 - 1; i >= 0; i--) {
-                            array[customDest + i] = array[customCursor + i];
-                        }
-
-                        if (length1 === 0) {
-                            exit = true;
-                            break;
-                        }
-                    }
-
-                    array[dest--] = tmp[cursor2--];
-
-                    if (--length2 === 1) {
-                        exit = true;
-                        break;
-                    }
-
-                    count2 = length2 - gallopLeft(array[cursor1], tmp, 0, length2, length2 - 1, compare);
-
-                    if (count2 !== 0) {
-                        dest -= count2;
-                        cursor2 -= count2;
-                        length2 -= count2;
-                        customDest = dest + 1;
-                        customCursor = cursor2 + 1;
-
-                        for (i = 0; i < count2; i++) {
-                            array[customDest + i] = tmp[customCursor + i];
-                        }
-
-                        if (length2 <= 1) {
-                            exit = true;
-                            break;
-                        }
-                    }
-
-                    array[dest--] = array[cursor1--];
-
-                    if (--length1 === 0) {
-                        exit = true;
-                        break;
-                    }
-
-                    _minGallop--;
-                } while (count1 >= DEFAULT_MIN_GALLOPING || count2 >= DEFAULT_MIN_GALLOPING);
-
-                if (exit) {
-                    break;
-                }
-
-                if (_minGallop < 0) {
-                    _minGallop = 0;
-                }
-
-                _minGallop += 2;
-            }
-
-            minGallop = _minGallop;
-
-            if (minGallop < 1) {
-                minGallop = 1;
-            }
-
-            if (length2 === 1) {
-                dest -= length1;
-                cursor1 -= length1;
-                customDest = dest + 1;
-                customCursor = cursor1 + 1;
-
-                for (i = length1 - 1; i >= 0; i--) {
-                    array[customDest + i] = array[customCursor + i];
-                }
-
-                array[dest] = tmp[cursor2];
-            }
-            else if (length2 === 0) {
-                throw new Error();
-                // throw new Error('mergeHigh preconditions were not respected');
-            }
-            else {
-                customCursor = dest - (length2 - 1);
-                for (i = 0; i < length2; i++) {
-                    array[customCursor + i] = tmp[i];
-                }
-            }
-        }
-
-        this.mergeRuns = mergeRuns;
-        this.forceMergeRuns = forceMergeRuns;
-        this.pushRun = pushRun;
-    }
-
-    function sort(array, compare, lo, hi) {
-        if (!lo) {
-            lo = 0;
-        }
-        if (!hi) {
-            hi = array.length;
-        }
-
-        var remaining = hi - lo;
-
-        if (remaining < 2) {
-            return;
-        }
-
-        var runLength = 0;
-
-        if (remaining < DEFAULT_MIN_MERGE) {
-            runLength = makeAscendingRun(array, lo, hi, compare);
-            binaryInsertionSort(array, lo, hi, lo + runLength, compare);
-            return;
-        }
-
-        var ts = new TimSort(array, compare);
-
-        var minRun = minRunLength(remaining);
-
-        do {
-            runLength = makeAscendingRun(array, lo, hi, compare);
-            if (runLength < minRun) {
-                var force = remaining;
-                if (force > minRun) {
-                    force = minRun;
-                }
-
-                binaryInsertionSort(array, lo, lo + force, lo + runLength, compare);
-                runLength = force;
-            }
-
-            ts.pushRun(lo, runLength);
-            ts.mergeRuns();
-
-            remaining -= runLength;
-            lo += runLength;
-        } while (remaining !== 0);
-
-        ts.forceMergeRuns();
-    }
-
-    return sort;
-}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ }),
-/* 81 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -19995,19 +16790,19 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*!
  */
 // Global defines
 !(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
-    var guid = __webpack_require__(60);
-    var env = __webpack_require__(77);
-    var zrUtil = __webpack_require__(1);
+    var guid = __webpack_require__(15);
+    var env = __webpack_require__(5);
+    var zrUtil = __webpack_require__(0);
 
-    var Handler = __webpack_require__(82);
-    var Storage = __webpack_require__(85);
-    var Animation = __webpack_require__(86);
-    var HandlerProxy = __webpack_require__(89);
+    var Handler = __webpack_require__(28);
+    var Storage = __webpack_require__(31);
+    var Animation = __webpack_require__(32);
+    var HandlerProxy = __webpack_require__(45);
 
     var useVML = !env.canvasSupported;
 
     var painterCtors = {
-        canvas: __webpack_require__(84)
+        canvas: __webpack_require__(30)
     };
 
     var instances = {};    // ZRender实例map索引
@@ -20420,7 +17215,51 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 82 */
+/* 27 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_ZRenderGeoJSON__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_zrender_src_graphic_shape_Circle__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_zrender_src_graphic_shape_Circle___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_zrender_src_graphic_shape_Circle__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_zrender_src_graphic_shape_Polyline__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_zrender_src_graphic_shape_Polyline___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_zrender_src_graphic_shape_Polyline__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_zrender_src_zrender__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_zrender_src_zrender___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_zrender_src_zrender__);
+
+
+
+
+
+
+let drawer = new __WEBPACK_IMPORTED_MODULE_1__src_ZRenderGeoJSON__["a" /* default */]();
+
+let getJSON = new Promise(function (resolve, reject) {
+    __WEBPACK_IMPORTED_MODULE_0_jquery___default.a.getJSON({
+        url: '../dist/china.json',
+        success: function (data) {
+            resolve(data);
+        },
+        error: function (error) {
+            reject(error);
+        }
+    });
+});
+
+getJSON.then(function (data) {
+    let zr = __WEBPACK_IMPORTED_MODULE_4_zrender_src_zrender___default.a.init(document.getElementById('app'), {
+        width: 1000,
+        height: 500
+    });
+
+    drawer.drawGeoJSON(zr, data, 1000, {});
+});
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -20434,10 +17273,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     'use strict';
 
-    var util = __webpack_require__(1);
-    var Draggable = __webpack_require__(91);
+    var util = __webpack_require__(0);
+    var Draggable = __webpack_require__(52);
 
-    var Eventful = __webpack_require__(69);
+    var Eventful = __webpack_require__(6);
 
     var SILENT = 'silent';
 
@@ -20747,7 +17586,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 
 /***/ }),
-/* 83 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -20756,10 +17595,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
  */
 !(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 
-    var util = __webpack_require__(1);
-    var config = __webpack_require__(20);
-    var Style = __webpack_require__(65);
-    var Pattern = __webpack_require__(64);
+    var util = __webpack_require__(0);
+    var config = __webpack_require__(4);
+    var Style = __webpack_require__(22);
+    var Pattern = __webpack_require__(21);
 
     function returnFalse() {
         return false;
@@ -20983,7 +17822,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 84 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -20996,15 +17835,15 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
  !(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
     'use strict';
 
-    var config = __webpack_require__(20);
-    var util = __webpack_require__(1);
-    var log = __webpack_require__(61);
-    var BoundingRect = __webpack_require__(9);
-    var timsort = __webpack_require__(80);
+    var config = __webpack_require__(4);
+    var util = __webpack_require__(0);
+    var log = __webpack_require__(16);
+    var BoundingRect = __webpack_require__(2);
+    var timsort = __webpack_require__(18);
 
-    var Layer = __webpack_require__(83);
+    var Layer = __webpack_require__(29);
 
-    var requestAnimationFrame = __webpack_require__(79);
+    var requestAnimationFrame = __webpack_require__(11);
 
     // PENDIGN
     // Layer exceeds MAX_PROGRESSIVE_LAYER_NUMBER may have some problem when flush directly second time.
@@ -22070,7 +18909,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
                 path.brush(ctx);
             }
 
-            var ImageShape = __webpack_require__(90);
+            var ImageShape = __webpack_require__(46);
             var imgShape = new ImageShape({
                 style: {
                     x: 0,
@@ -22101,7 +18940,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 
 /***/ }),
-/* 85 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -22115,14 +18954,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     'use strict';
 
-    var util = __webpack_require__(1);
-    var env = __webpack_require__(77);
+    var util = __webpack_require__(0);
+    var env = __webpack_require__(5);
 
-    var Group = __webpack_require__(87);
+    var Group = __webpack_require__(42);
 
     // Use timsort because in most case elements are partially sorted
     // https://jsfiddle.net/pissang/jr4x7mdm/8/
-    var timsort = __webpack_require__(80);
+    var timsort = __webpack_require__(18);
 
     function shapeCompareFunc(a, b) {
         if (a.zlevel === b.zlevel) {
@@ -22361,7 +19200,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 
 /***/ }),
-/* 86 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -22377,12 +19216,12 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     'use strict';
 
-    var util = __webpack_require__(1);
-    var Dispatcher = __webpack_require__(78).Dispatcher;
+    var util = __webpack_require__(0);
+    var Dispatcher = __webpack_require__(7).Dispatcher;
 
-    var requestAnimationFrame = __webpack_require__(79);
+    var requestAnimationFrame = __webpack_require__(11);
 
-    var Animator = __webpack_require__(48);
+    var Animator = __webpack_require__(10);
     /**
      * @typedef {Object} IZRenderStage
      * @property {Function} update
@@ -22623,7 +19462,1418 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 
 /***/ }),
-/* 87 */
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * 动画主控制器
+ * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
+ * @config life(1000) 动画时长
+ * @config delay(0) 动画延迟时间
+ * @config loop(true)
+ * @config gap(0) 循环的间隔时间
+ * @config onframe
+ * @config easing(optional)
+ * @config ondestroy(optional)
+ * @config onrestart(optional)
+ *
+ * TODO pause
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
+
+    var easingFuncs = __webpack_require__(34);
+
+    function Clip(options) {
+
+        this._target = options.target;
+
+        // 生命周期
+        this._life = options.life || 1000;
+        // 延时
+        this._delay = options.delay || 0;
+        // 开始时间
+        // this._startTime = new Date().getTime() + this._delay;// 单位毫秒
+        this._initialized = false;
+
+        // 是否循环
+        this.loop = options.loop == null ? false : options.loop;
+
+        this.gap = options.gap || 0;
+
+        this.easing = options.easing || 'Linear';
+
+        this.onframe = options.onframe;
+        this.ondestroy = options.ondestroy;
+        this.onrestart = options.onrestart;
+
+        this._pausedTime = 0;
+        this._paused = false;
+    }
+
+    Clip.prototype = {
+
+        constructor: Clip,
+
+        step: function (globalTime, deltaTime) {
+            // Set startTime on first step, or _startTime may has milleseconds different between clips
+            // PENDING
+            if (!this._initialized) {
+                this._startTime = globalTime + this._delay;
+                this._initialized = true;
+            }
+
+            if (this._paused) {
+                this._pausedTime += deltaTime;
+                return;
+            }
+
+            var percent = (globalTime - this._startTime - this._pausedTime) / this._life;
+
+            // 还没开始
+            if (percent < 0) {
+                return;
+            }
+
+            percent = Math.min(percent, 1);
+
+            var easing = this.easing;
+            var easingFunc = typeof easing == 'string' ? easingFuncs[easing] : easing;
+            var schedule = typeof easingFunc === 'function'
+                ? easingFunc(percent)
+                : percent;
+
+            this.fire('frame', schedule);
+
+            // 结束
+            if (percent == 1) {
+                if (this.loop) {
+                    this.restart (globalTime);
+                    // 重新开始周期
+                    // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
+                    return 'restart';
+                }
+
+                // 动画完成将这个控制器标识为待删除
+                // 在Animation.update中进行批量删除
+                this._needsRemove = true;
+                return 'destroy';
+            }
+
+            return null;
+        },
+
+        restart: function (globalTime) {
+            var remainder = (globalTime - this._startTime - this._pausedTime) % this._life;
+            this._startTime = globalTime - remainder + this.gap;
+            this._pausedTime = 0;
+
+            this._needsRemove = false;
+        },
+
+        fire: function (eventType, arg) {
+            eventType = 'on' + eventType;
+            if (this[eventType]) {
+                this[eventType](this._target, arg);
+            }
+        },
+
+        pause: function () {
+            this._paused = true;
+        },
+
+        resume: function () {
+            this._paused = false;
+        }
+    };
+
+    return Clip;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * 缓动代码来自 https://github.com/sole/tween.js/blob/master/src/Tween.js
+ * @see http://sole.github.io/tween.js/examples/03_graphs.html
+ * @exports zrender/animation/easing
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+    var easing = {
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        linear: function (k) {
+            return k;
+        },
+
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quadraticIn: function (k) {
+            return k * k;
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quadraticOut: function (k) {
+            return k * (2 - k);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quadraticInOut: function (k) {
+            if ((k *= 2) < 1) {
+                return 0.5 * k * k;
+            }
+            return -0.5 * (--k * (k - 2) - 1);
+        },
+
+        // 三次方的缓动（t^3）
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        cubicIn: function (k) {
+            return k * k * k;
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        cubicOut: function (k) {
+            return --k * k * k + 1;
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        cubicInOut: function (k) {
+            if ((k *= 2) < 1) {
+                return 0.5 * k * k * k;
+            }
+            return 0.5 * ((k -= 2) * k * k + 2);
+        },
+
+        // 四次方的缓动（t^4）
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quarticIn: function (k) {
+            return k * k * k * k;
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quarticOut: function (k) {
+            return 1 - (--k * k * k * k);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quarticInOut: function (k) {
+            if ((k *= 2) < 1) {
+                return 0.5 * k * k * k * k;
+            }
+            return -0.5 * ((k -= 2) * k * k * k - 2);
+        },
+
+        // 五次方的缓动（t^5）
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quinticIn: function (k) {
+            return k * k * k * k * k;
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quinticOut: function (k) {
+            return --k * k * k * k * k + 1;
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        quinticInOut: function (k) {
+            if ((k *= 2) < 1) {
+                return 0.5 * k * k * k * k * k;
+            }
+            return 0.5 * ((k -= 2) * k * k * k * k + 2);
+        },
+
+        // 正弦曲线的缓动（sin(t)）
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        sinusoidalIn: function (k) {
+            return 1 - Math.cos(k * Math.PI / 2);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        sinusoidalOut: function (k) {
+            return Math.sin(k * Math.PI / 2);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        sinusoidalInOut: function (k) {
+            return 0.5 * (1 - Math.cos(Math.PI * k));
+        },
+
+        // 指数曲线的缓动（2^t）
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        exponentialIn: function (k) {
+            return k === 0 ? 0 : Math.pow(1024, k - 1);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        exponentialOut: function (k) {
+            return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        exponentialInOut: function (k) {
+            if (k === 0) {
+                return 0;
+            }
+            if (k === 1) {
+                return 1;
+            }
+            if ((k *= 2) < 1) {
+                return 0.5 * Math.pow(1024, k - 1);
+            }
+            return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+        },
+
+        // 圆形曲线的缓动（sqrt(1-t^2)）
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        circularIn: function (k) {
+            return 1 - Math.sqrt(1 - k * k);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        circularOut: function (k) {
+            return Math.sqrt(1 - (--k * k));
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        circularInOut: function (k) {
+            if ((k *= 2) < 1) {
+                return -0.5 * (Math.sqrt(1 - k * k) - 1);
+            }
+            return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+        },
+
+        // 创建类似于弹簧在停止前来回振荡的动画
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        elasticIn: function (k) {
+            var s;
+            var a = 0.1;
+            var p = 0.4;
+            if (k === 0) {
+                return 0;
+            }
+            if (k === 1) {
+                return 1;
+            }
+            if (!a || a < 1) {
+                a = 1; s = p / 4;
+            }
+            else {
+                s = p * Math.asin(1 / a) / (2 * Math.PI);
+            }
+            return -(a * Math.pow(2, 10 * (k -= 1)) *
+                        Math.sin((k - s) * (2 * Math.PI) / p));
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        elasticOut: function (k) {
+            var s;
+            var a = 0.1;
+            var p = 0.4;
+            if (k === 0) {
+                return 0;
+            }
+            if (k === 1) {
+                return 1;
+            }
+            if (!a || a < 1) {
+                a = 1; s = p / 4;
+            }
+            else {
+                s = p * Math.asin(1 / a) / (2 * Math.PI);
+            }
+            return (a * Math.pow(2, -10 * k) *
+                    Math.sin((k - s) * (2 * Math.PI) / p) + 1);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        elasticInOut: function (k) {
+            var s;
+            var a = 0.1;
+            var p = 0.4;
+            if (k === 0) {
+                return 0;
+            }
+            if (k === 1) {
+                return 1;
+            }
+            if (!a || a < 1) {
+                a = 1; s = p / 4;
+            }
+            else {
+                s = p * Math.asin(1 / a) / (2 * Math.PI);
+            }
+            if ((k *= 2) < 1) {
+                return -0.5 * (a * Math.pow(2, 10 * (k -= 1))
+                    * Math.sin((k - s) * (2 * Math.PI) / p));
+            }
+            return a * Math.pow(2, -10 * (k -= 1))
+                    * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
+
+        },
+
+        // 在某一动画开始沿指示的路径进行动画处理前稍稍收回该动画的移动
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        backIn: function (k) {
+            var s = 1.70158;
+            return k * k * ((s + 1) * k - s);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        backOut: function (k) {
+            var s = 1.70158;
+            return --k * k * ((s + 1) * k + s) + 1;
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        backInOut: function (k) {
+            var s = 1.70158 * 1.525;
+            if ((k *= 2) < 1) {
+                return 0.5 * (k * k * ((s + 1) * k - s));
+            }
+            return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+        },
+
+        // 创建弹跳效果
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        bounceIn: function (k) {
+            return 1 - easing.bounceOut(1 - k);
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        bounceOut: function (k) {
+            if (k < (1 / 2.75)) {
+                return 7.5625 * k * k;
+            }
+            else if (k < (2 / 2.75)) {
+                return 7.5625 * (k -= (1.5 / 2.75)) * k + 0.75;
+            }
+            else if (k < (2.5 / 2.75)) {
+                return 7.5625 * (k -= (2.25 / 2.75)) * k + 0.9375;
+            }
+            else {
+                return 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375;
+            }
+        },
+        /**
+        * @param {number} k
+        * @return {number}
+        */
+        bounceInOut: function (k) {
+            if (k < 0.5) {
+                return easing.bounceIn(k * 2) * 0.5;
+            }
+            return easing.bounceOut(k * 2 - 1) * 0.5 + 0.5;
+        }
+    };
+
+    return easing;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var normalizeRadian = __webpack_require__(12).normalizeRadian;
+    var PI2 = Math.PI * 2;
+
+    return {
+        /**
+         * 圆弧描边包含判断
+         * @param  {number}  cx
+         * @param  {number}  cy
+         * @param  {number}  r
+         * @param  {number}  startAngle
+         * @param  {number}  endAngle
+         * @param  {boolean}  anticlockwise
+         * @param  {number} lineWidth
+         * @param  {number}  x
+         * @param  {number}  y
+         * @return {Boolean}
+         */
+        containStroke: function (
+            cx, cy, r, startAngle, endAngle, anticlockwise,
+            lineWidth, x, y
+        ) {
+
+            if (lineWidth === 0) {
+                return false;
+            }
+            var _l = lineWidth;
+
+            x -= cx;
+            y -= cy;
+            var d = Math.sqrt(x * x + y * y);
+
+            if ((d - _l > r) || (d + _l < r)) {
+                return false;
+            }
+            if (Math.abs(startAngle - endAngle) % PI2 < 1e-4) {
+                // Is a circle
+                return true;
+            }
+            if (anticlockwise) {
+                var tmp = startAngle;
+                startAngle = normalizeRadian(endAngle);
+                endAngle = normalizeRadian(tmp);
+            } else {
+                startAngle = normalizeRadian(startAngle);
+                endAngle = normalizeRadian(endAngle);
+            }
+            if (startAngle > endAngle) {
+                endAngle += PI2;
+            }
+
+            var angle = Math.atan2(y, x);
+            if (angle < 0) {
+                angle += PI2;
+            }
+            return (angle >= startAngle && angle <= endAngle)
+                || (angle + PI2 >= startAngle && angle + PI2 <= endAngle);
+        }
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var curve = __webpack_require__(3);
+
+    return {
+        /**
+         * 三次贝塞尔曲线描边包含判断
+         * @param  {number}  x0
+         * @param  {number}  y0
+         * @param  {number}  x1
+         * @param  {number}  y1
+         * @param  {number}  x2
+         * @param  {number}  y2
+         * @param  {number}  x3
+         * @param  {number}  y3
+         * @param  {number}  lineWidth
+         * @param  {number}  x
+         * @param  {number}  y
+         * @return {boolean}
+         */
+        containStroke: function(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {
+            if (lineWidth === 0) {
+                return false;
+            }
+            var _l = lineWidth;
+            // Quick reject
+            if (
+                (y > y0 + _l && y > y1 + _l && y > y2 + _l && y > y3 + _l)
+                || (y < y0 - _l && y < y1 - _l && y < y2 - _l && y < y3 - _l)
+                || (x > x0 + _l && x > x1 + _l && x > x2 + _l && x > x3 + _l)
+                || (x < x0 - _l && x < x1 - _l && x < x2 - _l && x < x3 - _l)
+            ) {
+                return false;
+            }
+            var d = curve.cubicProjectPoint(
+                x0, y0, x1, y1, x2, y2, x3, y3,
+                x, y, null
+            );
+            return d <= _l / 2;
+        }
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+    return {
+        /**
+         * 线段包含判断
+         * @param  {number}  x0
+         * @param  {number}  y0
+         * @param  {number}  x1
+         * @param  {number}  y1
+         * @param  {number}  lineWidth
+         * @param  {number}  x
+         * @param  {number}  y
+         * @return {boolean}
+         */
+        containStroke: function (x0, y0, x1, y1, lineWidth, x, y) {
+            if (lineWidth === 0) {
+                return false;
+            }
+            var _l = lineWidth;
+            var _a = 0;
+            var _b = x0;
+            // Quick reject
+            if (
+                (y > y0 + _l && y > y1 + _l)
+                || (y < y0 - _l && y < y1 - _l)
+                || (x > x0 + _l && x > x1 + _l)
+                || (x < x0 - _l && x < x1 - _l)
+            ) {
+                return false;
+            }
+
+            if (x0 !== x1) {
+                _a = (y0 - y1) / (x0 - x1);
+                _b = (x0 * y1 - x1 * y0) / (x0 - x1) ;
+            }
+            else {
+                return Math.abs(x - x0) <= _l / 2;
+            }
+            var tmp = _a * x - y + _b;
+            var _s = tmp * tmp / (_a * _a + 1);
+            return _s <= _l / 2 * _l / 2;
+        }
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    'use strict';
+
+    var CMD = __webpack_require__(14).CMD;
+    var line = __webpack_require__(37);
+    var cubic = __webpack_require__(36);
+    var quadratic = __webpack_require__(39);
+    var arc = __webpack_require__(35);
+    var normalizeRadian = __webpack_require__(12).normalizeRadian;
+    var curve = __webpack_require__(3);
+
+    var windingLine = __webpack_require__(41);
+
+    var containStroke = line.containStroke;
+
+    var PI2 = Math.PI * 2;
+
+    var EPSILON = 1e-4;
+
+    function isAroundEqual(a, b) {
+        return Math.abs(a - b) < EPSILON;
+    }
+
+    // 临时数组
+    var roots = [-1, -1, -1];
+    var extrema = [-1, -1];
+
+    function swapExtrema() {
+        var tmp = extrema[0];
+        extrema[0] = extrema[1];
+        extrema[1] = tmp;
+    }
+
+    function windingCubic(x0, y0, x1, y1, x2, y2, x3, y3, x, y) {
+        // Quick reject
+        if (
+            (y > y0 && y > y1 && y > y2 && y > y3)
+            || (y < y0 && y < y1 && y < y2 && y < y3)
+        ) {
+            return 0;
+        }
+        var nRoots = curve.cubicRootAt(y0, y1, y2, y3, y, roots);
+        if (nRoots === 0) {
+            return 0;
+        }
+        else {
+            var w = 0;
+            var nExtrema = -1;
+            var y0_, y1_;
+            for (var i = 0; i < nRoots; i++) {
+                var t = roots[i];
+
+                // Avoid winding error when intersection point is the connect point of two line of polygon
+                var unit = (t === 0 || t === 1) ? 0.5 : 1;
+
+                var x_ = curve.cubicAt(x0, x1, x2, x3, t);
+                if (x_ < x) { // Quick reject
+                    continue;
+                }
+                if (nExtrema < 0) {
+                    nExtrema = curve.cubicExtrema(y0, y1, y2, y3, extrema);
+                    if (extrema[1] < extrema[0] && nExtrema > 1) {
+                        swapExtrema();
+                    }
+                    y0_ = curve.cubicAt(y0, y1, y2, y3, extrema[0]);
+                    if (nExtrema > 1) {
+                        y1_ = curve.cubicAt(y0, y1, y2, y3, extrema[1]);
+                    }
+                }
+                if (nExtrema == 2) {
+                    // 分成三段单调函数
+                    if (t < extrema[0]) {
+                        w += y0_ < y0 ? unit : -unit;
+                    }
+                    else if (t < extrema[1]) {
+                        w += y1_ < y0_ ? unit : -unit;
+                    }
+                    else {
+                        w += y3 < y1_ ? unit : -unit;
+                    }
+                }
+                else {
+                    // 分成两段单调函数
+                    if (t < extrema[0]) {
+                        w += y0_ < y0 ? unit : -unit;
+                    }
+                    else {
+                        w += y3 < y0_ ? unit : -unit;
+                    }
+                }
+            }
+            return w;
+        }
+    }
+
+    function windingQuadratic(x0, y0, x1, y1, x2, y2, x, y) {
+        // Quick reject
+        if (
+            (y > y0 && y > y1 && y > y2)
+            || (y < y0 && y < y1 && y < y2)
+        ) {
+            return 0;
+        }
+        var nRoots = curve.quadraticRootAt(y0, y1, y2, y, roots);
+        if (nRoots === 0) {
+            return 0;
+        }
+        else {
+            var t = curve.quadraticExtremum(y0, y1, y2);
+            if (t >= 0 && t <= 1) {
+                var w = 0;
+                var y_ = curve.quadraticAt(y0, y1, y2, t);
+                for (var i = 0; i < nRoots; i++) {
+                    // Remove one endpoint.
+                    var unit = (roots[i] === 0 || roots[i] === 1) ? 0.5 : 1;
+
+                    var x_ = curve.quadraticAt(x0, x1, x2, roots[i]);
+                    if (x_ < x) {   // Quick reject
+                        continue;
+                    }
+                    if (roots[i] < t) {
+                        w += y_ < y0 ? unit : -unit;
+                    }
+                    else {
+                        w += y2 < y_ ? unit : -unit;
+                    }
+                }
+                return w;
+            }
+            else {
+                // Remove one endpoint.
+                var unit = (roots[0] === 0 || roots[0] === 1) ? 0.5 : 1;
+
+                var x_ = curve.quadraticAt(x0, x1, x2, roots[0]);
+                if (x_ < x) {   // Quick reject
+                    return 0;
+                }
+                return y2 < y0 ? unit : -unit;
+            }
+        }
+    }
+
+    // TODO
+    // Arc 旋转
+    function windingArc(
+        cx, cy, r, startAngle, endAngle, anticlockwise, x, y
+    ) {
+        y -= cy;
+        if (y > r || y < -r) {
+            return 0;
+        }
+        var tmp = Math.sqrt(r * r - y * y);
+        roots[0] = -tmp;
+        roots[1] = tmp;
+
+        var diff = Math.abs(startAngle - endAngle);
+        if (diff < 1e-4) {
+            return 0;
+        }
+        if (diff % PI2 < 1e-4) {
+            // Is a circle
+            startAngle = 0;
+            endAngle = PI2;
+            var dir = anticlockwise ? 1 : -1;
+            if (x >= roots[0] + cx && x <= roots[1] + cx) {
+                return dir;
+            } else {
+                return 0;
+            }
+        }
+
+        if (anticlockwise) {
+            var tmp = startAngle;
+            startAngle = normalizeRadian(endAngle);
+            endAngle = normalizeRadian(tmp);
+        }
+        else {
+            startAngle = normalizeRadian(startAngle);
+            endAngle = normalizeRadian(endAngle);
+        }
+        if (startAngle > endAngle) {
+            endAngle += PI2;
+        }
+
+        var w = 0;
+        for (var i = 0; i < 2; i++) {
+            var x_ = roots[i];
+            if (x_ + cx > x) {
+                var angle = Math.atan2(y, x_);
+                var dir = anticlockwise ? 1 : -1;
+                if (angle < 0) {
+                    angle = PI2 + angle;
+                }
+                if (
+                    (angle >= startAngle && angle <= endAngle)
+                    || (angle + PI2 >= startAngle && angle + PI2 <= endAngle)
+                ) {
+                    if (angle > Math.PI / 2 && angle < Math.PI * 1.5) {
+                        dir = -dir;
+                    }
+                    w += dir;
+                }
+            }
+        }
+        return w;
+    }
+
+    function containPath(data, lineWidth, isStroke, x, y) {
+        var w = 0;
+        var xi = 0;
+        var yi = 0;
+        var x0 = 0;
+        var y0 = 0;
+
+        for (var i = 0; i < data.length;) {
+            var cmd = data[i++];
+            // Begin a new subpath
+            if (cmd === CMD.M && i > 1) {
+                // Close previous subpath
+                if (!isStroke) {
+                    w += windingLine(xi, yi, x0, y0, x, y);
+                }
+                // 如果被任何一个 subpath 包含
+                // if (w !== 0) {
+                //     return true;
+                // }
+            }
+
+            if (i == 1) {
+                // 如果第一个命令是 L, C, Q
+                // 则 previous point 同绘制命令的第一个 point
+                //
+                // 第一个命令为 Arc 的情况下会在后面特殊处理
+                xi = data[i];
+                yi = data[i + 1];
+
+                x0 = xi;
+                y0 = yi;
+            }
+
+            switch (cmd) {
+                case CMD.M:
+                    // moveTo 命令重新创建一个新的 subpath, 并且更新新的起点
+                    // 在 closePath 的时候使用
+                    x0 = data[i++];
+                    y0 = data[i++];
+                    xi = x0;
+                    yi = y0;
+                    break;
+                case CMD.L:
+                    if (isStroke) {
+                        if (containStroke(xi, yi, data[i], data[i + 1], lineWidth, x, y)) {
+                            return true;
+                        }
+                    }
+                    else {
+                        // NOTE 在第一个命令为 L, C, Q 的时候会计算出 NaN
+                        w += windingLine(xi, yi, data[i], data[i + 1], x, y) || 0;
+                    }
+                    xi = data[i++];
+                    yi = data[i++];
+                    break;
+                case CMD.C:
+                    if (isStroke) {
+                        if (cubic.containStroke(xi, yi,
+                            data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1],
+                            lineWidth, x, y
+                        )) {
+                            return true;
+                        }
+                    }
+                    else {
+                        w += windingCubic(
+                            xi, yi,
+                            data[i++], data[i++], data[i++], data[i++], data[i], data[i + 1],
+                            x, y
+                        ) || 0;
+                    }
+                    xi = data[i++];
+                    yi = data[i++];
+                    break;
+                case CMD.Q:
+                    if (isStroke) {
+                        if (quadratic.containStroke(xi, yi,
+                            data[i++], data[i++], data[i], data[i + 1],
+                            lineWidth, x, y
+                        )) {
+                            return true;
+                        }
+                    }
+                    else {
+                        w += windingQuadratic(
+                            xi, yi,
+                            data[i++], data[i++], data[i], data[i + 1],
+                            x, y
+                        ) || 0;
+                    }
+                    xi = data[i++];
+                    yi = data[i++];
+                    break;
+                case CMD.A:
+                    // TODO Arc 判断的开销比较大
+                    var cx = data[i++];
+                    var cy = data[i++];
+                    var rx = data[i++];
+                    var ry = data[i++];
+                    var theta = data[i++];
+                    var dTheta = data[i++];
+                    // TODO Arc 旋转
+                    var psi = data[i++];
+                    var anticlockwise = 1 - data[i++];
+                    var x1 = Math.cos(theta) * rx + cx;
+                    var y1 = Math.sin(theta) * ry + cy;
+                    // 不是直接使用 arc 命令
+                    if (i > 1) {
+                        w += windingLine(xi, yi, x1, y1, x, y);
+                    }
+                    else {
+                        // 第一个命令起点还未定义
+                        x0 = x1;
+                        y0 = y1;
+                    }
+                    // zr 使用scale来模拟椭圆, 这里也对x做一定的缩放
+                    var _x = (x - cx) * ry / rx + cx;
+                    if (isStroke) {
+                        if (arc.containStroke(
+                            cx, cy, ry, theta, theta + dTheta, anticlockwise,
+                            lineWidth, _x, y
+                        )) {
+                            return true;
+                        }
+                    }
+                    else {
+                        w += windingArc(
+                            cx, cy, ry, theta, theta + dTheta, anticlockwise,
+                            _x, y
+                        );
+                    }
+                    xi = Math.cos(theta + dTheta) * rx + cx;
+                    yi = Math.sin(theta + dTheta) * ry + cy;
+                    break;
+                case CMD.R:
+                    x0 = xi = data[i++];
+                    y0 = yi = data[i++];
+                    var width = data[i++];
+                    var height = data[i++];
+                    var x1 = x0 + width;
+                    var y1 = y0 + height;
+                    if (isStroke) {
+                        if (containStroke(x0, y0, x1, y0, lineWidth, x, y)
+                          || containStroke(x1, y0, x1, y1, lineWidth, x, y)
+                          || containStroke(x1, y1, x0, y1, lineWidth, x, y)
+                          || containStroke(x0, y1, x0, y0, lineWidth, x, y)
+                        ) {
+                            return true;
+                        }
+                    }
+                    else {
+                        // FIXME Clockwise ?
+                        w += windingLine(x1, y0, x1, y1, x, y);
+                        w += windingLine(x0, y1, x0, y0, x, y);
+                    }
+                    break;
+                case CMD.Z:
+                    if (isStroke) {
+                        if (containStroke(
+                            xi, yi, x0, y0, lineWidth, x, y
+                        )) {
+                            return true;
+                        }
+                    }
+                    else {
+                        // Close a subpath
+                        w += windingLine(xi, yi, x0, y0, x, y);
+                        // 如果被任何一个 subpath 包含
+                        // FIXME subpaths may overlap
+                        // if (w !== 0) {
+                        //     return true;
+                        // }
+                    }
+                    xi = x0;
+                    yi = y0;
+                    break;
+            }
+        }
+        if (!isStroke && !isAroundEqual(yi, y0)) {
+            w += windingLine(xi, yi, x0, y0, x, y) || 0;
+        }
+        return w !== 0;
+    }
+
+    return {
+        contain: function (pathData, x, y) {
+            return containPath(pathData, 0, false, x, y);
+        },
+
+        containStroke: function (pathData, lineWidth, x, y) {
+            return containPath(pathData, lineWidth, true, x, y);
+        }
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var curve = __webpack_require__(3);
+
+    return {
+        /**
+         * 二次贝塞尔曲线描边包含判断
+         * @param  {number}  x0
+         * @param  {number}  y0
+         * @param  {number}  x1
+         * @param  {number}  y1
+         * @param  {number}  x2
+         * @param  {number}  y2
+         * @param  {number}  lineWidth
+         * @param  {number}  x
+         * @param  {number}  y
+         * @return {boolean}
+         */
+        containStroke: function (x0, y0, x1, y1, x2, y2, lineWidth, x, y) {
+            if (lineWidth === 0) {
+                return false;
+            }
+            var _l = lineWidth;
+            // Quick reject
+            if (
+                (y > y0 + _l && y > y1 + _l && y > y2 + _l)
+                || (y < y0 - _l && y < y1 - _l && y < y2 - _l)
+                || (x > x0 + _l && x > x1 + _l && x > x2 + _l)
+                || (x < x0 - _l && x < x1 - _l && x < x2 - _l)
+            ) {
+                return false;
+            }
+            var d = curve.quadraticProjectPoint(
+                x0, y0, x1, y1, x2, y2,
+                x, y, null
+            );
+            return d <= _l / 2;
+        }
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var textWidthCache = {};
+    var textWidthCacheCounter = 0;
+    var TEXT_CACHE_MAX = 5000;
+
+    var util = __webpack_require__(0);
+    var BoundingRect = __webpack_require__(2);
+    var retrieve = util.retrieve;
+
+    function getTextWidth(text, textFont) {
+        var key = text + ':' + textFont;
+        if (textWidthCache[key]) {
+            return textWidthCache[key];
+        }
+
+        var textLines = (text + '').split('\n');
+        var width = 0;
+
+        for (var i = 0, l = textLines.length; i < l; i++) {
+            // measureText 可以被覆盖以兼容不支持 Canvas 的环境
+            width = Math.max(textContain.measureText(textLines[i], textFont).width, width);
+        }
+
+        if (textWidthCacheCounter > TEXT_CACHE_MAX) {
+            textWidthCacheCounter = 0;
+            textWidthCache = {};
+        }
+        textWidthCacheCounter++;
+        textWidthCache[key] = width;
+
+        return width;
+    }
+
+    function getTextRect(text, textFont, textAlign, textBaseline) {
+        var textLineLen = ((text || '') + '').split('\n').length;
+
+        var width = getTextWidth(text, textFont);
+        // FIXME 高度计算比较粗暴
+        var lineHeight = getTextWidth('国', textFont);
+        var height = textLineLen * lineHeight;
+
+        var rect = new BoundingRect(0, 0, width, height);
+        // Text has a special line height property
+        rect.lineHeight = lineHeight;
+
+        switch (textBaseline) {
+            case 'bottom':
+            case 'alphabetic':
+                rect.y -= lineHeight;
+                break;
+            case 'middle':
+                rect.y -= lineHeight / 2;
+                break;
+            // case 'hanging':
+            // case 'top':
+        }
+
+        // FIXME Right to left language
+        switch (textAlign) {
+            case 'end':
+            case 'right':
+                rect.x -= rect.width;
+                break;
+            case 'center':
+                rect.x -= rect.width / 2;
+                break;
+            // case 'start':
+            // case 'left':
+        }
+
+        return rect;
+    }
+
+    function adjustTextPositionOnRect(textPosition, rect, textRect, distance) {
+
+        var x = rect.x;
+        var y = rect.y;
+
+        var height = rect.height;
+        var width = rect.width;
+
+        var textHeight = textRect.height;
+
+        var lineHeight = textRect.lineHeight;
+        var halfHeight = height / 2 - textHeight / 2 + lineHeight;
+
+        var textAlign = 'left';
+
+        switch (textPosition) {
+            case 'left':
+                x -= distance;
+                y += halfHeight;
+                textAlign = 'right';
+                break;
+            case 'right':
+                x += distance + width;
+                y += halfHeight;
+                textAlign = 'left';
+                break;
+            case 'top':
+                x += width / 2;
+                y -= distance + textHeight - lineHeight;
+                textAlign = 'center';
+                break;
+            case 'bottom':
+                x += width / 2;
+                y += height + distance + lineHeight;
+                textAlign = 'center';
+                break;
+            case 'inside':
+                x += width / 2;
+                y += halfHeight;
+                textAlign = 'center';
+                break;
+            case 'insideLeft':
+                x += distance;
+                y += halfHeight;
+                textAlign = 'left';
+                break;
+            case 'insideRight':
+                x += width - distance;
+                y += halfHeight;
+                textAlign = 'right';
+                break;
+            case 'insideTop':
+                x += width / 2;
+                y += distance + lineHeight;
+                textAlign = 'center';
+                break;
+            case 'insideBottom':
+                x += width / 2;
+                y += height - textHeight - distance + lineHeight;
+                textAlign = 'center';
+                break;
+            case 'insideTopLeft':
+                x += distance;
+                y += distance + lineHeight;
+                textAlign = 'left';
+                break;
+            case 'insideTopRight':
+                x += width - distance;
+                y += distance + lineHeight;
+                textAlign = 'right';
+                break;
+            case 'insideBottomLeft':
+                x += distance;
+                y += height - textHeight - distance + lineHeight;
+                break;
+            case 'insideBottomRight':
+                x += width - distance;
+                y += height - textHeight - distance + lineHeight;
+                textAlign = 'right';
+                break;
+        }
+
+        return {
+            x: x,
+            y: y,
+            textAlign: textAlign,
+            textBaseline: 'alphabetic'
+        };
+    }
+
+    /**
+     * Show ellipsis if overflow.
+     *
+     * @param  {string} text
+     * @param  {string} containerWidth
+     * @param  {string} textFont
+     * @param  {number} [ellipsis='...']
+     * @param  {Object} [options]
+     * @param  {number} [options.maxIterations=3]
+     * @param  {number} [options.minChar=0] If truncate result are less
+     *                  then minChar, ellipsis will not show, which is
+     *                  better for user hint in some cases.
+     * @param  {number} [options.placeholder=''] When all truncated, use the placeholder.
+     * @return {string}
+     */
+    function truncateText(text, containerWidth, textFont, ellipsis, options) {
+        if (!containerWidth) {
+            return '';
+        }
+
+        options = options || {};
+
+        ellipsis = retrieve(ellipsis, '...');
+        var maxIterations = retrieve(options.maxIterations, 2);
+        var minChar = retrieve(options.minChar, 0);
+        // FIXME
+        // Other languages?
+        var cnCharWidth = getTextWidth('国', textFont);
+        // FIXME
+        // Consider proportional font?
+        var ascCharWidth = getTextWidth('a', textFont);
+        var placeholder = retrieve(options.placeholder, '');
+
+        // Example 1: minChar: 3, text: 'asdfzxcv', truncate result: 'asdf', but not: 'a...'.
+        // Example 2: minChar: 3, text: '维度', truncate result: '维', but not: '...'.
+        var contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
+        for (var i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
+            contentWidth -= ascCharWidth;
+        }
+
+        var ellipsisWidth = getTextWidth(ellipsis);
+        if (ellipsisWidth > contentWidth) {
+            ellipsis = '';
+            ellipsisWidth = 0;
+        }
+
+        contentWidth = containerWidth - ellipsisWidth;
+
+        var textLines = (text + '').split('\n');
+
+        for (var i = 0, len = textLines.length; i < len; i++) {
+            var textLine = textLines[i];
+            var lineWidth = getTextWidth(textLine, textFont);
+
+            if (lineWidth <= containerWidth) {
+                continue;
+            }
+
+            for (var j = 0;; j++) {
+                if (lineWidth <= contentWidth || j >= maxIterations) {
+                    textLine += ellipsis;
+                    break;
+                }
+
+                var subLength = j === 0
+                    ? estimateLength(textLine, contentWidth, ascCharWidth, cnCharWidth)
+                    : lineWidth > 0
+                    ? Math.floor(textLine.length * contentWidth / lineWidth)
+                    : 0;
+
+                textLine = textLine.substr(0, subLength);
+                lineWidth = getTextWidth(textLine, textFont);
+            }
+
+            if (textLine === '') {
+                textLine = placeholder;
+            }
+
+            textLines[i] = textLine;
+        }
+
+        return textLines.join('\n');
+    }
+
+    function estimateLength(text, contentWidth, ascCharWidth, cnCharWidth) {
+        var width = 0;
+        var i = 0;
+        for (var len = text.length; i < len && width < contentWidth; i++) {
+            var charCode = text.charCodeAt(i);
+            width += (0 <= charCode && charCode <= 127) ? ascCharWidth : cnCharWidth;
+        }
+        return i;
+    }
+
+    var textContain = {
+
+        getWidth: getTextWidth,
+
+        getBoundingRect: getTextRect,
+
+        adjustTextPositionOnRect: adjustTextPositionOnRect,
+
+        truncateText: truncateText,
+
+        measureText: function (text, textFont) {
+            var ctx = util.getContext();
+            ctx.font = textFont || '12px sans-serif';
+            return ctx.measureText(text);
+        }
+    };
+
+    return textContain;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+    return function windingLine(x0, y0, x1, y1, x, y) {
+        if ((y > y0 && y > y1) || (y < y0 && y < y1)) {
+            return 0;
+        }
+        // Ignore horizontal line
+        if (y1 === y0) {
+            return 0;
+        }
+        var dir = y1 < y0 ? 1 : -1;
+        var t = (y - y0) / (y1 - y0);
+
+        // Avoid winding error when intersection point is the connect point of two line of polygon
+        if (t === 1 || t === 0) {
+            dir = y1 < y0 ? 0.5 : -0.5;
+        }
+
+        var x_ = t * (x1 - x0) + x0;
+
+        return x_ > x ? dir : 0;
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -22646,9 +20896,9 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
  */
 !(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 
-    var zrUtil = __webpack_require__(1);
-    var Element = __webpack_require__(47);
-    var BoundingRect = __webpack_require__(9);
+    var zrUtil = __webpack_require__(0);
+    var Element = __webpack_require__(9);
+    var BoundingRect = __webpack_require__(2);
 
     /**
      * @alias module:zrender/graphic/Group
@@ -22946,7 +21196,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 88 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -22956,7 +21206,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
     'use strict';
 
-    var eventUtil = __webpack_require__(78);
+    var eventUtil = __webpack_require__(7);
 
     var GestureMgr = function () {
 
@@ -23074,16 +21324,253 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 
 /***/ }),
-/* 89 */
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @author Yi Shen(https://github.com/pissang)
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var vec2 = __webpack_require__(1);
+    var curve = __webpack_require__(3);
+
+    var bbox = {};
+    var mathMin = Math.min;
+    var mathMax = Math.max;
+    var mathSin = Math.sin;
+    var mathCos = Math.cos;
+
+    var start = vec2.create();
+    var end = vec2.create();
+    var extremity = vec2.create();
+
+    var PI2 = Math.PI * 2;
+    /**
+     * 从顶点数组中计算出最小包围盒，写入`min`和`max`中
+     * @module zrender/core/bbox
+     * @param {Array<Object>} points 顶点数组
+     * @param {number} min
+     * @param {number} max
+     */
+    bbox.fromPoints = function(points, min, max) {
+        if (points.length === 0) {
+            return;
+        }
+        var p = points[0];
+        var left = p[0];
+        var right = p[0];
+        var top = p[1];
+        var bottom = p[1];
+        var i;
+
+        for (i = 1; i < points.length; i++) {
+            p = points[i];
+            left = mathMin(left, p[0]);
+            right = mathMax(right, p[0]);
+            top = mathMin(top, p[1]);
+            bottom = mathMax(bottom, p[1]);
+        }
+
+        min[0] = left;
+        min[1] = top;
+        max[0] = right;
+        max[1] = bottom;
+    };
+
+    /**
+     * @memberOf module:zrender/core/bbox
+     * @param {number} x0
+     * @param {number} y0
+     * @param {number} x1
+     * @param {number} y1
+     * @param {Array.<number>} min
+     * @param {Array.<number>} max
+     */
+    bbox.fromLine = function (x0, y0, x1, y1, min, max) {
+        min[0] = mathMin(x0, x1);
+        min[1] = mathMin(y0, y1);
+        max[0] = mathMax(x0, x1);
+        max[1] = mathMax(y0, y1);
+    };
+
+    var xDim = [];
+    var yDim = [];
+    /**
+     * 从三阶贝塞尔曲线(p0, p1, p2, p3)中计算出最小包围盒，写入`min`和`max`中
+     * @memberOf module:zrender/core/bbox
+     * @param {number} x0
+     * @param {number} y0
+     * @param {number} x1
+     * @param {number} y1
+     * @param {number} x2
+     * @param {number} y2
+     * @param {number} x3
+     * @param {number} y3
+     * @param {Array.<number>} min
+     * @param {Array.<number>} max
+     */
+    bbox.fromCubic = function(
+        x0, y0, x1, y1, x2, y2, x3, y3, min, max
+    ) {
+        var cubicExtrema = curve.cubicExtrema;
+        var cubicAt = curve.cubicAt;
+        var i;
+        var n = cubicExtrema(x0, x1, x2, x3, xDim);
+        min[0] = Infinity;
+        min[1] = Infinity;
+        max[0] = -Infinity;
+        max[1] = -Infinity;
+
+        for (i = 0; i < n; i++) {
+            var x = cubicAt(x0, x1, x2, x3, xDim[i]);
+            min[0] = mathMin(x, min[0]);
+            max[0] = mathMax(x, max[0]);
+        }
+        n = cubicExtrema(y0, y1, y2, y3, yDim);
+        for (i = 0; i < n; i++) {
+            var y = cubicAt(y0, y1, y2, y3, yDim[i]);
+            min[1] = mathMin(y, min[1]);
+            max[1] = mathMax(y, max[1]);
+        }
+
+        min[0] = mathMin(x0, min[0]);
+        max[0] = mathMax(x0, max[0]);
+        min[0] = mathMin(x3, min[0]);
+        max[0] = mathMax(x3, max[0]);
+
+        min[1] = mathMin(y0, min[1]);
+        max[1] = mathMax(y0, max[1]);
+        min[1] = mathMin(y3, min[1]);
+        max[1] = mathMax(y3, max[1]);
+    };
+
+    /**
+     * 从二阶贝塞尔曲线(p0, p1, p2)中计算出最小包围盒，写入`min`和`max`中
+     * @memberOf module:zrender/core/bbox
+     * @param {number} x0
+     * @param {number} y0
+     * @param {number} x1
+     * @param {number} y1
+     * @param {number} x2
+     * @param {number} y2
+     * @param {Array.<number>} min
+     * @param {Array.<number>} max
+     */
+    bbox.fromQuadratic = function(x0, y0, x1, y1, x2, y2, min, max) {
+        var quadraticExtremum = curve.quadraticExtremum;
+        var quadraticAt = curve.quadraticAt;
+        // Find extremities, where derivative in x dim or y dim is zero
+        var tx =
+            mathMax(
+                mathMin(quadraticExtremum(x0, x1, x2), 1), 0
+            );
+        var ty =
+            mathMax(
+                mathMin(quadraticExtremum(y0, y1, y2), 1), 0
+            );
+
+        var x = quadraticAt(x0, x1, x2, tx);
+        var y = quadraticAt(y0, y1, y2, ty);
+
+        min[0] = mathMin(x0, x2, x);
+        min[1] = mathMin(y0, y2, y);
+        max[0] = mathMax(x0, x2, x);
+        max[1] = mathMax(y0, y2, y);
+    };
+
+    /**
+     * 从圆弧中计算出最小包围盒，写入`min`和`max`中
+     * @method
+     * @memberOf module:zrender/core/bbox
+     * @param {number} x
+     * @param {number} y
+     * @param {number} rx
+     * @param {number} ry
+     * @param {number} startAngle
+     * @param {number} endAngle
+     * @param {number} anticlockwise
+     * @param {Array.<number>} min
+     * @param {Array.<number>} max
+     */
+    bbox.fromArc = function (
+        x, y, rx, ry, startAngle, endAngle, anticlockwise, min, max
+    ) {
+        var vec2Min = vec2.min;
+        var vec2Max = vec2.max;
+
+        var diff = Math.abs(startAngle - endAngle);
+
+
+        if (diff % PI2 < 1e-4 && diff > 1e-4) {
+            // Is a circle
+            min[0] = x - rx;
+            min[1] = y - ry;
+            max[0] = x + rx;
+            max[1] = y + ry;
+            return;
+        }
+
+        start[0] = mathCos(startAngle) * rx + x;
+        start[1] = mathSin(startAngle) * ry + y;
+
+        end[0] = mathCos(endAngle) * rx + x;
+        end[1] = mathSin(endAngle) * ry + y;
+
+        vec2Min(min, start, end);
+        vec2Max(max, start, end);
+
+        // Thresh to [0, Math.PI * 2]
+        startAngle = startAngle % (PI2);
+        if (startAngle < 0) {
+            startAngle = startAngle + PI2;
+        }
+        endAngle = endAngle % (PI2);
+        if (endAngle < 0) {
+            endAngle = endAngle + PI2;
+        }
+
+        if (startAngle > endAngle && !anticlockwise) {
+            endAngle += PI2;
+        }
+        else if (startAngle < endAngle && anticlockwise) {
+            startAngle += PI2;
+        }
+        if (anticlockwise) {
+            var tmp = endAngle;
+            endAngle = startAngle;
+            startAngle = tmp;
+        }
+
+        // var number = 0;
+        // var step = (anticlockwise ? -Math.PI : Math.PI) / 2;
+        for (var angle = 0; angle < endAngle; angle += Math.PI / 2) {
+            if (angle > startAngle) {
+                extremity[0] = mathCos(angle) * rx + x;
+                extremity[1] = mathSin(angle) * ry + y;
+
+                vec2Min(min, extremity, min);
+                vec2Max(max, extremity, max);
+            }
+        }
+    };
+
+    return bbox;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 
-    var eventTool = __webpack_require__(78);
-    var zrUtil = __webpack_require__(1);
-    var Eventful = __webpack_require__(69);
-    var env = __webpack_require__(77);
-    var GestureMgr = __webpack_require__(88);
+    var eventTool = __webpack_require__(7);
+    var zrUtil = __webpack_require__(0);
+    var Eventful = __webpack_require__(6);
+    var env = __webpack_require__(5);
+    var GestureMgr = __webpack_require__(43);
 
     var addEventListener = eventTool.addEventListener;
     var removeEventListener = eventTool.removeEventListener;
@@ -23459,7 +21946,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (re
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 90 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -23469,11 +21956,11 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 
 !(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
 
-    var Displayable = __webpack_require__(62);
-    var BoundingRect = __webpack_require__(9);
-    var zrUtil = __webpack_require__(1);
+    var Displayable = __webpack_require__(19);
+    var BoundingRect = __webpack_require__(2);
+    var zrUtil = __webpack_require__(0);
 
-    var LRU = __webpack_require__(58);
+    var LRU = __webpack_require__(13);
     var globalImageCache = new LRU(50);
     /**
      * @alias zrender/graphic/Image
@@ -23624,7 +22111,674 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/**
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ }),
-/* 91 */
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var smoothSpline = __webpack_require__(49);
+    var smoothBezier = __webpack_require__(48);
+
+    return {
+        buildPath: function (ctx, shape, closePath) {
+            var points = shape.points;
+            var smooth = shape.smooth;
+            if (points && points.length >= 2) {
+                if (smooth && smooth !== 'spline') {
+                    var controlPoints = smoothBezier(
+                        points, smooth, closePath, shape.smoothConstraint
+                    );
+
+                    ctx.moveTo(points[0][0], points[0][1]);
+                    var len = points.length;
+                    for (var i = 0; i < (closePath ? len : len - 1); i++) {
+                        var cp1 = controlPoints[i * 2];
+                        var cp2 = controlPoints[i * 2 + 1];
+                        var p = points[(i + 1) % len];
+                        ctx.bezierCurveTo(
+                            cp1[0], cp1[1], cp2[0], cp2[1], p[0], p[1]
+                        );
+                    }
+                }
+                else {
+                    if (smooth === 'spline') {
+                        points = smoothSpline(points, closePath);
+                    }
+
+                    ctx.moveTo(points[0][0], points[0][1]);
+                    for (var i = 1, l = points.length; i < l; i++) {
+                        ctx.lineTo(points[i][0], points[i][1]);
+                    }
+                }
+
+                closePath && ctx.closePath();
+            }
+        }
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * 贝塞尔平滑曲线
+ * @module zrender/shape/util/smoothBezier
+ * @author pissang (https://www.github.com/pissang)
+ *         Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ *         errorrik (errorrik@gmail.com)
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var vec2 = __webpack_require__(1);
+    var v2Min = vec2.min;
+    var v2Max = vec2.max;
+    var v2Scale = vec2.scale;
+    var v2Distance = vec2.distance;
+    var v2Add = vec2.add;
+
+    /**
+     * 贝塞尔平滑曲线
+     * @alias module:zrender/shape/util/smoothBezier
+     * @param {Array} points 线段顶点数组
+     * @param {number} smooth 平滑等级, 0-1
+     * @param {boolean} isLoop
+     * @param {Array} constraint 将计算出来的控制点约束在一个包围盒内
+     *                           比如 [[0, 0], [100, 100]], 这个包围盒会与
+     *                           整个折线的包围盒做一个并集用来约束控制点。
+     * @param {Array} 计算出来的控制点数组
+     */
+    return function (points, smooth, isLoop, constraint) {
+        var cps = [];
+
+        var v = [];
+        var v1 = [];
+        var v2 = [];
+        var prevPoint;
+        var nextPoint;
+
+        var min, max;
+        if (constraint) {
+            min = [Infinity, Infinity];
+            max = [-Infinity, -Infinity];
+            for (var i = 0, len = points.length; i < len; i++) {
+                v2Min(min, min, points[i]);
+                v2Max(max, max, points[i]);
+            }
+            // 与指定的包围盒做并集
+            v2Min(min, min, constraint[0]);
+            v2Max(max, max, constraint[1]);
+        }
+
+        for (var i = 0, len = points.length; i < len; i++) {
+            var point = points[i];
+
+            if (isLoop) {
+                prevPoint = points[i ? i - 1 : len - 1];
+                nextPoint = points[(i + 1) % len];
+            }
+            else {
+                if (i === 0 || i === len - 1) {
+                    cps.push(vec2.clone(points[i]));
+                    continue;
+                }
+                else {
+                    prevPoint = points[i - 1];
+                    nextPoint = points[i + 1];
+                }
+            }
+
+            vec2.sub(v, nextPoint, prevPoint);
+
+            // use degree to scale the handle length
+            v2Scale(v, v, smooth);
+
+            var d0 = v2Distance(point, prevPoint);
+            var d1 = v2Distance(point, nextPoint);
+            var sum = d0 + d1;
+            if (sum !== 0) {
+                d0 /= sum;
+                d1 /= sum;
+            }
+
+            v2Scale(v1, v, -d0);
+            v2Scale(v2, v, d1);
+            var cp0 = v2Add([], point, v1);
+            var cp1 = v2Add([], point, v2);
+            if (constraint) {
+                v2Max(cp0, cp0, min);
+                v2Min(cp0, cp0, max);
+                v2Max(cp1, cp1, min);
+                v2Min(cp1, cp1, max);
+            }
+            cps.push(cp0);
+            cps.push(cp1);
+        }
+
+        if (isLoop) {
+            cps.push(cps.shift());
+        }
+
+        return cps;
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * Catmull-Rom spline 插值折线
+ * @module zrender/shape/util/smoothSpline
+ * @author pissang (https://www.github.com/pissang)
+ *         Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ *         errorrik (errorrik@gmail.com)
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+    var vec2 = __webpack_require__(1);
+
+    /**
+     * @inner
+     */
+    function interpolate(p0, p1, p2, p3, t, t2, t3) {
+        var v0 = (p2 - p0) * 0.5;
+        var v1 = (p3 - p1) * 0.5;
+        return (2 * (p1 - p2) + v0 + v1) * t3
+                + (-3 * (p1 - p2) - 2 * v0 - v1) * t2
+                + v0 * t + p1;
+    }
+
+    /**
+     * @alias module:zrender/shape/util/smoothSpline
+     * @param {Array} points 线段顶点数组
+     * @param {boolean} isLoop
+     * @return {Array}
+     */
+    return function (points, isLoop) {
+        var len = points.length;
+        var ret = [];
+
+        var distance = 0;
+        for (var i = 1; i < len; i++) {
+            distance += vec2.distance(points[i - 1], points[i]);
+        }
+
+        var segs = distance / 2;
+        segs = segs < len ? len : segs;
+        for (var i = 0; i < segs; i++) {
+            var pos = i / (segs - 1) * (isLoop ? len : len - 1);
+            var idx = Math.floor(pos);
+
+            var w = pos - idx;
+
+            var p0;
+            var p1 = points[idx % len];
+            var p2;
+            var p3;
+            if (!isLoop) {
+                p0 = points[idx === 0 ? idx : idx - 1];
+                p2 = points[idx > len - 2 ? len - 1 : idx + 1];
+                p3 = points[idx > len - 3 ? len - 1 : idx + 2];
+            }
+            else {
+                p0 = points[(idx - 1 + len) % len];
+                p2 = points[(idx + 1) % len];
+                p3 = points[(idx + 2) % len];
+            }
+
+            var w2 = w * w;
+            var w3 = w * w2;
+
+            ret.push([
+                interpolate(p0[0], p1[0], p2[0], p3[0], w, w2, w3),
+                interpolate(p0[1], p1[1], p2[1], p3[1], w, w2, w3)
+            ]);
+        }
+        return ret;
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * Mixin for drawing text in a element bounding rect
+ * @module zrender/mixin/RectText
+ */
+
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    var textContain = __webpack_require__(40);
+    var BoundingRect = __webpack_require__(2);
+
+    var tmpRect = new BoundingRect();
+
+    var RectText = function () {};
+
+    function parsePercent(value, maxValue) {
+        if (typeof value === 'string') {
+            if (value.lastIndexOf('%') >= 0) {
+                return parseFloat(value) / 100 * maxValue;
+            }
+            return parseFloat(value);
+        }
+        return value;
+    }
+
+    RectText.prototype = {
+
+        constructor: RectText,
+
+        /**
+         * Draw text in a rect with specified position.
+         * @param  {CanvasRenderingContext} ctx
+         * @param  {Object} rect Displayable rect
+         * @return {Object} textRect Alternative precalculated text bounding rect
+         */
+        drawRectText: function (ctx, rect, textRect) {
+            var style = this.style;
+            var text = style.text;
+            // Convert to string
+            text != null && (text += '');
+            if (!text) {
+                return;
+            }
+
+            // FIXME
+            ctx.save();
+
+            var x;
+            var y;
+            var textPosition = style.textPosition;
+            var textOffset = style.textOffset;
+            var distance = style.textDistance;
+            var align = style.textAlign;
+            var font = style.textFont || style.font;
+            var baseline = style.textBaseline;
+            var verticalAlign = style.textVerticalAlign;
+            rect = style.textPositionRect || rect;
+
+            textRect = textRect || textContain.getBoundingRect(text, font, align, baseline);
+
+            // Transform rect to view space
+            var transform = this.transform;
+            if (!style.textTransform) {
+                if (transform) {
+                    tmpRect.copy(rect);
+                    tmpRect.applyTransform(transform);
+                    rect = tmpRect;
+                }
+            }
+            else {
+                this.setTransform(ctx);
+            }
+
+            // Text position represented by coord
+            if (textPosition instanceof Array) {
+                // Percent
+                x = rect.x + parsePercent(textPosition[0], rect.width);
+                y = rect.y + parsePercent(textPosition[1], rect.height);
+                align = align || 'left';
+                baseline = baseline || 'top';
+
+                if (verticalAlign) {
+                    switch (verticalAlign) {
+                        case 'middle':
+                            y -= textRect.height / 2 - textRect.lineHeight / 2;
+                            break;
+                        case 'bottom':
+                            y -= textRect.height - textRect.lineHeight / 2;
+                            break;
+                        default:
+                            y += textRect.lineHeight / 2;
+                    }
+                    // Force bseline to be middle
+                    baseline = 'middle';
+                }
+            }
+            else {
+                var res = textContain.adjustTextPositionOnRect(
+                    textPosition, rect, textRect, distance
+                );
+                x = res.x;
+                y = res.y;
+                // Default align and baseline when has textPosition
+                align = align || res.textAlign;
+                baseline = baseline || res.textBaseline;
+            }
+
+            if (textOffset) {
+                x += textOffset[0];
+                y += textOffset[1];
+            }
+
+            // Use canvas default left textAlign. Giving invalid value will cause state not change
+            ctx.textAlign = align || 'left';
+            // Use canvas default alphabetic baseline
+            ctx.textBaseline = baseline || 'alphabetic';
+
+            var textFill = style.textFill;
+            var textStroke = style.textStroke;
+            textFill && (ctx.fillStyle = textFill);
+            textStroke && (ctx.strokeStyle = textStroke);
+
+            // TODO Invalid font
+            ctx.font = font || '12px sans-serif';
+
+            // Text shadow
+            // Always set shadowBlur and shadowOffset to avoid leak from displayable
+            ctx.shadowBlur = style.textShadowBlur;
+            ctx.shadowColor = style.textShadowColor || 'transparent';
+            ctx.shadowOffsetX = style.textShadowOffsetX;
+            ctx.shadowOffsetY = style.textShadowOffsetY;
+
+            var textLines = text.split('\n');
+
+            if (style.textRotation) {
+                transform && ctx.translate(transform[4], transform[5]);
+                ctx.rotate(style.textRotation);
+                transform && ctx.translate(-transform[4], -transform[5]);
+            }
+
+            for (var i = 0; i < textLines.length; i++) {
+                // Fill after stroke so the outline will not cover the main part.
+                textStroke && ctx.strokeText(textLines[i], x, y);
+                textFill && ctx.fillText(textLines[i], x, y);
+                y += textRect.lineHeight;
+            }
+
+            ctx.restore();
+        }
+    };
+
+    return RectText;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @module zrender/mixin/Animatable
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
+
+    'use strict';
+
+    var Animator = __webpack_require__(10);
+    var util = __webpack_require__(0);
+    var isString = util.isString;
+    var isFunction = util.isFunction;
+    var isObject = util.isObject;
+    var log = __webpack_require__(16);
+
+    /**
+     * @alias modue:zrender/mixin/Animatable
+     * @constructor
+     */
+    var Animatable = function () {
+
+        /**
+         * @type {Array.<module:zrender/animation/Animator>}
+         * @readOnly
+         */
+        this.animators = [];
+    };
+
+    Animatable.prototype = {
+
+        constructor: Animatable,
+
+        /**
+         * 动画
+         *
+         * @param {string} path 需要添加动画的属性获取路径，可以通过a.b.c来获取深层的属性
+         * @param {boolean} [loop] 动画是否循环
+         * @return {module:zrender/animation/Animator}
+         * @example:
+         *     el.animate('style', false)
+         *         .when(1000, {x: 10} )
+         *         .done(function(){ // Animation done })
+         *         .start()
+         */
+        animate: function (path, loop) {
+            var target;
+            var animatingShape = false;
+            var el = this;
+            var zr = this.__zr;
+            if (path) {
+                var pathSplitted = path.split('.');
+                var prop = el;
+                // If animating shape
+                animatingShape = pathSplitted[0] === 'shape';
+                for (var i = 0, l = pathSplitted.length; i < l; i++) {
+                    if (!prop) {
+                        continue;
+                    }
+                    prop = prop[pathSplitted[i]];
+                }
+                if (prop) {
+                    target = prop;
+                }
+            }
+            else {
+                target = el;
+            }
+
+            if (!target) {
+                log(
+                    'Property "'
+                    + path
+                    + '" is not existed in element '
+                    + el.id
+                );
+                return;
+            }
+
+            var animators = el.animators;
+
+            var animator = new Animator(target, loop);
+
+            animator.during(function (target) {
+                el.dirty(animatingShape);
+            })
+            .done(function () {
+                // FIXME Animator will not be removed if use `Animator#stop` to stop animation
+                animators.splice(util.indexOf(animators, animator), 1);
+            });
+
+            animators.push(animator);
+
+            // If animate after added to the zrender
+            if (zr) {
+                zr.animation.addAnimator(animator);
+            }
+
+            return animator;
+        },
+
+        /**
+         * 停止动画
+         * @param {boolean} forwardToLast If move to last frame before stop
+         */
+        stopAnimation: function (forwardToLast) {
+            var animators = this.animators;
+            var len = animators.length;
+            for (var i = 0; i < len; i++) {
+                animators[i].stop(forwardToLast);
+            }
+            animators.length = 0;
+
+            return this;
+        },
+
+        /**
+         * @param {Object} target
+         * @param {number} [time=500] Time in ms
+         * @param {string} [easing='linear']
+         * @param {number} [delay=0]
+         * @param {Function} [callback]
+         *
+         * @example
+         *  // Animate position
+         *  el.animateTo({
+         *      position: [10, 10]
+         *  }, function () { // done })
+         *
+         *  // Animate shape, style and position in 100ms, delayed 100ms, with cubicOut easing
+         *  el.animateTo({
+         *      shape: {
+         *          width: 500
+         *      },
+         *      style: {
+         *          fill: 'red'
+         *      }
+         *      position: [10, 10]
+         *  }, 100, 100, 'cubicOut', function () { // done })
+         */
+         // TODO Return animation key
+        animateTo: function (target, time, delay, easing, callback) {
+            // animateTo(target, time, easing, callback);
+            if (isString(delay)) {
+                callback = easing;
+                easing = delay;
+                delay = 0;
+            }
+            // animateTo(target, time, delay, callback);
+            else if (isFunction(easing)) {
+                callback = easing;
+                easing = 'linear';
+                delay = 0;
+            }
+            // animateTo(target, time, callback);
+            else if (isFunction(delay)) {
+                callback = delay;
+                delay = 0;
+            }
+            // animateTo(target, callback)
+            else if (isFunction(time)) {
+                callback = time;
+                time = 500;
+            }
+            // animateTo(target)
+            else if (!time) {
+                time = 500;
+            }
+            // Stop all previous animations
+            this.stopAnimation();
+            this._animateToShallow('', this, target, time, delay, easing, callback);
+
+            // Animators may be removed immediately after start
+            // if there is nothing to animate
+            var animators = this.animators.slice();
+            var count = animators.length;
+            function done() {
+                count--;
+                if (!count) {
+                    callback && callback();
+                }
+            }
+
+            // No animators. This should be checked before animators[i].start(),
+            // because 'done' may be executed immediately if no need to animate.
+            if (!count) {
+                callback && callback();
+            }
+            // Start after all animators created
+            // Incase any animator is done immediately when all animation properties are not changed
+            for (var i = 0; i < animators.length; i++) {
+                animators[i]
+                    .done(done)
+                    .start(easing);
+            }
+        },
+
+        /**
+         * @private
+         * @param {string} path=''
+         * @param {Object} source=this
+         * @param {Object} target
+         * @param {number} [time=500]
+         * @param {number} [delay=0]
+         *
+         * @example
+         *  // Animate position
+         *  el._animateToShallow({
+         *      position: [10, 10]
+         *  })
+         *
+         *  // Animate shape, style and position in 100ms, delayed 100ms
+         *  el._animateToShallow({
+         *      shape: {
+         *          width: 500
+         *      },
+         *      style: {
+         *          fill: 'red'
+         *      }
+         *      position: [10, 10]
+         *  }, 100, 100)
+         */
+        _animateToShallow: function (path, source, target, time, delay) {
+            var objShallow = {};
+            var propertyCount = 0;
+            for (var name in target) {
+                if (!target.hasOwnProperty(name)) {
+                    continue;
+                }
+
+                if (source[name] != null) {
+                    if (isObject(target[name]) && !util.isArrayLike(target[name])) {
+                        this._animateToShallow(
+                            path ? path + '.' + name : name,
+                            source[name],
+                            target[name],
+                            time,
+                            delay
+                        );
+                    }
+                    else {
+                        objShallow[name] = target[name];
+                        propertyCount++;
+                    }
+                }
+                else if (target[name] != null) {
+                    // Attr directly if not has property
+                    // FIXME, if some property not needed for element ?
+                    if (!path) {
+                        this.attr(name, target[name]);
+                    }
+                    else {  // Shape or style
+                        var props = {};
+                        props[path] = {};
+                        props[path][name] = target[name];
+                        this.attr(props);
+                    }
+                }
+            }
+
+            if (propertyCount > 0) {
+                this.animate(path, false)
+                    .when(time == null ? 500 : time, objShallow)
+                    .delay(delay || 0);
+            }
+
+            return this;
+        }
+    };
+
+    return Animatable;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;// TODO Draggable for group
@@ -23715,6 +22869,815 @@ var __WEBPACK_AMD_DEFINE_RESULT__;// TODO Draggable for group
     return Draggable;
 }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * 提供变换扩展
+ * @module zrender/mixin/Transformable
+ * @author pissang (https://www.github.com/pissang)
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function (require) {
+
+    'use strict';
+
+    var matrix = __webpack_require__(17);
+    var vector = __webpack_require__(1);
+    var mIdentity = matrix.identity;
+
+    var EPSILON = 5e-5;
+
+    function isNotAroundZero(val) {
+        return val > EPSILON || val < -EPSILON;
+    }
+
+    /**
+     * @alias module:zrender/mixin/Transformable
+     * @constructor
+     */
+    var Transformable = function (opts) {
+        opts = opts || {};
+        // If there are no given position, rotation, scale
+        if (!opts.position) {
+            /**
+             * 平移
+             * @type {Array.<number>}
+             * @default [0, 0]
+             */
+            this.position = [0, 0];
+        }
+        if (opts.rotation == null) {
+            /**
+             * 旋转
+             * @type {Array.<number>}
+             * @default 0
+             */
+            this.rotation = 0;
+        }
+        if (!opts.scale) {
+            /**
+             * 缩放
+             * @type {Array.<number>}
+             * @default [1, 1]
+             */
+            this.scale = [1, 1];
+        }
+        /**
+         * 旋转和缩放的原点
+         * @type {Array.<number>}
+         * @default null
+         */
+        this.origin = this.origin || null;
+    };
+
+    var transformableProto = Transformable.prototype;
+    transformableProto.transform = null;
+
+    /**
+     * 判断是否需要有坐标变换
+     * 如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
+     */
+    transformableProto.needLocalTransform = function () {
+        return isNotAroundZero(this.rotation)
+            || isNotAroundZero(this.position[0])
+            || isNotAroundZero(this.position[1])
+            || isNotAroundZero(this.scale[0] - 1)
+            || isNotAroundZero(this.scale[1] - 1);
+    };
+
+    transformableProto.updateTransform = function () {
+        var parent = this.parent;
+        var parentHasTransform = parent && parent.transform;
+        var needLocalTransform = this.needLocalTransform();
+
+        var m = this.transform;
+        if (!(needLocalTransform || parentHasTransform)) {
+            m && mIdentity(m);
+            return;
+        }
+
+        m = m || matrix.create();
+
+        if (needLocalTransform) {
+            this.getLocalTransform(m);
+        }
+        else {
+            mIdentity(m);
+        }
+
+        // 应用父节点变换
+        if (parentHasTransform) {
+            if (needLocalTransform) {
+                matrix.mul(m, parent.transform, m);
+            }
+            else {
+                matrix.copy(m, parent.transform);
+            }
+        }
+        // 保存这个变换矩阵
+        this.transform = m;
+
+        this.invTransform = this.invTransform || matrix.create();
+        matrix.invert(this.invTransform, m);
+    };
+
+    transformableProto.getLocalTransform = function (m) {
+        return Transformable.getLocalTransform(this, m);
+    };
+
+    /**
+     * 将自己的transform应用到context上
+     * @param {Context2D} ctx
+     */
+    transformableProto.setTransform = function (ctx) {
+        var m = this.transform;
+        var dpr = ctx.dpr || 1;
+        if (m) {
+            ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
+        }
+        else {
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+    };
+
+    transformableProto.restoreTransform = function (ctx) {
+        var dpr = ctx.dpr || 1;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    var tmpTransform = [];
+
+    /**
+     * 分解`transform`矩阵到`position`, `rotation`, `scale`
+     */
+    transformableProto.decomposeTransform = function () {
+        if (!this.transform) {
+            return;
+        }
+        var parent = this.parent;
+        var m = this.transform;
+        if (parent && parent.transform) {
+            // Get local transform and decompose them to position, scale, rotation
+            matrix.mul(tmpTransform, parent.invTransform, m);
+            m = tmpTransform;
+        }
+        var sx = m[0] * m[0] + m[1] * m[1];
+        var sy = m[2] * m[2] + m[3] * m[3];
+        var position = this.position;
+        var scale = this.scale;
+        if (isNotAroundZero(sx - 1)) {
+            sx = Math.sqrt(sx);
+        }
+        if (isNotAroundZero(sy - 1)) {
+            sy = Math.sqrt(sy);
+        }
+        if (m[0] < 0) {
+            sx = -sx;
+        }
+        if (m[3] < 0) {
+            sy = -sy;
+        }
+        position[0] = m[4];
+        position[1] = m[5];
+        scale[0] = sx;
+        scale[1] = sy;
+        this.rotation = Math.atan2(-m[1] / sy, m[0] / sx);
+    };
+
+    /**
+     * Get global scale
+     * @return {Array.<number>}
+     */
+    transformableProto.getGlobalScale = function () {
+        var m = this.transform;
+        if (!m) {
+            return [1, 1];
+        }
+        var sx = Math.sqrt(m[0] * m[0] + m[1] * m[1]);
+        var sy = Math.sqrt(m[2] * m[2] + m[3] * m[3]);
+        if (m[0] < 0) {
+            sx = -sx;
+        }
+        if (m[3] < 0) {
+            sy = -sy;
+        }
+        return [sx, sy];
+    };
+    /**
+     * 变换坐标位置到 shape 的局部坐标空间
+     * @method
+     * @param {number} x
+     * @param {number} y
+     * @return {Array.<number>}
+     */
+    transformableProto.transformCoordToLocal = function (x, y) {
+        var v2 = [x, y];
+        var invTransform = this.invTransform;
+        if (invTransform) {
+            vector.applyTransform(v2, v2, invTransform);
+        }
+        return v2;
+    };
+
+    /**
+     * 变换局部坐标位置到全局坐标空间
+     * @method
+     * @param {number} x
+     * @param {number} y
+     * @return {Array.<number>}
+     */
+    transformableProto.transformCoordToGlobal = function (x, y) {
+        var v2 = [x, y];
+        var transform = this.transform;
+        if (transform) {
+            vector.applyTransform(v2, v2, transform);
+        }
+        return v2;
+    };
+
+    /**
+     * @static
+     * @param {Object} target
+     * @param {Array.<number>} target.origin
+     * @param {number} target.rotation
+     * @param {Array.<number>} target.position
+     * @param {Array.<number>} [m]
+     */
+    Transformable.getLocalTransform = function (target, m) {
+        m = m || [];
+        mIdentity(m);
+
+        var origin = target.origin;
+        var scale = target.scale || [1, 1];
+        var rotation = target.rotation || 0;
+        var position = target.position || [0, 0];
+
+        if (origin) {
+            // Translate to origin
+            m[4] -= origin[0];
+            m[5] -= origin[1];
+        }
+        matrix.scale(m, m, scale);
+        if (rotation) {
+            matrix.rotate(m, m, rotation);
+        }
+        if (origin) {
+            // Translate back from origin
+            m[4] += origin[0];
+            m[5] += origin[1];
+        }
+
+        m[4] += position[0];
+        m[5] += position[1];
+
+        return m;
+    };
+
+    return Transformable;
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * @module zrender/tool/color
+ */
+!(__WEBPACK_AMD_DEFINE_RESULT__ = function(require) {
+
+    var LRU = __webpack_require__(13);
+
+    var kCSSColorTable = {
+        'transparent': [0,0,0,0], 'aliceblue': [240,248,255,1],
+        'antiquewhite': [250,235,215,1], 'aqua': [0,255,255,1],
+        'aquamarine': [127,255,212,1], 'azure': [240,255,255,1],
+        'beige': [245,245,220,1], 'bisque': [255,228,196,1],
+        'black': [0,0,0,1], 'blanchedalmond': [255,235,205,1],
+        'blue': [0,0,255,1], 'blueviolet': [138,43,226,1],
+        'brown': [165,42,42,1], 'burlywood': [222,184,135,1],
+        'cadetblue': [95,158,160,1], 'chartreuse': [127,255,0,1],
+        'chocolate': [210,105,30,1], 'coral': [255,127,80,1],
+        'cornflowerblue': [100,149,237,1], 'cornsilk': [255,248,220,1],
+        'crimson': [220,20,60,1], 'cyan': [0,255,255,1],
+        'darkblue': [0,0,139,1], 'darkcyan': [0,139,139,1],
+        'darkgoldenrod': [184,134,11,1], 'darkgray': [169,169,169,1],
+        'darkgreen': [0,100,0,1], 'darkgrey': [169,169,169,1],
+        'darkkhaki': [189,183,107,1], 'darkmagenta': [139,0,139,1],
+        'darkolivegreen': [85,107,47,1], 'darkorange': [255,140,0,1],
+        'darkorchid': [153,50,204,1], 'darkred': [139,0,0,1],
+        'darksalmon': [233,150,122,1], 'darkseagreen': [143,188,143,1],
+        'darkslateblue': [72,61,139,1], 'darkslategray': [47,79,79,1],
+        'darkslategrey': [47,79,79,1], 'darkturquoise': [0,206,209,1],
+        'darkviolet': [148,0,211,1], 'deeppink': [255,20,147,1],
+        'deepskyblue': [0,191,255,1], 'dimgray': [105,105,105,1],
+        'dimgrey': [105,105,105,1], 'dodgerblue': [30,144,255,1],
+        'firebrick': [178,34,34,1], 'floralwhite': [255,250,240,1],
+        'forestgreen': [34,139,34,1], 'fuchsia': [255,0,255,1],
+        'gainsboro': [220,220,220,1], 'ghostwhite': [248,248,255,1],
+        'gold': [255,215,0,1], 'goldenrod': [218,165,32,1],
+        'gray': [128,128,128,1], 'green': [0,128,0,1],
+        'greenyellow': [173,255,47,1], 'grey': [128,128,128,1],
+        'honeydew': [240,255,240,1], 'hotpink': [255,105,180,1],
+        'indianred': [205,92,92,1], 'indigo': [75,0,130,1],
+        'ivory': [255,255,240,1], 'khaki': [240,230,140,1],
+        'lavender': [230,230,250,1], 'lavenderblush': [255,240,245,1],
+        'lawngreen': [124,252,0,1], 'lemonchiffon': [255,250,205,1],
+        'lightblue': [173,216,230,1], 'lightcoral': [240,128,128,1],
+        'lightcyan': [224,255,255,1], 'lightgoldenrodyellow': [250,250,210,1],
+        'lightgray': [211,211,211,1], 'lightgreen': [144,238,144,1],
+        'lightgrey': [211,211,211,1], 'lightpink': [255,182,193,1],
+        'lightsalmon': [255,160,122,1], 'lightseagreen': [32,178,170,1],
+        'lightskyblue': [135,206,250,1], 'lightslategray': [119,136,153,1],
+        'lightslategrey': [119,136,153,1], 'lightsteelblue': [176,196,222,1],
+        'lightyellow': [255,255,224,1], 'lime': [0,255,0,1],
+        'limegreen': [50,205,50,1], 'linen': [250,240,230,1],
+        'magenta': [255,0,255,1], 'maroon': [128,0,0,1],
+        'mediumaquamarine': [102,205,170,1], 'mediumblue': [0,0,205,1],
+        'mediumorchid': [186,85,211,1], 'mediumpurple': [147,112,219,1],
+        'mediumseagreen': [60,179,113,1], 'mediumslateblue': [123,104,238,1],
+        'mediumspringgreen': [0,250,154,1], 'mediumturquoise': [72,209,204,1],
+        'mediumvioletred': [199,21,133,1], 'midnightblue': [25,25,112,1],
+        'mintcream': [245,255,250,1], 'mistyrose': [255,228,225,1],
+        'moccasin': [255,228,181,1], 'navajowhite': [255,222,173,1],
+        'navy': [0,0,128,1], 'oldlace': [253,245,230,1],
+        'olive': [128,128,0,1], 'olivedrab': [107,142,35,1],
+        'orange': [255,165,0,1], 'orangered': [255,69,0,1],
+        'orchid': [218,112,214,1], 'palegoldenrod': [238,232,170,1],
+        'palegreen': [152,251,152,1], 'paleturquoise': [175,238,238,1],
+        'palevioletred': [219,112,147,1], 'papayawhip': [255,239,213,1],
+        'peachpuff': [255,218,185,1], 'peru': [205,133,63,1],
+        'pink': [255,192,203,1], 'plum': [221,160,221,1],
+        'powderblue': [176,224,230,1], 'purple': [128,0,128,1],
+        'red': [255,0,0,1], 'rosybrown': [188,143,143,1],
+        'royalblue': [65,105,225,1], 'saddlebrown': [139,69,19,1],
+        'salmon': [250,128,114,1], 'sandybrown': [244,164,96,1],
+        'seagreen': [46,139,87,1], 'seashell': [255,245,238,1],
+        'sienna': [160,82,45,1], 'silver': [192,192,192,1],
+        'skyblue': [135,206,235,1], 'slateblue': [106,90,205,1],
+        'slategray': [112,128,144,1], 'slategrey': [112,128,144,1],
+        'snow': [255,250,250,1], 'springgreen': [0,255,127,1],
+        'steelblue': [70,130,180,1], 'tan': [210,180,140,1],
+        'teal': [0,128,128,1], 'thistle': [216,191,216,1],
+        'tomato': [255,99,71,1], 'turquoise': [64,224,208,1],
+        'violet': [238,130,238,1], 'wheat': [245,222,179,1],
+        'white': [255,255,255,1], 'whitesmoke': [245,245,245,1],
+        'yellow': [255,255,0,1], 'yellowgreen': [154,205,50,1]
+    };
+
+    function clampCssByte(i) {  // Clamp to integer 0 .. 255.
+        i = Math.round(i);  // Seems to be what Chrome does (vs truncation).
+        return i < 0 ? 0 : i > 255 ? 255 : i;
+    }
+
+    function clampCssAngle(i) {  // Clamp to integer 0 .. 360.
+        i = Math.round(i);  // Seems to be what Chrome does (vs truncation).
+        return i < 0 ? 0 : i > 360 ? 360 : i;
+    }
+
+    function clampCssFloat(f) {  // Clamp to float 0.0 .. 1.0.
+        return f < 0 ? 0 : f > 1 ? 1 : f;
+    }
+
+    function parseCssInt(str) {  // int or percentage.
+        if (str.length && str.charAt(str.length - 1) === '%') {
+            return clampCssByte(parseFloat(str) / 100 * 255);
+        }
+        return clampCssByte(parseInt(str, 10));
+    }
+
+    function parseCssFloat(str) {  // float or percentage.
+        if (str.length && str.charAt(str.length - 1) === '%') {
+            return clampCssFloat(parseFloat(str) / 100);
+        }
+        return clampCssFloat(parseFloat(str));
+    }
+
+    function cssHueToRgb(m1, m2, h) {
+        if (h < 0) {
+            h += 1;
+        }
+        else if (h > 1) {
+            h -= 1;
+        }
+
+        if (h * 6 < 1) {
+            return m1 + (m2 - m1) * h * 6;
+        }
+        if (h * 2 < 1) {
+            return m2;
+        }
+        if (h * 3 < 2) {
+            return m1 + (m2 - m1) * (2/3 - h) * 6;
+        }
+        return m1;
+    }
+
+    function lerp(a, b, p) {
+        return a + (b - a) * p;
+    }
+
+    function setRgba(out, r, g, b, a) {
+        out[0] = r; out[1] = g; out[2] = b; out[3] = a;
+        return out;
+    }
+    function copyRgba(out, a) {
+        out[0] = a[0]; out[1] = a[1]; out[2] = a[2]; out[3] = a[3];
+        return out;
+    }
+    var colorCache = new LRU(20);
+    var lastRemovedArr = null;
+    function putToCache(colorStr, rgbaArr) {
+        // Reuse removed array
+        if (lastRemovedArr) {
+            copyRgba(lastRemovedArr, rgbaArr);
+        }
+        lastRemovedArr = colorCache.put(colorStr, lastRemovedArr || (rgbaArr.slice()));
+    }
+    /**
+     * @param {string} colorStr
+     * @param {Array.<number>} out
+     * @return {Array.<number>}
+     * @memberOf module:zrender/util/color
+     */
+    function parse(colorStr, rgbaArr) {
+        if (!colorStr) {
+            return;
+        }
+        rgbaArr = rgbaArr || [];
+
+        var cached = colorCache.get(colorStr);
+        if (cached) {
+            return copyRgba(rgbaArr, cached);
+        }
+
+        // colorStr may be not string
+        colorStr = colorStr + '';
+        // Remove all whitespace, not compliant, but should just be more accepting.
+        var str = colorStr.replace(/ /g, '').toLowerCase();
+
+        // Color keywords (and transparent) lookup.
+        if (str in kCSSColorTable) {
+            copyRgba(rgbaArr, kCSSColorTable[str]);
+            putToCache(colorStr, rgbaArr);
+            return rgbaArr;
+        }
+
+        // #abc and #abc123 syntax.
+        if (str.charAt(0) === '#') {
+            if (str.length === 4) {
+                var iv = parseInt(str.substr(1), 16);  // TODO(deanm): Stricter parsing.
+                if (!(iv >= 0 && iv <= 0xfff)) {
+                    setRgba(rgbaArr, 0, 0, 0, 1);
+                    return;  // Covers NaN.
+                }
+                setRgba(rgbaArr,
+                    ((iv & 0xf00) >> 4) | ((iv & 0xf00) >> 8),
+                    (iv & 0xf0) | ((iv & 0xf0) >> 4),
+                    (iv & 0xf) | ((iv & 0xf) << 4),
+                    1
+                );
+                putToCache(colorStr, rgbaArr);
+                return rgbaArr;
+            }
+            else if (str.length === 7) {
+                var iv = parseInt(str.substr(1), 16);  // TODO(deanm): Stricter parsing.
+                if (!(iv >= 0 && iv <= 0xffffff)) {
+                    setRgba(rgbaArr, 0, 0, 0, 1);
+                    return;  // Covers NaN.
+                }
+                setRgba(rgbaArr,
+                    (iv & 0xff0000) >> 16,
+                    (iv & 0xff00) >> 8,
+                    iv & 0xff,
+                    1
+                );
+                putToCache(colorStr, rgbaArr);
+                return rgbaArr;
+            }
+
+            return;
+        }
+        var op = str.indexOf('('), ep = str.indexOf(')');
+        if (op !== -1 && ep + 1 === str.length) {
+            var fname = str.substr(0, op);
+            var params = str.substr(op + 1, ep - (op + 1)).split(',');
+            var alpha = 1;  // To allow case fallthrough.
+            switch (fname) {
+                case 'rgba':
+                    if (params.length !== 4) {
+                        setRgba(rgbaArr, 0, 0, 0, 1);
+                        return;
+                    }
+                    alpha = parseCssFloat(params.pop()); // jshint ignore:line
+                // Fall through.
+                case 'rgb':
+                    if (params.length !== 3) {
+                        setRgba(rgbaArr, 0, 0, 0, 1);
+                        return;
+                    }
+                    setRgba(rgbaArr,
+                        parseCssInt(params[0]),
+                        parseCssInt(params[1]),
+                        parseCssInt(params[2]),
+                        alpha
+                    );
+                    putToCache(colorStr, rgbaArr);
+                    return rgbaArr;
+                case 'hsla':
+                    if (params.length !== 4) {
+                        setRgba(rgbaArr, 0, 0, 0, 1);
+                        return;
+                    }
+                    params[3] = parseCssFloat(params[3]);
+                    hsla2rgba(params, rgbaArr);
+                    putToCache(colorStr, rgbaArr);
+                    return rgbaArr;
+                case 'hsl':
+                    if (params.length !== 3) {
+                        setRgba(rgbaArr, 0, 0, 0, 1);
+                        return;
+                    }
+                    hsla2rgba(params, rgbaArr);
+                    putToCache(colorStr, rgbaArr);
+                    return rgbaArr;
+                default:
+                    return;
+            }
+        }
+
+        setRgba(rgbaArr, 0, 0, 0, 1);
+        return;
+    }
+
+    /**
+     * @param {Array.<number>} hsla
+     * @param {Array.<number>} rgba
+     * @return {Array.<number>} rgba
+     */
+    function hsla2rgba(hsla, rgba) {
+        var h = (((parseFloat(hsla[0]) % 360) + 360) % 360) / 360;  // 0 .. 1
+        // NOTE(deanm): According to the CSS spec s/l should only be
+        // percentages, but we don't bother and let float or percentage.
+        var s = parseCssFloat(hsla[1]);
+        var l = parseCssFloat(hsla[2]);
+        var m2 = l <= 0.5 ? l * (s + 1) : l + s - l * s;
+        var m1 = l * 2 - m2;
+
+        rgba = rgba || [];
+        setRgba(rgba,
+            clampCssByte(cssHueToRgb(m1, m2, h + 1 / 3) * 255),
+            clampCssByte(cssHueToRgb(m1, m2, h) * 255),
+            clampCssByte(cssHueToRgb(m1, m2, h - 1 / 3) * 255),
+            1
+        );
+
+        if (hsla.length === 4) {
+            rgba[3] = hsla[3];
+        }
+
+        return rgba;
+    }
+
+    /**
+     * @param {Array.<number>} rgba
+     * @return {Array.<number>} hsla
+     */
+    function rgba2hsla(rgba) {
+        if (!rgba) {
+            return;
+        }
+
+        // RGB from 0 to 255
+        var R = rgba[0] / 255;
+        var G = rgba[1] / 255;
+        var B = rgba[2] / 255;
+
+        var vMin = Math.min(R, G, B); // Min. value of RGB
+        var vMax = Math.max(R, G, B); // Max. value of RGB
+        var delta = vMax - vMin; // Delta RGB value
+
+        var L = (vMax + vMin) / 2;
+        var H;
+        var S;
+        // HSL results from 0 to 1
+        if (delta === 0) {
+            H = 0;
+            S = 0;
+        }
+        else {
+            if (L < 0.5) {
+                S = delta / (vMax + vMin);
+            }
+            else {
+                S = delta / (2 - vMax - vMin);
+            }
+
+            var deltaR = (((vMax - R) / 6) + (delta / 2)) / delta;
+            var deltaG = (((vMax - G) / 6) + (delta / 2)) / delta;
+            var deltaB = (((vMax - B) / 6) + (delta / 2)) / delta;
+
+            if (R === vMax) {
+                H = deltaB - deltaG;
+            }
+            else if (G === vMax) {
+                H = (1 / 3) + deltaR - deltaB;
+            }
+            else if (B === vMax) {
+                H = (2 / 3) + deltaG - deltaR;
+            }
+
+            if (H < 0) {
+                H += 1;
+            }
+
+            if (H > 1) {
+                H -= 1;
+            }
+        }
+
+        var hsla = [H * 360, S, L];
+
+        if (rgba[3] != null) {
+            hsla.push(rgba[3]);
+        }
+
+        return hsla;
+    }
+
+    /**
+     * @param {string} color
+     * @param {number} level
+     * @return {string}
+     * @memberOf module:zrender/util/color
+     */
+    function lift(color, level) {
+        var colorArr = parse(color);
+        if (colorArr) {
+            for (var i = 0; i < 3; i++) {
+                if (level < 0) {
+                    colorArr[i] = colorArr[i] * (1 - level) | 0;
+                }
+                else {
+                    colorArr[i] = ((255 - colorArr[i]) * level + colorArr[i]) | 0;
+                }
+            }
+            return stringify(colorArr, colorArr.length === 4 ? 'rgba' : 'rgb');
+        }
+    }
+
+    /**
+     * @param {string} color
+     * @return {string}
+     * @memberOf module:zrender/util/color
+     */
+    function toHex(color, level) {
+        var colorArr = parse(color);
+        if (colorArr) {
+            return ((1 << 24) + (colorArr[0] << 16) + (colorArr[1] << 8) + (+colorArr[2])).toString(16).slice(1);
+        }
+    }
+
+    /**
+     * Map value to color. Faster than mapToColor methods because color is represented by rgba array.
+     * @param {number} normalizedValue A float between 0 and 1.
+     * @param {Array.<Array.<number>>} colors List of rgba color array
+     * @param {Array.<number>} [out] Mapped gba color array
+     * @return {Array.<number>} will be null/undefined if input illegal.
+     */
+    function fastMapToColor(normalizedValue, colors, out) {
+        if (!(colors && colors.length)
+            || !(normalizedValue >= 0 && normalizedValue <= 1)
+        ) {
+            return;
+        }
+
+        out = out || [];
+
+        var value = normalizedValue * (colors.length - 1);
+        var leftIndex = Math.floor(value);
+        var rightIndex = Math.ceil(value);
+        var leftColor = colors[leftIndex];
+        var rightColor = colors[rightIndex];
+        var dv = value - leftIndex;
+        out[0] = clampCssByte(lerp(leftColor[0], rightColor[0], dv));
+        out[1] = clampCssByte(lerp(leftColor[1], rightColor[1], dv));
+        out[2] = clampCssByte(lerp(leftColor[2], rightColor[2], dv));
+        out[3] = clampCssFloat(lerp(leftColor[3], rightColor[3], dv));
+
+        return out;
+    }
+    /**
+     * @param {number} normalizedValue A float between 0 and 1.
+     * @param {Array.<string>} colors Color list.
+     * @param {boolean=} fullOutput Default false.
+     * @return {(string|Object)} Result color. If fullOutput,
+     *                           return {color: ..., leftIndex: ..., rightIndex: ..., value: ...},
+     * @memberOf module:zrender/util/color
+     */
+    function mapToColor(normalizedValue, colors, fullOutput) {
+        if (!(colors && colors.length)
+            || !(normalizedValue >= 0 && normalizedValue <= 1)
+        ) {
+            return;
+        }
+
+        var value = normalizedValue * (colors.length - 1);
+        var leftIndex = Math.floor(value);
+        var rightIndex = Math.ceil(value);
+        var leftColor = parse(colors[leftIndex]);
+        var rightColor = parse(colors[rightIndex]);
+        var dv = value - leftIndex;
+
+        var color = stringify(
+            [
+                clampCssByte(lerp(leftColor[0], rightColor[0], dv)),
+                clampCssByte(lerp(leftColor[1], rightColor[1], dv)),
+                clampCssByte(lerp(leftColor[2], rightColor[2], dv)),
+                clampCssFloat(lerp(leftColor[3], rightColor[3], dv))
+            ],
+            'rgba'
+        );
+
+        return fullOutput
+            ? {
+                color: color,
+                leftIndex: leftIndex,
+                rightIndex: rightIndex,
+                value: value
+            }
+            : color;
+    }
+
+    /**
+     * @param {string} color
+     * @param {number=} h 0 ~ 360, ignore when null.
+     * @param {number=} s 0 ~ 1, ignore when null.
+     * @param {number=} l 0 ~ 1, ignore when null.
+     * @return {string} Color string in rgba format.
+     * @memberOf module:zrender/util/color
+     */
+    function modifyHSL(color, h, s, l) {
+        color = parse(color);
+
+        if (color) {
+            color = rgba2hsla(color);
+            h != null && (color[0] = clampCssAngle(h));
+            s != null && (color[1] = parseCssFloat(s));
+            l != null && (color[2] = parseCssFloat(l));
+
+            return stringify(hsla2rgba(color), 'rgba');
+        }
+    }
+
+    /**
+     * @param {string} color
+     * @param {number=} alpha 0 ~ 1
+     * @return {string} Color string in rgba format.
+     * @memberOf module:zrender/util/color
+     */
+    function modifyAlpha(color, alpha) {
+        color = parse(color);
+
+        if (color && alpha != null) {
+            color[3] = clampCssFloat(alpha);
+            return stringify(color, 'rgba');
+        }
+    }
+
+    /**
+     * @param {Array.<number>} arrColor like [12,33,44,0.4]
+     * @param {string} type 'rgba', 'hsva', ...
+     * @return {string} Result color. (If input illegal, return undefined).
+     */
+    function stringify(arrColor, type) {
+        if (!arrColor || !arrColor.length) {
+            return;
+        }
+        var colorStr = arrColor[0] + ',' + arrColor[1] + ',' + arrColor[2];
+        if (type === 'rgba' || type === 'hsva' || type === 'hsla') {
+            colorStr += ',' + arrColor[3];
+        }
+        return type + '(' + colorStr + ')';
+    }
+
+    return {
+        parse: parse,
+        lift: lift,
+        toHex: toHex,
+        fastMapToColor: fastMapToColor,
+        mapToColor: mapToColor,
+        modifyHSL: modifyHSL,
+        modifyAlpha: modifyAlpha,
+        stringify: stringify
+    };
+}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
 
 /***/ })
 /******/ ]);

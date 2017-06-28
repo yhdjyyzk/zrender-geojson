@@ -19,27 +19,11 @@ let getJSON = new Promise(function (resolve, reject) {
 });
 
 getJSON.then(function (data) {
-    let lines = drawer.drawGeoJSON(data, 500, {});
-
-    let circle = new Circle({
-        shape: {
-            cx: 100,
-            cy: 100,
-            r: 30
-        },
-        style: {
-            fill: 'red'
-        }
-    });
-
     let zr = zrender.init(document.getElementById('app'), {
         width: 1000,
-        height: 1000
+        height: 500
     });
 
-    zr.add(circle);
-    for(let i = 0; i < lines.length; i++) {
-        zr.add(lines[i])
-    }
+    drawer.drawGeoJSON(zr, data, 1000, {});
 });
 
