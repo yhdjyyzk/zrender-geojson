@@ -1,0 +1,41 @@
+{
+  "name": "zrender-geojson",
+  "version": "1.0.0",
+  "description": "Using zrender to draw geojson in canvas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --watch",
+    "dev": "webpack --watch & webpack-dev-server --progress --colors --watch --port 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuanzhaokang/zrender-geojson.git"
+  },
+  "keywords": [
+    "zrender",
+    "geojson",
+    "canvas",
+    "map",
+    "visualization"
+  ],
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.4.0",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "jquery": "^3.2.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1",
+    "zrender": "^3.4.4"
+  },
+  "author": "yuanzhaokang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yuanzhaokang/zrender-geojson/issues"
+  },
+  "homepage": "https://github.com/yuanzhaokang/zrender-geojson#readme"
+}
