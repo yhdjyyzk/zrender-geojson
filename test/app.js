@@ -16,6 +16,6 @@ let getJSON = new Promise(function (resolve, reject) {
 });
 
 getJSON.then(function (data) {
-    drawer.drawGeoJSON(data);
+    drawer.drawGeoJSON(data, 100, {});
 });
 

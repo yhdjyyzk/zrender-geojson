@@ -41,6 +41,7 @@ export default class ZRenderGeoJSON {
                     for (var point_num = 0; point_num < coordinate_array.length; point_num++) {
                         this.convertToPlaneCoords(coordinate_array[point_num], radius);
                     }
+
                     this.drawLine(y_values, z_values, x_values, options);
                 }
 
@@ -97,6 +98,7 @@ export default class ZRenderGeoJSON {
 
         z_values.push((lat / 180) * radius);
         y_values.push((lon / 180) * radius);
+        // console.log(z_values, y_values)
     }
 
     createCoordinateArray(feature) {
