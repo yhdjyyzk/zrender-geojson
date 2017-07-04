@@ -1,4 +1,5 @@
 import Group from 'zrender/src/container/Group';
+import Line from 'zrender/src/graphic/shape/Line';
 import Polyline from 'zrender/src/graphic/shape/Polyline';
 
 let x_values = [];
@@ -8,86 +9,85 @@ let z_values = [];
 export default class ZRenderGeoJSON {
     constructor() {
         this.width = this.height = 0;
+        this.zr = null;
     }
 
     drawGeoJSON(zr, json, radius, options) {
         this.width = zr.getWidth();
         this.height = zr.getHeight();
+        this.zr = zr;
 
         let g = new Group();
         let json_geom = this.parseGeoJSON(json);
         let coordinate_array = [];
 
-        for(let geom_num = 0; geom_num < json_geom.length; geom_num++) {
-            if(json_geom[geom_num].type == 'Point') {
-                this.convertToPlaneCoords(json_geom[geom_num].coordinates, radius);
+        for (let i = 0; i < json_geom.length; i++) {
+            if (json_geom[i].type == 'Point') {
+                this.convertToPlaneCoords(json_geom[i].coordinates, radius);
                 // drawParticle(y_values[0], z_values[0], x_values[0], options);
-
-            } else if(json_geom[geom_num].type == 'MultiPoint') {
-                for(let point_num = 0; point_num < json_geom[geom_num].coordinates.length; point_num++) {
-                    this.convertToPlaneCoords(json_geom[geom_num].coordinates[point_num], radius);
+            }
+            else if (json_geom[i].type == 'MultiPoint') {
+                for (let j = 0; j < json_geom[i].coordinates.length; j++) {
+                    this.convertToPlaneCoords(json_geom[i].coordinates[j], radius);
                     // drawParticle(y_values[0], z_values[0], x_values[0], options);
                 }
+            }
+            else if (json_geom[i].type == 'LineString') {
+                coordinate_array = this.createCoordinateArray(json_geom[i].coordinates);
 
-            } else if(json_geom[geom_num].type == 'LineString') {
-                coordinate_array = this.createCoordinateArray(json_geom[geom_num].coordinates);
-
-                for(let point_num = 0; point_num < coordinate_array.length; point_num++) {
-                    this.convertToPlaneCoords(coordinate_array[point_num], radius);
+                for (let j = 0; j < coordinate_array.length; j++) {
+                    this.convertToPlaneCoords(coordinate_array[j], radius);
                 }
-            } else if(json_geom[geom_num].type == 'Polygon') {
-                for(let segment_num = 0; segment_num < json_geom[geom_num].coordinates.length; segment_num++) {
-                    coordinate_array = this.createCoordinateArray(json_geom[geom_num].coordinates[segment_num]);
+            }
+            else if (json_geom[i].type == 'Polygon') {
+                for (let segment_num = 0; segment_num < json_geom[i].coordinates.length; segment_num++) {
+                    coordinate_array = this.createCoordinateArray(json_geom[i].coordinates[segment_num]);
 
-                    for(let point_num = 0; point_num < coordinate_array.length; point_num++) {
-                        this.convertToPlaneCoords(coordinate_array[point_num], radius);
+                    for (let j = 0; j < coordinate_array.length; j++) {
+                        this.convertToPlaneCoords(coordinate_array[j], radius);
                     }
 
+                    this.drawLine(y_values, z_values, x_values, options)
                 }
-            } else if(json_geom[geom_num].type == 'MultiLineString') {
-                for(let segment_num = 0; segment_num < json_geom[geom_num].coordinates.length; segment_num++) {
-                    coordinate_array = this.createCoordinateArray(json_geom[geom_num].coordinates[segment_num]);
+            }
+            else if (json_geom[i].type == 'MultiLineString') {
+                for (let segment_num = 0; segment_num < json_geom[i].coordinates.length; segment_num++) {
+                    coordinate_array = this.createCoordinateArray(json_geom[i].coordinates[segment_num]);
 
-                    for(let point_num = 0; point_num < coordinate_array.length; point_num++) {
-                        this.convertToPlaneCoords(coordinate_array[point_num], radius);
+                    for (let j = 0; j < coordinate_array.length; j++) {
+                        this.convertToPlaneCoords(coordinate_array[j], radius);
                     }
-
-                    this.drawLine(y_values, z_values, x_values, options);
                 }
+            }
+            else if (json_geom[i].type == 'MultiPolygon') {
+                for (let polygon_num = 0; polygon_num < json_geom[i].coordinates.length; polygon_num++) {
+                    for (let segment_num = 0; segment_num < json_geom[i].coordinates[polygon_num].length; segment_num++) {
+                        coordinate_array = this.createCoordinateArray(json_geom[i].coordinates[polygon_num][segment_num]);
 
-            } else if(json_geom[geom_num].type == 'MultiPolygon') {
-                for(let polygon_num = 0; polygon_num < json_geom[geom_num].coordinates.length; polygon_num++) {
-                    for(let segment_num = 0; segment_num < json_geom[geom_num].coordinates[polygon_num].length; segment_num++) {
-                        coordinate_array = this.createCoordinateArray(json_geom[geom_num].coordinates[polygon_num][segment_num]);
-
-                        for(let point_num = 0; point_num < coordinate_array.length; point_num++) {
-                            this.convertToPlaneCoords(coordinate_array[point_num], radius);
+                        for (let j = 0; j < coordinate_array.length; j++) {
+                            this.convertToPlaneCoords(coordinate_array[j], radius);
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 throw new Error('The geoJSON is not valid.');
             }
-
-            g.add(this.drawLine(y_values, z_values, x_values, options));
-            this.resetXYZ();
         }
-
-        zr.add(g);
     }
 
     parseGeoJSON(json) {
         let geometry_array = [];
 
-        if(json.type == 'Feature') {
+        if (json.type == 'Feature') {
             geometry_array.push(json.geometry);
-        } else if(json.type == 'FeatureCollection') {
-            for(let feature_num = 0; feature_num < json.features.length; feature_num++) {
+        } else if (json.type == 'FeatureCollection') {
+            for (let feature_num = 0; feature_num < json.features.length; feature_num++) {
                 geometry_array.push(json.features[feature_num].geometry);
             }
-        } else if(json.type == 'GeometryCollection') {
-            for(let geom_num = 0; geom_num < json.geometries.length; geom_num++) {
-                geometry_array.push(json.geometries[geom_num]);
+        } else if (json.type == 'GeometryCollection') {
+            for (let i = 0; i < json.geometries.length; i++) {
+                geometry_array.push(json.geometries[i]);
             }
         } else {
             throw new Error('The geoJSON is not valid.');
@@ -110,17 +110,17 @@ export default class ZRenderGeoJSON {
         let temp_array = [];
         let interpolation_array = [];
 
-        for(let point_num = 0; point_num < feature.length; point_num++) {
-            let point1 = feature[point_num];
-            let point2 = feature[point_num - 1];
+        for (let j = 0; j < feature.length; j++) {
+            let point1 = feature[j];
+            let point2 = feature[j - 1];
 
-            if(point_num > 0) {
-                if(this.needsInterpolation(point2, point1)) {
+            if (j > 0) {
+                if (this.needsInterpolation(point2, point1)) {
                     interpolation_array = [point2, point1];
                     interpolation_array = this.interpolatePoints(interpolation_array);
 
-                    for(let inter_point_num = 0; inter_point_num < interpolation_array.length; inter_point_num++) {
-                        temp_array.push(interpolation_array[inter_point_num]);
+                    for (let inter_j = 0; inter_j < interpolation_array.length; inter_j++) {
+                        temp_array.push(interpolation_array[inter_j]);
                     }
                 } else {
                     temp_array.push(point1);
@@ -142,7 +142,7 @@ export default class ZRenderGeoJSON {
         let lon_distance = Math.abs(lon1 - lon2);
         let lat_distance = Math.abs(lat1 - lat2);
 
-        if(lon_distance > 5 || lat_distance > 5) {
+        if (lon_distance > 5 || lat_distance > 5) {
             return true;
         } else {
             return false;
@@ -155,11 +155,11 @@ export default class ZRenderGeoJSON {
         let temp_array = [];
         let point1, point2;
 
-        for(let point_num = 0; point_num < interpolation_array.length - 1; point_num++) {
-            point1 = interpolation_array[point_num];
-            point2 = interpolation_array[point_num + 1];
+        for (let j = 0; j < interpolation_array.length - 1; j++) {
+            point1 = interpolation_array[j];
+            point2 = interpolation_array[j + 1];
 
-            if(this.needsInterpolation(point2, point1)) {
+            if (this.needsInterpolation(point2, point1)) {
                 temp_array.push(point1);
                 temp_array.push(this.getMidpoint(point1, point2));
             } else {
@@ -169,7 +169,7 @@ export default class ZRenderGeoJSON {
 
         temp_array.push(interpolation_array[interpolation_array.length - 1]);
 
-        if(temp_array.length > interpolation_array.length) {
+        if (temp_array.length > interpolation_array.length) {
             temp_array = this.interpolatePoints(temp_array);
         } else {
             return temp_array;
@@ -188,12 +188,17 @@ export default class ZRenderGeoJSON {
     drawLine(x_values, y_values, z_values, options) {
         let points = [];
 
-        for(let i = 0; i < x_values.length; i++) {
-            points.push([x_values[i], this.height - y_values[i]]);
+        for (let i = 0; i < x_values.length - 1; i++) {
+            points.push([this.width / 2 + x_values[i], this.height / 2 - y_values[i]]);
+            points.push([this.width / 2 + x_values[i + 1], this.height / 2 - y_values[i + 1]]);
         }
 
         let polyline = new Polyline({
             shape: {
+                // x1: this.width / 2 + x_values[i],
+                // y1: this.height / 2 - y_values[i],
+                // x2: this.width / 2 + x_values[i + 1],
+                // y2: this.height / 2 - y_values[i + 1]
                 points: points
             },
             style: {
@@ -203,7 +208,10 @@ export default class ZRenderGeoJSON {
             draggable: true
         });
 
-        return polyline;
+        this.zr.add(polyline);
+        points = [];
+        this.resetXYZ();
+
     }
 
     getRandomColor() {
@@ -211,8 +219,8 @@ export default class ZRenderGeoJSON {
     }
 
     resetXYZ() {
-        x_values = [];
-        y_values = []
-        z_values = [];
+        x_values.length = 0;
+        y_values.length = 0;
+        z_values.length = 0;
     }
 }

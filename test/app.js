@@ -8,7 +8,7 @@ let drawer = new ZRenderGeoJSON();
 
 let getJSON = new Promise(function (resolve, reject) {
     $.getJSON({
-        url: '../dist/china.json',
+        url: '../dist/world-countries.json',
         success: function (data) {
             resolve(data);
         },
@@ -24,6 +24,6 @@ getJSON.then(function (data) {
         height: 500
     });
 
-    drawer.drawGeoJSON(zr, data, 1000, {});
+    drawer.drawGeoJSON(zr, data, 300, {});
 });
 
