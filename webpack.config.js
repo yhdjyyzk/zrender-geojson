@@ -4,8 +4,7 @@ var webpack = require('webpack');
 module.exports = {
     devtool: false,
     entry: {
-        // bundle: './src/ZRenderGeoJSON.js',
-        bundle: './test/app.js'
+        bundle: './src/app.js'
     },
     output: {
         path: __dirname + '/dist/',
