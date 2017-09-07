@@ -2,6 +2,7 @@ import * as d3 from 'd3';
 import zrender from 'zrender/src/zrender';
 import Group from 'zrender/src/container/Group';
 import pathTool from 'zrender/src/tool/path';
+import util from 'zrender/src/core/util';
 
 let group = new Group();
 let zr = zrender.init(document.querySelector("#canvas"));
@@ -40,3 +41,20 @@ fetch('./dist/china.json')
             }
         });
     });
+
+let scale = 1;
+
+document.addEventListener("mousewheel", function (e) {
+    if(zr) {
+        var storage = zr.storage;
+        var els = zr.storage.getDisplayList(true, true);
+        var delta = e.wheelDelta;
+        var newScale = scale + delta / 1000.0;
+
+        scale = newScale;
+        util.each(els, function (el) {
+            el.attr("scale", [scale, scale]);
+            el.attr('origin', [e.clientX, e.clientY]);
+        });
+    }
+});
